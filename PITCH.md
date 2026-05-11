@@ -65,12 +65,14 @@ Three properties separate a DePIN protocol from an app with points:
 
 This is not a hackathon prototype.
 
-- **[X] registered users** in Brazil, active and earning
-- **[Y] on-chain session proofs** — each one a Memo on Solana mainnet, verifiable right now
-- **[Z] CNB tokens redeemed** to Solana wallets
-- **PIX withdrawals processed** — fiat onramp functional, not theoretical
-- **Referral system on-chain** — each affiliate registration generates a verifiable Memo at the moment it happens
-- **Public dashboard** at `cnbmobile-2053c.web.app` — live data, every proof linked to Solscan
+- **3,491 registered users** in Brazil, active and earning
+- **1,369 users with 60+ minutes** of verified charging — real engagement, not signups
+- **1,217,925 minutes** (20,298 hours) of verified charging sessions accumulated on-chain
+- **20 daily aggregate proofs on Solana mainnet** — each one a Memo with SHA-256 hash of all sessions, verifiable right now. [Latest proof on Solscan](https://solscan.io/tx/2Bkui44aPDVC5TdF3mg8RsytKQWmEzXcABVKA6kiZSzdreeZUP4K6q7Za53YYYvR73Bj9hj1ihbcVDdbMsPwao8y)
+- **12 CNB token redemptions** to Solana wallets — fiat + crypto exit both functional
+- **69 PIX withdrawal requests** — fiat onramp live, not theoretical
+- **338 active affiliates** running the referral program
+- **1,312 users active on May 9** — growing daily
 
 We came to this hackathon with a working protocol, not a pitch deck. Every number above exists on mainnet today.
 

@@ -133,13 +133,18 @@ Ore proved the formula at Renaissance 2024. We extend that thesis from computati
 
 This is not a hackathon prototype.
 
-- **Active users** in Brazil, earning daily
-- **On-chain session proofs** — each one a Memo on Solana mainnet, verifiable right now
-- **JUICE tokens redeemed** to Solana wallets
-- **PIX withdrawals processed** — fiat onramp functional, not theoretical
-- **Anti-fraud system** — device fingerprinting, circular referral detection, IP correlation
+| Metric | Number |
+|---|---|
+| Registered users | **3,491** |
+| Users with 60+ min verified | **1,369** |
+| Total minutes on-chain | **1,217,925 min (20,298 h)** |
+| Daily aggregate proofs on Solana | **20** |
+| PIX withdrawal requests | **69** |
+| CNB token redemptions | **12** |
+| Active affiliates | **338** |
+| Peak daily active users | **1,312** (May 9) |
 
-Every proof exists on mainnet today. Every number is auditable on Solscan.
+Every proof exists on mainnet today. [Verify on Solscan →](https://solscan.io/tx/2Bkui44aPDVC5TdF3mg8RsytKQWmEzXcABVKA6kiZSzdreeZUP4K6q7Za53YYYvR73Bj9hj1ihbcVDdbMsPwao8y)
 
 ---
 
