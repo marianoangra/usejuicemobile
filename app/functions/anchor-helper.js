@@ -19,7 +19,7 @@ const crypto = require('crypto');
 const IDL = require('./cnb_program_idl.json');
 
 const PROGRAM_ID = 'BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo';
-const CLUSTER_URL = 'https://api.devnet.solana.com'; // → mainnet quando pronto
+const CLUSTER_URL = 'https://api.mainnet-beta.solana.com';
 
 /**
  * sha256(uid).slice(0, 16) — identificador privado on-chain.

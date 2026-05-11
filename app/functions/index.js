@@ -234,6 +234,133 @@ exports.notificarNovoLead = onDocumentCreated(
   }
 );
 
+// ─── Registro de lead com rate limiting por IP ───────────────────────────────
+// Substitui escrita direta do client em /leads (bloqueada nas Firestore rules).
+// Rate limit: máx 3 submissões por IP a cada 10 minutos.
+exports.registrarLead = onRequest(
+  { region: 'us-central1', cors: true },
+  async (req, res) => {
+    if (req.method !== 'POST') { res.status(405).json({ ok: false, reason: 'method_not_allowed' }); return; }
+
+    const { email, locale, source } = req.body ?? {};
+
+    if (
+      typeof email !== 'string' ||
+      !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ||
+      email.length < 6 || email.length > 200
+    ) { res.status(400).json({ ok: false, reason: 'invalid_email' }); return; }
+
+    if (!['pt', 'en', 'es'].includes(locale)) { res.status(400).json({ ok: false, reason: 'invalid_locale' }); return; }
+
+    if (typeof source !== 'string' || source.length > 50) { res.status(400).json({ ok: false, reason: 'invalid_source' }); return; }
+
+    const db = getFirestore();
+    const ipRaw = req.headers['x-forwarded-for'] ?? req.ip ?? '';
+    const ip = ipRaw.split(',')[0].trim();
+    const ipHash = crypto.createHash('sha256').update(ip).digest('hex').slice(0, 16);
+
+    // Rate limit: máx 3 por IP a cada 10 min
+    const rlRef = db.doc(`rate_limit/lead_${ipHash}`);
+    const JANELA_MS = 10 * 60 * 1000;
+    const LIMITE = 3;
+
+    try {
+      await db.runTransaction(async (tx) => {
+        const rlSnap = await tx.get(rlRef);
+        const agora = Date.now();
+        const rl = rlSnap.exists ? rlSnap.data() : { count: 0, windowStart: agora };
+        const emJanela = (agora - rl.windowStart) < JANELA_MS;
+        const count = emJanela ? rl.count : 0;
+        const windowStart = emJanela ? rl.windowStart : agora;
+        if (count >= LIMITE) throw Object.assign(new Error('rate_limit'), { code: 429 });
+        tx.set(rlRef, { count: count + 1, windowStart });
+      });
+    } catch (e) {
+      if (e.code === 429) { res.status(429).json({ ok: false, reason: 'rate_limit' }); return; }
+      throw e;
+    }
+
+    const emailNorm = email.toLowerCase().trim();
+    const leadRef = db.collection('leads').doc(emailNorm);
+    const snap = await leadRef.get();
+    if (snap.exists) { res.status(200).json({ ok: true, existing: true }); return; }
+
+    await leadRef.set({ email: emailNorm, locale, source, createdAt: new Date() });
+    res.status(200).json({ ok: true });
+  }
+);
+
+// ─── Registro na waitlist JUICE com rate limiting por IP ─────────────────────
+// Substitui escrita direta do client em /juice_waitlist.
+// Rate limit: máx 3 submissões por IP a cada 10 minutos.
+exports.registrarWaitlist = onRequest(
+  { region: 'us-central1', cors: true },
+  async (req, res) => {
+    if (req.method !== 'POST') { res.status(405).json({ ok: false, reason: 'method_not_allowed' }); return; }
+
+    const { email, locale, source, walletAddress, walletSolana, uid: uidParam, pontosApp, juiceEstimado } = req.body ?? {};
+    const wallet = walletAddress ?? walletSolana ?? null; // app usa walletSolana, web usa walletAddress
+
+    if (
+      typeof email !== 'string' ||
+      !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ||
+      email.length < 6 || email.length > 200
+    ) { res.status(400).json({ ok: false, reason: 'invalid_email' }); return; }
+
+    if (!['pt', 'en', 'es'].includes(locale)) { res.status(400).json({ ok: false, reason: 'invalid_locale' }); return; }
+
+    if (typeof source !== 'string' || source.length > 50) { res.status(400).json({ ok: false, reason: 'invalid_source' }); return; }
+
+    if (wallet != null && (typeof wallet !== 'string' || wallet.length > 100)) {
+      res.status(400).json({ ok: false, reason: 'invalid_wallet' }); return;
+    }
+
+    if (uidParam != null && (typeof uidParam !== 'string' || uidParam.length > 100)) {
+      res.status(400).json({ ok: false, reason: 'invalid_uid' }); return;
+    }
+
+    const db = getFirestore();
+    const ipRaw = req.headers['x-forwarded-for'] ?? req.ip ?? '';
+    const ip = ipRaw.split(',')[0].trim();
+    const ipHash = crypto.createHash('sha256').update(ip).digest('hex').slice(0, 16);
+
+    // Rate limit: máx 3 por IP a cada 10 min (compartilha namespace com leads)
+    const rlRef = db.doc(`rate_limit/waitlist_${ipHash}`);
+    const JANELA_MS = 10 * 60 * 1000;
+    const LIMITE = 3;
+
+    try {
+      await db.runTransaction(async (tx) => {
+        const rlSnap = await tx.get(rlRef);
+        const agora = Date.now();
+        const rl = rlSnap.exists ? rlSnap.data() : { count: 0, windowStart: agora };
+        const emJanela = (agora - rl.windowStart) < JANELA_MS;
+        const count = emJanela ? rl.count : 0;
+        const windowStart = emJanela ? rl.windowStart : agora;
+        if (count >= LIMITE) throw Object.assign(new Error('rate_limit'), { code: 429 });
+        tx.set(rlRef, { count: count + 1, windowStart });
+      });
+    } catch (e) {
+      if (e.code === 429) { res.status(429).json({ ok: false, reason: 'rate_limit' }); return; }
+      throw e;
+    }
+
+    const emailNorm = email.toLowerCase().trim();
+    const ref = db.collection('juice_waitlist').doc(emailNorm);
+    const snap = await ref.get();
+    if (snap.exists) { res.status(200).json({ ok: true, existing: true }); return; }
+
+    const data = { email: emailNorm, locale, source, createdAt: new Date() };
+    if (wallet) data.walletAddress = wallet;
+    if (uidParam) data.uid = uidParam;
+    if (typeof pontosApp === 'number') data.pontosApp = pontosApp;
+    if (typeof juiceEstimado === 'number') data.juiceEstimado = juiceEstimado;
+
+    await ref.set(data);
+    res.status(200).json({ ok: true });
+  }
+);
+
 // ─── 1% de comissão para o indicador quando o indicado faz um saque ─────────
 // Ex: saque de 100.000 pts → indicador recebe +1.000 pts automaticamente.
 exports.processarComissaoSaque = onDocumentCreated(
@@ -775,10 +902,26 @@ exports.registrarProvasSessao = onCall(
     const MEMO_PROGRAM = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
     const db = getFirestore();
 
+    // ── Validação server-side: duracaoMinutos não pode exceder tempo real desde última sessão ──
+    const agora = new Date();
+    const perfilSnap = await db.doc(`usuarios/${uid}`).get();
+    const perfil = perfilSnap.exists ? perfilSnap.data() : {};
+    const ultimaSessaoTs = perfil.ultimaSessao?.toDate?.() ?? null;
+
+    if (ultimaSessaoTs) {
+      const minutosdesdeuUltima = Math.floor((agora - ultimaSessaoTs) / 60000);
+      const TOLERANCIA_MINUTOS = 5; // margem para clock drift e latência
+      const limitePermitido = minutosdesdeuUltima + TOLERANCIA_MINUTOS;
+      if (duracaoMinutos > limitePermitido) {
+        console.warn(`[SessionProof] Rate limit: uid=${uid} claimed=${duracaoMinutos}min elapsed=${minutosdesdeuUltima}min`);
+        throw new HttpsError('resource-exhausted', 'Duração informada excede o tempo desde a última sessão registrada.');
+      }
+    }
+
     // Hash do UID para preservar privacidade na blockchain pública
     const uidHash = crypto.createHash('sha256').update(uid).digest('hex').slice(0, 16);
     const pontos = duracaoMinutos * 10 + Math.floor(duracaoMinutos / 60) * 50;
-    const ts = new Date().toISOString();
+    const ts = agora.toISOString();
 
     // ── Rastreamento anti-fraude: device hash + IP hash ─────────────────────
     const ipRaw = request.rawRequest?.ip ?? request.rawRequest?.headers?.['x-forwarded-for'] ?? '';
@@ -789,7 +932,7 @@ exports.registrarProvasSessao = onCall(
 
     // Atualiza device/IP hash no perfil (usado em onReferreeBecameActive para detectar fraude)
     try {
-      const profileUpdate = { ultimaSessao: new Date() };
+      const profileUpdate = { ultimaSessao: agora };
       if (deviceHash) profileUpdate.deviceHash = deviceHash;
       if (ipHash)     profileUpdate.ipHash = ipHash;
       await db.doc(`usuarios/${uid}`).update(profileUpdate);

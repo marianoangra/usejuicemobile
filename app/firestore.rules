@@ -23,7 +23,7 @@ service cloud.firestore {
       allow update: if request.auth != null
         && request.auth.uid == uid
         && request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['nome', 'avatarURL', 'sessionToken', 'codigoAfiliado', 'modo']);
+            .hasOnly(['nome', 'avatarURL', 'codigoAfiliado', 'modo']);
 
       // Atualização 2 — referidoPor: pode ser definido uma única vez, nunca alterado
       allow update: if request.auth != null
@@ -132,46 +132,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // ── Lista de espera (waitlist) — público, sem auth ───────────────────────
-    // Inserções vêm do site cnbmobile.com (visitantes anônimos).
-    // Doc ID = email sanitizado → 2º submit do mesmo email é bloqueado pelo
-    // currentDocument.exists=false no SDK web (no-op silencioso).
+    // ── Lista de espera (waitlist) — somente via Cloud Function registrarLead ─
+    // Escrita direta bloqueada; rate limiting e validação feitos server-side.
     match /leads/{leadId} {
-      allow create: if
-        request.resource.data.email is string
-        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-        && request.resource.data.email.size() > 5
-        && request.resource.data.email.size() < 200
-        && request.resource.data.locale in ['pt', 'en', 'es']
-        && request.resource.data.source is string
-        && request.resource.data.source.size() < 50
-        && request.resource.data.keys().hasOnly(['email', 'locale', 'source', 'createdAt']);
-      allow read, update, delete: if false;
+      allow read, write: if false;
     }
 
-    // ── JUICE Airdrop waitlist — público, sem auth ───────────────────────────
-    // Inserções vêm do /airdrop em cnbmobile.com (visitantes anônimos OU
-    // usuários do app via Linking.openURL com ?from=app&email=&uid=).
-    // Doc ID = email sanitizado → idempotente; segundo submit é no-op pelo
-    // currentDocument.exists=false do SDK web. Wallet address opcional.
+    // ── JUICE Airdrop waitlist — somente via Cloud Function registrarWaitlist ─
+    // Escrita direta bloqueada; rate limiting e validação feitos server-side.
     match /juice_waitlist/{leadId} {
-      allow create: if
-        request.resource.data.email is string
-        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-        && request.resource.data.email.size() > 5
-        && request.resource.data.email.size() < 200
-        && request.resource.data.locale in ['pt', 'en', 'es']
-        && request.resource.data.source is string
-        && request.resource.data.source.size() < 50
-        && (request.resource.data.walletAddress == null
-            || (request.resource.data.walletAddress is string
-                && request.resource.data.walletAddress.size() < 100))
-        && (request.resource.data.uid == null
-            || (request.resource.data.uid is string
-                && request.resource.data.uid.size() < 100))
-        && request.resource.data.keys().hasOnly(
-            ['email', 'walletAddress', 'locale', 'source', 'uid', 'createdAt']);
-      allow read, update, delete: if false;
+      allow read, write: if false;
     }
 
   }
@@ -179,6 +149,6 @@ service cloud.firestore {
 
 function isAdmin() {
   return request.auth != null
-    && request.auth.token.email == 'contato@rafaelmariano.com.br'
+    && request.auth.uid == 'X619NYBpp5OqXKTBomuFTISuQGY2'
     && request.auth.token.email_verified == true;
 }

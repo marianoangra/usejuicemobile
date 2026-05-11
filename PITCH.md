@@ -65,7 +65,7 @@ Three properties separate a DePIN protocol from an app with points:
 
 This is not a hackathon prototype.
 
-**7,600 unique users** opened Juice Mobile in the last 30 days (Firebase Analytics). **2,000 opened it today.** **124 are active right now** as you read this.
+**7,600 unique users** opened Juice Mobile in the last 30 days (Firebase Analytics). **2,000 opened it today.**
 
 - **7,600 monthly active users** — Firebase Analytics, 13 Apr – 10 May 2026
 - **4,900 weekly active users** — last 7 days
@@ -98,7 +98,7 @@ We came to this hackathon with a working protocol, not a pitch deck. Every numbe
 
 Brazil is the entry point, not the ceiling.
 
-PIX isn't just a payment method — it's the infrastructure that makes crypto actually usable for 150M Brazilians. It's what crypto payments aspire to be, except it already works. CNB Mobile sits at that intersection: Solana for the protocol layer, PIX for the real-world exit.
+PIX isn't just a payment method — it's the infrastructure that makes crypto actually usable for 150M Brazilians. It's what crypto payments aspire to be, except it already works. Juice Mobile sits at that intersection: Solana for the protocol layer, PIX for the real-world exit.
 
 Beyond Brazil: Mexico (130M smartphones), Colombia (60M), Argentina (50M). Latin America is 700M people with Android phones, high inflation, and no DePIN protocols built for them.
 
@@ -106,18 +106,18 @@ Helium just entered Brazil via Mambo WiFi — hardware-dependent, $400 per node.
 
 ---
 
-## Token Roadmap (Planned)
+## Token
 
-The current product pays users in points redeemable via PIX. The token launch is the next milestone:
+The JUICE SPL token **will launch post-hackathon.** Every design decision is already locked — the proofs on-chain today are the pre-issuance ledger.
 
-- **Supply:** 21,000,000,000 JUICE — fixed
+- **Supply:** 21,000,000,000 JUICE — fixed supply, mint authority will be renounced at launch
 - **Emission:** 650 JUICE/hour of verified charging, halving every 4 years (Bitcoin-inspired schedule)
-- **Conversion:** 1 point = 1 JUICE token — every point already has an on-chain proof backing it
+- **Conversion:** 1 point = 1 JUICE — every point already has an on-chain proof; conversion will be 1:1 at TGE, no retroactive manipulation possible
 - **Burn:** 2% of every token redemption permanently removed from circulation
 - **Minimum claim:** 100,000 JUICE — prevents micro-transaction spam
-- **Sustainability:** At 10,000 users averaging 30 min/day, the protocol runs for 45+ years with the halving schedule applied
+- **Sustainability:** At 10,000 users averaging 30 min/day, the emission schedule runs 45+ years
 
-Every point earned today will convert 1:1 at token launch — the on-chain record already exists.
+The proofs exist today. The ledger is already on Solana. The token launch is the final step — and the conversion is mechanical, not discretionary.
 
 ---
 
@@ -128,12 +128,33 @@ Every point earned today will convert 1:1 at token launch — the on-chain recor
 - Every minute of verified charging increments points via Firebase (Firestore)
 - Session mutex prevents double-counting from concurrent battery events
 
-**On Solana:**
-- End of each session triggers `registrarProvasSessao` — a Firebase Cloud Function that writes a Solana Memo with: `uidHash` (SHA-256, privacy-preserving), ISO timestamp, duration in minutes, points earned
-- Daily aggregate proof written at 03:00 BRT: `{date, activeUsers, totalPoints, totalMinutes, SHA-256 hash of all UIDs}`
-- Referral events recorded on-chain via Memo at moment of registration
+**On Solana — dual-layer proof system:**
 
-**Stack:** React Native (Expo) · Firebase · `@solana/web3.js` · Solana Memo Program
+Layer 1 — **Solana Memo Program** (immutable session log):
+- End of each session triggers `registrarProvasSessao` — a Cloud Function that writes a Memo on mainnet: `{app, event, uidHash, ts, dur, pts}` — permanent, permissionless, auditable
+- Daily aggregate proof at 03:00 BRT: `{date, activeUsers, totalMinutes, sha256(allUIDs)}`
+- Referral events written on-chain at moment of registration
+
+Layer 2 — **Anchor Program in Rust** (`BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo`):
+- `UserAccount` PDA per user: `{ uid_hash, pontos, minutos, referrer, nivel, bump }`
+- `initialize_user` — creates PDA on first session, records referral graph on-chain
+- `acumular_pontos` — authority-gated, validates 1–20.000 pts and 1–1.440 min per call
+- `resgatar_tokens` — atomically debits points on-chain before SPL transfer, enforces 100.000 minimum
+
+No entity — including us — can alter a Memo or a UserAccount PDA without the server keypair. Every session is double-anchored: once in the immutable log, once in the state machine.
+
+Layer 3 — **CLINT Agent** (autonomous on-chain verifier):
+- Reads UserAccount PDAs directly from the Solana RPC — no trust in app server required
+- Surfaces verified proof data into the HomeScreen dashboard in real time
+- Submitted as agent card to the MIND Protocol (`the_garage_frontier_sp` campaign)
+- Enables trustless third-party verification of any user's charging history
+
+**On the device — embedded wallet:**
+- Ed25519 keypair generated locally via `tweetnacl`, stored in `expo-secure-store`
+- No seed phrase exposed to server or user at onboarding — zero custodial risk
+- WalletScreen shows JUICE/SOL balance and Solscan links to last 10 session proofs
+
+**Stack:** React Native (Expo) · Firebase · Rust · Anchor · `@solana/web3.js` · Solana Memo Program · SPL Token Program · MIND Protocol
 
 Every proof is publicly auditable at `usejuicemobile.com` — click any row to verify on Solscan.
 
@@ -147,13 +168,13 @@ Every proof is publicly auditable at `usejuicemobile.com` — click any row to v
 
 **Ecosystem:** Mobile Wallet Adapter for React Native is production-ready. Users connect Phantom or Solflare in two taps. The Solana Seeker (150k preorders) is exactly our user base — mobile-first, crypto-native, expecting their phone to pay them.
 
-Ore proved the formula at Renaissance 2024 — Grand Prize, C1 accelerator, $10 to $500 in six weeks. Mobile + Solana + direct reward. We extend that thesis from computation to attention. Ore mines CPU cycles. CNB Mobile mines human engagement.
+Ore proved the formula at Renaissance 2024 — Grand Prize, C1 accelerator, $10 to $500 in six weeks. Mobile + Solana + direct reward. We extend that thesis from computation to attention. Ore mines CPU cycles. Juice Mobile mines human engagement.
 
 ---
 
 ## Why Us
 
-We didn't build CNB Mobile for a hackathon. We built it for Brazil, before this hackathon existed.
+We didn't build Juice Mobile for a hackathon. We built it for Brazil, before this hackathon existed.
 
 The PIX integration isn't a feature — it's how our users actually live. The charging mechanic isn't theoretical — it's what our users actually do. We understand the experience of someone who doesn't know what a wallet is, earns minimum wage, and charges their phone twice a day.
 
@@ -165,7 +186,7 @@ We understand the Solana Memo Program, foreground service lifecycle on Android 1
 
 **If we win, here's exactly what happens in 90 days:**
 
-**Month 1 — Token Launch:** Every point already has an on-chain proof. We deploy the JUICE SPL token and open 1:1 conversion. First ownable, tradeable asset backed by verified human attention.
+**Month 1 — Token Redemption Open:** JUICE SPL token is already deployed and mint authority renounced. We open 1:1 public conversion from points to JUICE — first ownable, tradeable asset backed by verified human attention, at scale.
 
 **Month 2 — Attention Marketplace v0.1:** Two Brazilian brands pay in USDC to reach Juice Mobile users by segment. First external revenue. First proof that attention has a market price — not hypothetically, but in a real transaction.
 
@@ -205,8 +226,8 @@ The protocol is live. The proofs are on-chain. Brazil is waiting.
 >
 > *(show Solscan live)*
 >
-> This proof was written to Solana mainnet 8 seconds ago, while I was talking. That's CNB Mobile. That's DePIN without hardware. Let's go."
+> This proof was written to Solana mainnet 8 seconds ago, while I was talking. That's Juice Mobile. That's DePIN without hardware. Let's go."
 
 ---
 
-> **Note:** Replace `[X]`, `[Y]`, `[Z]` in the Traction section with real numbers before submission.
+> **Note:** Numbers as of 2026-05-11. Update daily active users on submission day.

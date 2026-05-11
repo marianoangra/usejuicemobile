@@ -6,8 +6,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Gift, CheckCircle, Zap, Star, Shield } from 'lucide-react-native';
-import { addDoc, collection, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
-import { db, auth } from '../services/firebase';
+import { auth } from '../services/firebase';
+
+const WAITLIST_URL = 'https://us-central1-cnbmobile-2053c.cloudfunctions.net/registrarWaitlist';
 
 const PRIMARY = '#c6ff4a';
 const JUICE_COLOR = '#c6ff4a';
@@ -43,25 +44,25 @@ export default function AirdropScreen({ route, navigation }) {
     setErro('');
     setEnviando(true);
     try {
-      // Evita duplicatas por e-mail
-      const q = query(collection(db, 'juice_waitlist'), where('email', '==', email.trim().toLowerCase()));
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        setSucesso(true);
-        return;
-      }
-
-      await addDoc(collection(db, 'juice_waitlist'), {
-        email:         email.trim().toLowerCase(),
-        walletSolana:  wallet.trim() || null,
-        uid:           user?.uid ?? null,
-        pontosApp:     pontosAtuais,
-        juiceEstimado: juiceEstimado,
-        source:        'app',
-        locale:        'pt',
-        criadoEm:      serverTimestamp(),
+      const res = await fetch(WAITLIST_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email:         email.trim().toLowerCase(),
+          walletSolana:  wallet.trim() || null,
+          uid:           user?.uid ?? null,
+          pontosApp:     pontosAtuais,
+          juiceEstimado: juiceEstimado,
+          source:        'app',
+          locale:        'pt',
+        }),
       });
-      setSucesso(true);
+      const json = await res.json();
+      if (json.ok || json.existing) {
+        setSucesso(true);
+      } else {
+        setErro('Não foi possível registrar agora. Tente novamente.');
+      }
     } catch (e) {
       setErro('Não foi possível registrar agora. Tente novamente.');
     } finally {

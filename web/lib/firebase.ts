@@ -90,86 +90,61 @@ export type WaitlistInsert = {
   uid?: string | null;
 };
 
+const FUNCTIONS_BASE = 'https://us-central1-cnbmobile-2053c.cloudfunctions.net';
+
 /**
- * Inserts a wallet-aware signup into the JUICE airdrop waitlist.
- * Doc ID = sanitized email so the second submit hits the same doc and is
- * blocked by the create-only rule (UX still shows success — already on list).
+ * Inserts a wallet-aware signup into the JUICE airdrop waitlist via Cloud Function.
+ * Rate limited server-side (3 req/IP per 10 min). Idempotent on email.
  */
 export async function insertWaitlist(
   entry: WaitlistInsert,
 ): Promise<{ ok: boolean; error?: string }> {
-  const db = getDb();
-  if (!db) return { ok: false, error: 'firebase_not_configured' };
-
-  const { doc, setDoc, serverTimestamp, FirestoreError } = await import(
-    'firebase/firestore'
-  );
-
-  const docId = entry.email
-    .toLowerCase()
-    .replace(/[^a-z0-9@._-]/g, '_')
-    .slice(0, 140);
-
   try {
-    await setDoc(doc(db, 'juice_waitlist', docId), {
-      email: entry.email.toLowerCase().trim(),
-      walletAddress: entry.walletAddress ?? null,
-      locale: entry.locale,
-      source: entry.source ?? 'web-airdrop',
-      uid: entry.uid ?? null,
-      createdAt: serverTimestamp(),
+    const res = await fetch(`${FUNCTIONS_BASE}/registrarWaitlist`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: entry.email,
+        walletAddress: entry.walletAddress ?? null,
+        locale: entry.locale,
+        source: entry.source ?? 'web-airdrop',
+        uid: entry.uid ?? null,
+      }),
     });
-    return { ok: true };
+    const json = await res.json();
+    if (json.ok || json.existing) return { ok: true };
+    if (res.status === 429) return { ok: false, error: 'rate_limit' };
+    return { ok: false, error: json.reason ?? 'unknown' };
   } catch (e) {
-    if (e instanceof FirestoreError && e.code === 'permission-denied') {
-      return { ok: true };
-    }
     // eslint-disable-next-line no-console
-    console.error('[insertWaitlist] Firebase write failed:', e);
+    console.error('[insertWaitlist] request failed:', e);
     const msg = e instanceof Error ? `${e.name}: ${e.message}` : 'unknown';
     return { ok: false, error: msg };
   }
 }
 
 /**
- * Inserts a lead into the `leads` Firestore collection. Idempotent on email:
- * subsequent submits of the same email no-op (security rule blocks update).
- *
- * Returns `{ ok: true }` on success or duplicate (so the user sees the same
- * UX). Returns `{ ok: false, error }` only on real failures.
+ * Inserts a lead via Cloud Function.
+ * Rate limited server-side (3 req/IP per 10 min). Idempotent on email.
  */
 export async function insertLead(lead: LeadInsert): Promise<{ ok: boolean; error?: string }> {
-  const db = getDb();
-  if (!db) {
-    return { ok: false, error: 'firebase_not_configured' };
-  }
-
-  // Lazy-load Firestore SDK to keep initial bundle small.
-  const { doc, setDoc, serverTimestamp, FirestoreError } = await import('firebase/firestore');
-
-  // Use a sanitized email as the document ID so a second submit hits the same
-  // doc and is rejected by the security rule (which only allows `create`).
-  const docId = lead.email.toLowerCase().replace(/[^a-z0-9@._-]/g, '_').slice(0, 140);
-
   try {
-    await setDoc(
-      doc(db, 'leads', docId),
-      {
-        email: lead.email.toLowerCase().trim(),
+    const res = await fetch(`${FUNCTIONS_BASE}/registrarLead`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: lead.email,
         locale: lead.locale,
         source: lead.source ?? 'website-waitlist',
-        createdAt: serverTimestamp(),
-      }
-    );
-    return { ok: true };
+      }),
+    });
+    const json = await res.json();
+    if (json.ok || json.existing) return { ok: true };
+    if (res.status === 429) return { ok: false, error: 'rate_limit' };
+    return { ok: false, error: json.reason ?? 'unknown' };
   } catch (e) {
-    // permission-denied happens when the doc already exists (rule blocks update) —
-    // treat as a successful "already on the list" signup so the user sees success.
-    if (e instanceof FirestoreError && e.code === 'permission-denied') {
-      return { ok: true };
-    }
     // eslint-disable-next-line no-console
-    console.error('[insertLead] Firebase write failed:', e);
+    console.error('[insertLead] request failed:', e);
     const msg = e instanceof Error ? `${e.name}: ${e.message}` : 'unknown';
     return { ok: false, error: msg };
   }
