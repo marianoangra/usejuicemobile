@@ -135,14 +135,19 @@ This is not a hackathon prototype.
 
 | Metric | Number |
 |---|---|
-| Registered users | **3,491** |
-| Users with 60+ min verified | **1,369** |
-| Total minutes on-chain | **1,217,925 min (20,298 h)** |
-| Daily aggregate proofs on Solana | **20** |
+| Monthly active users (Firebase Analytics) | **7,600** |
+| Weekly active users | **4,900** |
+| Daily active users (today) | **2,000** |
+| Active right now | **124** |
+| Registered accounts | **3,491** |
+| Users with 60+ verified minutes | **1,369** |
+| Total minutes verified on-chain | **4,492,033 min (74,867 h)** |
+| Total points generated | **99,761,359** |
+| Daily Solana Memo proofs | **20** |
 | PIX withdrawal requests | **69** |
 | CNB token redemptions | **12** |
 | Active affiliates | **338** |
-| Peak daily active users | **1,312** (May 9) |
+| Peak daily charging users | **1,312** (May 9) — **12x growth in 20 days** |
 
 Every proof exists on mainnet today. [Verify on Solscan →](https://solscan.io/tx/2Bkui44aPDVC5TdF3mg8RsytKQWmEzXcABVKA6kiZSzdreeZUP4K6q7Za53YYYvR73Bj9hj1ihbcVDdbMsPwao8y)
 
