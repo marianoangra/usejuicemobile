@@ -1,0 +1,424 @@
+================================================================================
+JUICE — PITCH SCRIPT VERBAL · FRONTIER COLOSSEUM 2026
+v4 · slide-2 reframe ("Você paga / O celular paga o Google" · ad spend ancorado)
+================================================================================
+
+Autor: Rafael Mariano
+Data: 2026-05-05
+Duração alvo: 2 min (~310 palavras · 155 wpm)
+Idioma: PT-BR (versão EN no fim)
+Estrutura: 11 slides
+Número-mestre do deck: R$ 42,7 bilhões — IAB Brasil 2025
+
+--------------------------------------------------------------------------------
+PRINCÍPIOS DA ENTREGA (LEIA ANTES DE ENSAIAR)
+--------------------------------------------------------------------------------
+
+  1. NÃO LEIA O SLIDE. O slide é apoio visual. Você narra POR CIMA.
+  2. NÚMEROS EM VOZ ALTA, COM PAUSA. "Quatro mil brasileiros." [pausa 1s]
+     "Quatrocentos e sessenta mil minutos validados." [pausa 1s]
+  3. ZERO HEDGING. Não fale "esperamos atingir" — fale "já fizemos".
+     Não fale "queremos tentar" — fale "vamos fazer".
+  4. PACING DENSO. Cada frase carrega informação. Sem "tipo, sabe...".
+  5. CONFIANÇA NO PRIMEIRO SEGUNDO. Sua primeira frase deve doer.
+     Sem aquecimento, sem "olá pessoal, meu nome é".
+  6. CONTATO VISUAL. Olha pro jurado, não pro slide.
+  7. RESPIRA. Os winners pausam depois de números. Você também.
+
+--------------------------------------------------------------------------------
+SCRIPT — VERSÃO 2 MINUTOS (FULL · 11 SLIDES)
+--------------------------------------------------------------------------------
+
+[SLIDE 1 — CAPA]
+(Aparece o wordmark JUICE. NÃO leia "JUICE". Dá 1 segundo de pausa,
+respira, e avança pro slide 2 já começando a falar.)
+
+
+[SLIDE 2 — PROBLEMA]  ← HOOK. PRIMEIRA FRASE = O PITCH INTEIRO.
+
+  "Você paga pelo celular."
+
+  [pausa 1s]
+
+  "O celular paga o Google."
+
+  [pausa 1s — olha pro jurado]
+
+  "Quarenta e dois vírgula sete bilhões de reais
+   em publicidade digital no Brasil em 2025 — IAB Brasil.
+   Cento e vinte milhões de aparelhos geraram esse valor.
+   Trezentos e cinquenta e cinco reais por celular, por ano.
+   Pro dono do celular: zero."
+
+  [pausa 1s — avança]
+
+
+[SLIDE 3 — SOLUÇÃO]
+
+  "JUICE é uma DePIN com Prova de Atividade Humana.
+   Cada minuto carregando o celular vira valor on-chain —
+   validado, contabilizado, recompensado na Solana.
+   Live, hoje, mainnet. Quatrocentos e sessenta mil memos
+   já escritos. Auditável no Solscan agora."
+
+
+[SLIDE 4 — TRAÇÃO]  ← MOMENTO CRÍTICO. ALTA ENERGIA. PAUSAS.
+
+  "E não estamos pedindo pra acreditar."
+  [pausa]
+  "Já provamos."
+  [pausa 1s]
+
+  "Quatro mil usuários ativos." [pausa]
+  "Quatrocentos e sessenta mil minutos validados." [pausa]
+  "Dez mil duzentos JUICE distribuídos." [pausa]
+  "Mais de dez mil downloads — Android, iOS e Seeker."
+
+  "Tudo na mainnet. Tudo verificável agora."
+
+
+[SLIDE 5 — MERCADO]
+
+  "Quarenta e dois vírgula sete bilhões em publicidade digital no Brasil.
+   Capturados por Google, Meta, TikTok — zero pro celular
+   que gerou o valor.
+   TAM global: setecentos e cinquenta bilhões de dólares.
+   SAM LATAM: vinte e oito bilhões.
+   SOM Brasil: oito vírgula cinco bilhões — cento e vinte milhões
+   de smartphones ativos.
+   A gente redireciona on-chain — pro dono do celular.
+   Os primeiros quatro mil já estão carregando."
+
+
+[SLIDE 6 — WHY NOW]
+
+  "A janela técnica abriu em dois mil e vinte e quatro.
+   ZK Compression do Light Protocol entrega
+   cinco mil vezes redução de custo de state.
+   Antes disso, escrever um bilhão de memos por ano era inviável.
+   Hoje é trivial."
+
+
+[SLIDE 7 — MAPA DePIN]
+
+  "Helium pede modem. Hivemapper pede dashcam.
+   DeCharge pede carregador. UpRock pede bandwidth ociosa.
+   A gente pede o celular que já está na sua mão.
+   Zero hardware adicional. Zero fricção.
+   É a quinta lane — e a única que escala sem instalação."
+
+
+[SLIDE 8 — PRODUTO]
+
+  "Plug. Validação. Reward.
+   Conectou o cabo, o app detecta a sessão,
+   JUICE cai na carteira.
+   Saque via PIX ou cripto. Liquidação em segundos.
+   Carregar é só o gatilho — o produto vive dentro:
+   missões, dados, comunidade."
+
+
+[SLIDE 9 — MODELO]
+
+  "Quatro linhas de receita.
+   Lidera Sponsored Charging — marcas pagam pro usuário
+   recarregar enquanto consome conteúdo, atenção verificada via PoHA.
+   Depois ADS e parcerias com BingX, OKX, KAST.
+   Real-yield staking distribuído pros holders.
+   E recompra-e-queima do token.
+   Não somos Move-to-Earn. Supply fixo de um bilhão.
+   Referência é Mercado Pago + Pix, não STEPN."
+
+
+[SLIDE 10 — MOAT]
+
+  "Bot não recarrega celular.
+   Sybil-resistance física, em camadas.
+   Quatro defesas no ar. Quatro a caminho no Q3.
+   Sem inflar o que ainda não foi feito."
+
+
+[SLIDE 11 — FOUNDER + ASK]
+
+  "Sou Rafael Mariano.
+   Construí o primeiro DePIN com usuário real em LATAM.
+   CNPI, oito anos em fintech — XP, Rico, Terra.
+   Carol Uchoas comigo: CMO e CCO,
+   growth, parcerias B2B, narrativa que converte."
+
+  [pausa — olha pro jurado]
+
+  "Buscamos:
+   um — grant e aceleração pra escalar pra cem mil usuários até Q3.
+   dois — cosign Solana Foundation pro track LATAM.
+   três — intro com Light Protocol e KORA, ZK Compression e gasless."
+
+  [pausa final — voz baixa, firme]
+
+  "Brasil vai ser o flagship market da Solana.
+   Não é IF. É WHEN.
+   JUICE é o veículo. Obrigado."
+
+--------------------------------------------------------------------------------
+VERSÃO COMPRIMIDA — 90 SEGUNDOS (ELEVATOR)
+--------------------------------------------------------------------------------
+
+Pra Q&A em 1 minuto ou abertura informal:
+
+  "Você paga pelo celular. O celular paga o Google.
+   Quarenta e dois vírgula sete bilhões em publicidade digital
+   no Brasil em 2025 — IAB. Trezentos e cinquenta e cinco reais
+   por celular, por ano. Pro dono do celular: zero.
+
+   JUICE é a primeira DePIN brasileira na Solana.
+   Cada minuto que você carrega o celular vira $JUICE on-chain.
+   Live mainnet, hoje. Quatro mil usuários ativos,
+   quatrocentos e sessenta mil minutos validados, dez mil downloads.
+
+   Diferença pra Helium, Hivemapper, DeCharge?
+   Zero hardware extra. Só o celular que já está na sua mão.
+   Diferença pra STEPN? Supply fixo, distribuição proporcional ao uso real.
+
+   Sou Rafael, oito anos em fintech, CNPI, ex-XP/Rico/Terra.
+   Carol Uchoas, CMO e CCO. Buscamos grant + cosign Solana Foundation
+   pra escalar pra cem mil usuários até Q3.
+
+   Brasil é o flagship market da Solana. JUICE é o veículo."
+
+--------------------------------------------------------------------------------
+PALAVRAS-VÍCIO A EVITAR (corte na hora)
+--------------------------------------------------------------------------------
+
+  ❌ "tipo"          → corte
+  ❌ "sabe"          → corte
+  ❌ "a gente quer"  → "a gente vai" / "a gente faz"
+  ❌ "esperamos"     → "vamos"
+  ❌ "tentamos"      → "fizemos"
+  ❌ "uns 4 mil"     → "quatro mil"
+  ❌ "é meio que"    → corte
+  ❌ "no fim do dia" → corte
+  ❌ "obviamente"    → corte
+  ❌ "basicamente"   → corte
+  ❌ "na verdade"    → corte
+  ❌ "honestamente"  → corte (sempre soa desonesto)
+
+--------------------------------------------------------------------------------
+NÚMEROS-CHAVE — DECORE DE COR
+--------------------------------------------------------------------------------
+
+Problema (slide 2):
+  • R$ 42,7 bi/ano publicidade digital BR  → "quarenta e dois vírgula sete bilhões"
+  • Fonte: IAB Brasil + Kantar Ibope, Digital Adspend 2026
+  • 120 mi smartphones ativos              → "cento e vinte milhões"
+  • Fonte: Anatel 2025
+  • R$ 355 por celular por ano             → "trezentos e cinquenta e cinco reais"
+
+Métricas de tração (slides 3 e 4):
+  • 4.000 usuários ativos                  → "quatro mil"
+  • 460.000+ minutos validados             → "quatrocentos e sessenta mil"
+  • 10.200 $JUICE distribuídos             → "dez mil duzentos"
+  • +10.000 downloads                      → "mais de dez mil"
+
+Mercado (slide 5):
+  • TAM global ad digital: $750 bi         → "setecentos e cinquenta bilhões"
+  • Fonte: WARC / Magna Global Ad Outlook 2025
+  • SAM LATAM ad digital: $28 bi           → "vinte e oito bilhões"
+  • Fonte: Statista LATAM Digital Advertising 2025
+  • SOM Brasil ad digital: $8,5 bi         → "oito vírgula cinco bilhões"
+  • Fonte: IAB Brasil 2025 (R$ 42,7 bi @ R$ 5,00/USD)
+
+Tech moat (slide 6):
+  • ZK Compression 5000×                   → "cinco mil vezes"
+  • Janela aberta em 2024                  → "dois mil e vinte e quatro"
+
+Tokenomics (slide 9):
+  • Supply 1B                              → "um bilhão"
+
+Ask (slide 11):
+  • 100k usuários até Q3 2026              → "cem mil usuários até Q3"
+
+--------------------------------------------------------------------------------
+PERGUNTAS PROVÁVEIS DO JURADO + RESPOSTAS PRONTAS (Q&A)
+--------------------------------------------------------------------------------
+
+Q: "Onde tirou os R$ 42,7 bi em publicidade digital?"
+A: "IAB Brasil em parceria com Kantar Ibope — Digital Adspend 2026, divulgado em
+    abril deste ano. Crescimento de 12,7% sobre 2024. Cento e vinte milhões de
+    smartphones ativos pela Anatel 2025. Dividido, dá trezentos e cinquenta e
+    cinco reais por aparelho por ano. Auditado por associação setorial e empresa
+    de pesquisa, não cherry-pick."
+
+Q: "Mas o usuário não recebe YouTube, Instagram, Spotify de graça em troca?"
+A: "Não é grátis. Você pagou o plano de celular que entrega o conteúdo. O
+    brasileiro paga em média oitenta a duzentos reais por mês de plano. Você paga
+    duas vezes — uma em dinheiro pelo plano, outra em atenção pra quem anuncia.
+    Os dois recebimentos vão pro mesmo lugar: Google, Meta, TikTok. Nenhum volta
+    pra você. JUICE redireciona o segundo recebimento — em PIX, no Brasil, agora."
+
+Q: "Como vocês evitam farm bot?"
+A: "Quatro camadas em produção: memo on-chain por sessão, rules cap server-side
+    sessenta pontos por minuto, anti-bot oito horas diárias, e SHA-256 pseudonymity.
+    Mais quatro a caminho no Q3 — Play Integrity, App Attest, nonce server-issued
+    e battery delta validation. Bot não recarrega celular físico — esse é o moat."
+
+Q: "Qual o token utility real?"
+A: "Quatro linhas, em ordem de prioridade: Sponsored Charging — marcas pagam JUICE
+    pro usuário consumir conteúdo durante a recarga, com PoHA verificável on-chain;
+    créditos publicitários em parcerias com BingX, OKX, KAST; real-yield staking
+    distribuído pros holders; e recompra-e-queima de receita do app."
+
+Q: "Por que Solana?"
+A: "ZK Compression do Light Protocol — cinco mil vezes redução de custo de state.
+    É o único caminho técnico pra escrever um bilhão de memos por ano. Sem isso,
+    a economia não fecha. Stack 100% nativo: KORA pra gasless, Solana Pay pro PIX,
+    Attestations pro PoHA verificável, CLOAK pra privacidade."
+
+Q: "Diferença pra STEPN?"
+A: "Supply fixo de um bilhão, não inflacionário. Distribuição proporcional ao uso
+    real, não dependente de novos compradores. Referência mental é Mercado Pago + Pix,
+    não Move-to-Earn. STEPN caiu 91% em um mês quando crescimento parou — JUICE
+    reflete adoção real, não momentum marginal."
+
+Q: "Quem é Carol?"
+A: "Carol Uchoas, CMO e CCO. Growth e aquisição em LATAM, vendas B2B com varejo
+    e operadoras, brand e comunidade — converte no-coiner em embaixador. Ela traduz
+    cripto pro brasileiro comum. Cripto só vence quando o usuário comum entende."
+
+Q: "Quanto vocês precisam levantar?"
+A: "Frontier Colosseum não é fundraising tradicional. Pra escalar de quatro mil
+    pra cem mil usuários até Q3 a gente precisa de três coisas:
+    grant para growth e infra, cosign da Solana Foundation pra parcerias B2B no Brasil,
+    e intro com os times do Light Protocol e KORA pra implementação ZK Compression."
+
+Q: "Qual o GTM?"
+A: "Brazil-first. Quatro mil usuários atuais cresceram organicamente em três meses
+    via Telegram e WhatsApp. SDK B2B no Q4 pra parcerias com varejo. Q1 2027 expansão
+    pra México e Colômbia. Brasil é o flagship LATAM da Solana — a gente é o veículo."
+
+Q: "Por que não é só mais um app de cashback?"
+A: "Cashback Web2 trava o valor dentro da empresa que emitiu — Smiles, LATAM Pass,
+    Livelo. JUICE não compete com cashback — é uma fonte de receita completamente
+    nova: ad-spend redirecionado on-chain. A gente não substitui o programa de
+    fidelidade, redireciona o que Google e Meta capturam — diretamente pro dono
+    do celular, em token líquido com saque PIX."
+
+Q: "Vocês têm algum partnership confirmado?"
+A: "BingX, OKX e KAST em conversa pra créditos publicitários. Quatro mil usuários
+    orgânicos validam o canal. O cosign Solana Foundation acelera as conversas B2B
+    com varejo brasileiro — esse é um dos pedidos do nosso ask."
+
+--------------------------------------------------------------------------------
+ENGLISH VERSION (PARA APRESENTAÇÃO INTERNACIONAL)
+--------------------------------------------------------------------------------
+
+[SLIDE 2 — PROBLEM]
+"You pay for the phone. The phone pays Google.
+Forty-two point seven billion reais in Brazilian digital ad spend, 2025 — IAB.
+One hundred twenty million phones generated that value.
+Three hundred and fifty-five reais per phone per year.
+For the phone's owner: zero."
+
+[SLIDE 3 — SOLUTION]
+"JUICE is a DePIN with Proof-of-Human-Activity.
+Every minute charging your phone becomes value on-chain —
+validated, accounted, rewarded on Solana.
+Live, today, mainnet. Four hundred sixty thousand memos already written.
+Verifiable on Solscan right now."
+
+[SLIDE 4 — TRACTION]
+"And we're not asking you to believe. We've already proven it.
+Four thousand active users. Four hundred sixty thousand minutes validated.
+Ten thousand JUICE distributed. Ten thousand downloads.
+All on mainnet. All verifiable now."
+
+[SLIDE 5 — MARKET]
+"Forty-two point seven billion reais a year in Brazilian digital ad spend.
+Captured by Google, Meta, TikTok — zero for the phone that generated the value.
+TAM: seven hundred fifty billion dollars in global digital ad spend.
+SAM: twenty-eight billion in LATAM. SOM: eight and a half billion in Brazil —
+one hundred twenty million active smartphones.
+We redirect it on-chain — to the phone's owner.
+The first four thousand are already charging."
+
+[SLIDE 6 — WHY NOW]
+"The technical window opened in 2024.
+ZK Compression by Light Protocol delivers five thousand times state cost reduction.
+Before that, writing one billion memos a year was impossible. Now it's trivial."
+
+[SLIDE 7 — DePIN MAP]
+"Helium needs a modem. Hivemapper needs a dashcam.
+DeCharge needs an EV charger. UpRock needs idle bandwidth.
+We need the phone already in your hand. Zero extra hardware. Zero friction.
+It's the fifth lane — the only one that scales without installation."
+
+[SLIDE 8 — PRODUCT]
+"Plug. Validate. Reward. Plug the cable, app detects the session,
+JUICE hits the wallet. PIX or crypto cashout. Settlement in seconds.
+Charging is just the trigger — the product lives inside:
+missions, data, community."
+
+[SLIDE 9 — MODEL]
+"Four revenue lines, in priority order:
+Sponsored Charging — brands pay users to charge while watching content,
+attention verified via on-chain PoHA. Then ad partnerships with BingX, OKX, KAST.
+Real-yield staking distributed to holders. And token buyback-and-burn.
+We're not Move-to-Earn. Fixed one-billion supply.
+Reference is Mercado Pago + Pix, not STEPN."
+
+[SLIDE 10 — MOAT]
+"Bots don't charge phones. Physical Sybil-resistance, layered.
+Four defenses live. Four more shipping Q3. No vaporware."
+
+[SLIDE 11 — FOUNDER + ASK]
+"I'm Rafael Mariano. I built the first DePIN with real users in LATAM.
+CNPI certified, eight years in fintech — XP, Rico, Terra.
+Carol Uchoas with me — CMO and CCO, growth and B2B partnerships.
+We're asking for: grant and acceleration to scale from four to a hundred thousand
+users by Q3, Solana Foundation cosign for the LATAM track, and intros to Light
+Protocol and KORA for ZK Compression and gasless infrastructure.
+Brazil will be Solana's flagship market. It's not IF. It's WHEN.
+JUICE is the vehicle. Thank you."
+
+--------------------------------------------------------------------------------
+ROTINA DE ENSAIO (RECOMENDADO — 5 SESSÕES MÍNIMAS)
+--------------------------------------------------------------------------------
+
+Sessão 1 (45 min): leitura sentado, sem cronômetro. Marca o que travou.
+Sessão 2 (30 min): em pé, com cronômetro. Anota onde excedeu o tempo.
+Sessão 3 (30 min): grava em vídeo. Reassiste sem som — postura, gestos.
+Sessão 4 (30 min): grava em áudio. Reassiste só audio — pacing, hedging.
+Sessão 5 (30 min): pratica com alguém ouvindo. Q&A pós-pitch.
+
+Meta: 1m50 a 2m00. Se passar de 2m05 estás cozinhando — corte algo.
+
+--------------------------------------------------------------------------------
+CHECK FINAL — DIA DA APRESENTAÇÃO
+--------------------------------------------------------------------------------
+
+  [ ] Hidratado. Garrafa de água ao lado.
+  [ ] Slide aberto em https://usejuicemobile.com/demoday em fullscreen (F).
+  [ ] Backup: PDF do deck no celular caso a tela falhe.
+  [ ] Telefone com app JUICE aberto e logado — pode precisar mostrar live.
+  [ ] Solscan aberto numa aba: link pra account de memos como prova on-the-fly.
+  [ ] Postura: pés firmes, ombros pra trás, olhar no jurado.
+  [ ] Primeira frase decorada como número de telefone da mãe.
+  [ ] Última frase ensaiada com voz baixa e firme — "É WHEN."
+  [ ] Respira fundo antes de subir. Sorri. Vai.
+
+--------------------------------------------------------------------------------
+ÚLTIMA INSTRUÇÃO
+--------------------------------------------------------------------------------
+
+A primeira frase do pitch é a mais importante.
+Decora ela como decora o número de telefone da mãe.
+Diz ela com a voz firme. Olho no olho. Sem aquecimento.
+
+  "Você paga pelo celular.
+   O celular paga o Google."
+
+Pausa um segundo entre as duas frases. Deixa o jurado sentir o peso
+da inversão. Aí dropa o número — quarenta e dois vírgula sete bilhões.
+
+Se essas duas frases vão como manteiga, o resto vem natural.
+
+================================================================================

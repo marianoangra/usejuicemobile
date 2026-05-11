@@ -1,0 +1,22 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+cnb_program = "BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo"
+
+[programs.devnet]
+cnb_program = "BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[test]
+startup_wait = 5000
+
+[scripts]
+test = "cargo test --test test_initialize"

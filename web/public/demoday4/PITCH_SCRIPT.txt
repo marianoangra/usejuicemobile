@@ -1,0 +1,460 @@
+================================================================================
+JUICE — PITCH SCRIPT VERBAL · FRONTIER COLOSSEUM 2026 · DEMODAY4
+v5 · 10 slides · concentração de mercado como hook (US$ 750 bi / 3 empresas)
+================================================================================
+
+Autor: Rafael Mariano
+Data: 2026-05-07
+Duração alvo: 2 min (~310 palavras · 155 wpm)
+Idioma: PT-BR (versão EN no fim)
+Estrutura: 10 slides
+Número-mestre do deck: US$ 750 bilhões — concentrados em 3 empresas (2025)
+
+--------------------------------------------------------------------------------
+PRINCÍPIOS DA ENTREGA (LEIA ANTES DE ENSAIAR)
+--------------------------------------------------------------------------------
+
+  1. NÃO LEIA O SLIDE. O slide é apoio visual. Você narra POR CIMA.
+  2. NÚMEROS EM VOZ ALTA, COM PAUSA. "Setecentos e cinquenta bilhões." [pausa 1s]
+     "Cinco mil usuários ativos." [pausa 1s]
+  3. ZERO HEDGING. Não fale "esperamos atingir" — fale "já fizemos".
+     Não fale "queremos tentar" — fale "vamos fazer".
+  4. PACING DENSO. Cada frase carrega informação. Sem "tipo, sabe...".
+  5. CONFIANÇA NO PRIMEIRO SEGUNDO. Sua primeira frase deve doer.
+     Sem aquecimento, sem "olá pessoal, meu nome é".
+  6. CONTATO VISUAL. Olha pro jurado, não pro slide.
+  7. RESPIRA. Os winners pausam depois de números. Você também.
+
+--------------------------------------------------------------------------------
+SCRIPT — VERSÃO 2 MINUTOS (FULL · 10 SLIDES)
+--------------------------------------------------------------------------------
+
+[SLIDE 1 — PROBLEMA · CONCENTRAÇÃO]  ← HOOK. PRIMEIRA FRASE = O PITCH INTEIRO.
+
+  "Você paga pelo celular."
+
+  [pausa 1s]
+
+  "O celular paga o Google."
+
+  [pausa 1s — olha pro jurado]
+
+  "Setecentos e cinquenta bilhões de dólares em publicidade digital,
+   concentrados em três empresas — Google, Meta, Amazon.
+   Um cento e vinte milhões de aparelhos no Brasil geram esse valor todo dia.
+   Pro dono do celular: zero."
+
+  [pausa 1s — avança]
+
+
+[SLIDE 2 — SOLUÇÃO]
+
+  "JUICE é um app de publicidade. DePIN na Solana.
+   Carregue, assista e ganhe.
+   Live, hoje, em três lojas:
+   Google Play, App Store, e Solana Mobile Seeker.
+   Quatrocentos e sessenta e oito mil minutos validados na mainnet."
+
+
+[SLIDE 3 — PRODUTO · PUBLICIDADE SEM FRICÇÃO]
+
+  "Publicidade sem fricção.
+   Plug. Validação. Reward.
+   Conectou o cabo, o app detecta a sessão,
+   pontos sobem ao vivo, JUICE cai na carteira.
+   Saque via PIX ou cripto, liquidação em segundos.
+   Carregar é só o gatilho — o produto vive dentro:
+   parceiros, missões, ranking semanal."
+
+
+[SLIDE 4 — TRAÇÃO]  ← MOMENTO CRÍTICO. ALTA ENERGIA. PAUSAS.
+
+  "E não estamos pedindo pra acreditar."
+  [pausa]
+  "Já provamos."
+  [pausa 1s]
+
+  "Cinco mil usuários ativos." [pausa]
+  "Quatrocentos e sessenta e oito mil minutos validados." [pausa]
+  "Mais de dez mil downloads — Android, iOS e Seeker." [pausa]
+
+  "Solflare, X Pay, BingX — publicidade ativa rodando agora.
+   Tudo na mainnet. Tudo verificável agora."
+
+
+[SLIDE 5 — MERCADO]
+
+  "TAM: setecentos e cinquenta bilhões de dólares em publicidade digital global.
+   SAM: vinte e oito bilhões na América Latina.
+   SOM: nove bilhões no Brasil — nosso ICP inicial.
+
+   Concentração:
+   sessenta e dois por cento global vai pra Google, Meta, Amazon.
+   Noventa por cento na LATAM.
+   Noventa e seis por cento no Brasil — só Google e Meta.
+
+   A gente redireciona on-chain — pro dono do celular."
+
+
+[SLIDE 6 — MODELO DE NEGÓCIO]
+
+  "O modelo é um iceberg.
+   Acima da água: Entrada, TAU mais GRIND, Sybil resilience —
+   o que a marca compra e vê.
+   Abaixo: Pessoas, ADS, Data Annotation — o que sustenta tudo.
+
+   Atenção verificada via prova de atividade humana on-chain.
+   Marcas pagam JUICE. Usuário recebe JUICE. Solana liquida em segundos."
+
+
+[SLIDE 7 — POR QUE SOLANA]
+
+  "Stack cem por cento Solana — não é por moda.
+   Privacidade via ZK Compression do Light Protocol —
+   cinco mil vezes redução de custo de state.
+   Antes disso, escrever um bilhão de memos por ano era inviável.
+   Hoje é trivial.
+   KORA pra gasless, Solana Pay pra liquidação PIX,
+   Solana Attestations pra prova de atividade humana,
+   CLOAK pra privacidade selectiva.
+   E Solana Mobile Seeker como rampa nativa pro usuário cripto."
+
+
+[SLIDE 8 — MOAT · BOT NÃO RECARREGA CELULAR]
+
+  "Bot não recarrega celular.
+   Sybil-resistance física, em produção, em cinco camadas:
+   Solana Attestation Service.
+   Rules cap server-side.
+   Anti-bot oito horas diário.
+   Pseudonymity SHA-256.
+   Play Integrity da Google.
+   Tudo no ar. Sem vaporware."
+
+
+[SLIDE 9 — ROADMAP]
+
+  "Roadmap real, não slideware.
+   Q2 deste ano: lançamento Android e iOS — ✓ feito.
+   Q3: cem mil usuários e tokenomics em mainnet.
+   Q4: SDK B2B e pre-seed de dois milhões de dólares.
+   Q1 vinte e sete: expansão LATAM."
+
+
+[SLIDE 10 — TIME + ASK]
+
+  "Sou Rafael Mariano.
+   Vendi quatrocentos rigs de mineração no Brasil.
+   CNPI, oito anos em fintech — XP, Rico, Terra.
+   Shipei o MVP solo, React Native mais Solana mainnet,
+   antes de levantar centavo.
+   Educador SENAI. Piloto comercial. Empresário no mercado financeiro.
+
+   Carol Uchoas comigo: CMO e CCO.
+   Growth, vendas B2B, brand e funil de receita.
+   Converte no-coiner em embaixador."
+
+  [pausa — olha pro jurado]
+
+  "Buscamos:
+   um — grant e aceleração pra escalar pra cem mil usuários até Q3.
+   dois — cosign Solana Foundation pro track LATAM.
+   três — intro com Light Protocol e KORA, ZK Compression e gasless."
+
+  [pausa final — voz baixa, firme]
+
+  "Brasil vai ser o flagship market da Solana.
+   Não é IF. É WHEN.
+   JUICE é o veículo. Obrigado."
+
+--------------------------------------------------------------------------------
+VERSÃO COMPRIMIDA — 90 SEGUNDOS (ELEVATOR)
+--------------------------------------------------------------------------------
+
+Pra Q&A em 1 minuto ou abertura informal:
+
+  "Você paga pelo celular. O celular paga o Google.
+   Setecentos e cinquenta bilhões de dólares em publicidade digital
+   concentrados em três empresas. Pro dono do celular: zero.
+
+   JUICE é a primeira DePIN brasileira na Solana.
+   Cada minuto que você carrega o celular vira $JUICE on-chain.
+   Live mainnet, hoje. Cinco mil usuários ativos,
+   quatrocentos e sessenta e oito mil minutos validados,
+   mais de dez mil downloads — Android, iOS e Solana Mobile Seeker.
+
+   Stack cem por cento Solana: ZK Compression do Light Protocol,
+   KORA gasless, Solana Pay pra PIX, Attestations pra prova de atividade humana.
+
+   Sou Rafael, oito anos em fintech, CNPI, ex-XP/Rico/Terra,
+   vendi quatrocentos rigs antes do ciclo. Carol Uchoas, CMO e CCO.
+   Buscamos grant + cosign Solana Foundation pra escalar
+   pra cem mil usuários até Q3.
+
+   Brasil é o flagship market da Solana. JUICE é o veículo."
+
+--------------------------------------------------------------------------------
+PALAVRAS-VÍCIO A EVITAR (corte na hora)
+--------------------------------------------------------------------------------
+
+  X "tipo"          -> corte
+  X "sabe"          -> corte
+  X "a gente quer"  -> "a gente vai" / "a gente faz"
+  X "esperamos"     -> "vamos"
+  X "tentamos"      -> "fizemos"
+  X "uns 5 mil"     -> "cinco mil"
+  X "é meio que"    -> corte
+  X "no fim do dia" -> corte
+  X "obviamente"    -> corte
+  X "basicamente"   -> corte
+  X "na verdade"    -> corte
+  X "honestamente"  -> corte (sempre soa desonesto)
+
+--------------------------------------------------------------------------------
+NÚMEROS-CHAVE — DECORE DE COR
+--------------------------------------------------------------------------------
+
+Problema (slide 1):
+  - US$ 750 bi global ad spend digital      -> "setecentos e cinquenta bilhões"
+  - 3 empresas concentram                   -> "Google, Meta, Amazon"
+  - 120 mi smartphones ativos no Brasil     -> "cento e vinte milhões"
+  - Fonte: WARC / Magna 2025 + Anatel 2025
+
+Tração (slide 4):
+  - 5.000 usuários ativos                   -> "cinco mil"
+  - 468.120 minutos validados               -> "quatrocentos e sessenta e oito mil"
+  - +10.000 downloads                       -> "mais de dez mil"
+  - Parceiros ativos:                       -> Solflare, X Pay, BingX
+
+Mercado (slide 5):
+  - TAM Global ad digital: $750 bi          -> "setecentos e cinquenta bilhões"
+  - SAM LATAM ad digital:  $28 bi           -> "vinte e oito bilhões"
+  - SOM Brasil ad digital: $9 bi            -> "nove bilhões"
+  - Concentração Global (Google/Meta/Amazon): aprox 62%
+  - Concentração LATAM (Google/Meta/MELI):   aprox 90%
+  - Concentração Brasil (Google/Meta):       aprox 96%
+
+Tech (slide 7):
+  - ZK Compression 5000x                    -> "cinco mil vezes"
+  - Stack: KORA · Solana Pay · Attestations · CLOAK · Seeker
+
+Moat (slide 8):
+  - 5 camadas em produção (SAS · Rules cap · Anti-bot 8h · SHA-256 · Play Integrity)
+
+Roadmap (slide 9):
+  - Q2/26 lançamento Android + iOS    [feito]
+  - Q3/26 mainnet 100k usuários + tokenomics
+  - Q4/26 SDK B2B + Pre-Seed US$ 2 mi
+  - Q1/27 expansão LATAM
+
+Ask (slide 10):
+  - 100k usuários até Q3 2026               -> "cem mil usuários até Q3"
+  - Pre-Seed Q4/26: US$ 2 mi                -> "dois milhões"
+
+--------------------------------------------------------------------------------
+PERGUNTAS PROVÁVEIS DO JURADO + RESPOSTAS PRONTAS (Q&A)
+--------------------------------------------------------------------------------
+
+Q: "De onde tirou os US$ 750 bilhões?"
+A: "WARC e Magna Global Ad Outlook 2025 — relatório de digital ad spend
+    consolidado. Sessenta e dois por cento concentrados em Google, Meta e
+    Amazon. Numbers auditados por associação setorial, não cherry-pick. No
+    Brasil, IAB Brasil em parceria com Kantar Ibope mostra noventa e seis
+    por cento só nas mãos de Google e Meta — concentração ainda mais aguda."
+
+Q: "Mas o usuário não recebe YouTube, Instagram, Spotify de graça em troca?"
+A: "Não é grátis. Você pagou o plano de celular que entrega o conteúdo. O
+    brasileiro paga em média oitenta a duzentos reais por mês. Você paga
+    duas vezes — uma em dinheiro pelo plano, outra em atenção pra quem
+    anuncia. Os dois recebimentos vão pro mesmo lugar: Google, Meta. Nenhum
+    volta pro dono do celular. JUICE redireciona o segundo recebimento — em
+    PIX, no Brasil, agora."
+
+Q: "Como vocês evitam farm bot?"
+A: "Cinco camadas em produção: Solana Attestation Service, rules cap
+    server-side de sessenta pontos por minuto, anti-bot oito horas diárias,
+    SHA-256 pseudonymity, e Play Integrity da Google. Bot não recarrega
+    celular físico — esse é o moat. Sybil-resistance física, não criptográfica."
+
+Q: "Qual o token utility real?"
+A: "Quatro linhas, em ordem de prioridade: Sponsored Charging — marcas
+    pagam JUICE pro usuário consumir conteúdo durante a recarga, com prova
+    de atividade humana verificável on-chain; créditos publicitários em
+    parcerias com BingX, OKX, KAST; real-yield staking distribuído pros
+    holders; e recompra-e-queima de receita do app."
+
+Q: "Por que Solana?"
+A: "ZK Compression do Light Protocol — cinco mil vezes redução de custo
+    de state. É o único caminho técnico pra escrever um bilhão de memos
+    por ano. Sem isso, a economia não fecha. Stack cem por cento nativo:
+    KORA pra gasless, Solana Pay pro PIX, Attestations pro PoHA verificável,
+    CLOAK pra privacidade. E Seeker — rampa nativa de quem já tem self-custody."
+
+Q: "Diferença pra STEPN ou Move-to-Earn?"
+A: "Supply fixo de um bilhão, não inflacionário. Distribuição proporcional
+    ao uso real, não dependente de novos compradores. Referência mental é
+    Mercado Pago + Pix, não Move-to-Earn. JUICE reflete adoção real, não
+    momentum marginal — bot não recarrega celular físico."
+
+Q: "Quem é Carol?"
+A: "Carol Uchoas, CMO e CCO. Growth e aquisição em LATAM, vendas B2B com
+    varejo e operadoras, brand e comunidade — converte no-coiner em
+    embaixador. Ela traduz cripto pro brasileiro comum. Cripto só vence
+    quando o usuário comum entende."
+
+Q: "Quanto vocês precisam levantar?"
+A: "Frontier Colosseum não é fundraising tradicional. Pra escalar de cinco
+    mil pra cem mil usuários até Q3 a gente precisa de três coisas: grant
+    para growth e infra, cosign da Solana Foundation pra parcerias B2B no
+    Brasil, e intro com os times do Light Protocol e KORA pra implementação
+    ZK Compression e gasless. Pre-seed de dois milhões está marcado pra Q4."
+
+Q: "Qual o GTM?"
+A: "Brazil-first. Cinco mil usuários atuais cresceram organicamente em
+    poucos meses via Telegram, WhatsApp e parceiros. SDK B2B no Q4 pra
+    integração com varejo e operadoras. Q1 vinte e sete expansão pra
+    México e Colômbia. Brasil é o flagship LATAM da Solana — a gente é
+    o veículo."
+
+Q: "Por que não é só mais um app de cashback?"
+A: "Cashback Web2 trava o valor dentro da empresa que emitiu — Smiles,
+    LATAM Pass, Livelo. JUICE não compete com cashback — é uma fonte de
+    receita completamente nova: ad-spend redirecionado on-chain. A gente
+    não substitui o programa de fidelidade, redireciona o que Google,
+    Meta e Amazon capturam — diretamente pro dono do celular, em token
+    líquido com saque PIX."
+
+Q: "Vocês têm partnership confirmado?"
+A: "Solflare, X Pay e BingX já com publicidade ativa rodando no app —
+    visível no slide 4. OKX e KAST em conversa. Cinco mil usuários
+    orgânicos validam o canal. Cosign Solana Foundation acelera as
+    conversas B2B com varejo brasileiro — esse é um dos pedidos do ask."
+
+Q: "Foundation já investe em DePIN no Brasil?"
+A: "Brasil é o segundo maior pool de devs Solana fora dos EUA — Superteam
+    Brasil ultrapassou dezenove mil builders. Ainda não há um flagship
+    DePIN brasileiro com tração real on-chain — JUICE é o candidato natural.
+    Quatrocentos e sessenta e oito mil minutos validados na mainnet são prova."
+
+--------------------------------------------------------------------------------
+ENGLISH VERSION (PARA APRESENTAÇÃO INTERNACIONAL)
+--------------------------------------------------------------------------------
+
+[SLIDE 1 — PROBLEM · CONCENTRATION]
+"You pay for the phone. The phone pays Google.
+Seven hundred fifty billion dollars in global digital ad spend,
+concentrated in three companies — Google, Meta, Amazon.
+One hundred twenty million phones in Brazil generate that value every day.
+For the phone's owner: zero."
+
+[SLIDE 2 — SOLUTION]
+"JUICE is an advertising app. DePIN on Solana.
+Charge, watch, earn.
+Live today on three stores: Google Play, App Store, Solana Mobile Seeker.
+Four hundred sixty-eight thousand minutes validated on mainnet."
+
+[SLIDE 3 — PRODUCT · FRICTIONLESS ADVERTISING]
+"Frictionless advertising. Plug, validate, reward.
+Plug the cable, app detects the session, points climb live, JUICE hits
+the wallet. PIX or crypto cashout. Settlement in seconds.
+Charging is just the trigger — the product lives inside:
+partners, missions, weekly ranking."
+
+[SLIDE 4 — TRACTION]
+"And we're not asking you to believe. We've already proven it.
+Five thousand active users. Four hundred sixty-eight thousand minutes validated.
+Over ten thousand downloads — Android, iOS, Seeker.
+Solflare, X Pay, BingX — paid advertising running today.
+All on mainnet. All verifiable now."
+
+[SLIDE 5 — MARKET]
+"TAM: seven hundred fifty billion dollars in global digital ad spend.
+SAM: twenty-eight billion in LATAM. SOM: nine billion in Brazil — our initial ICP.
+Concentration: sixty-two percent global to Google, Meta, Amazon.
+Ninety percent LATAM. Ninety-six percent Brazil — just Google and Meta.
+We redirect it on-chain — to the phone's owner."
+
+[SLIDE 6 — BUSINESS MODEL]
+"The model is an iceberg.
+Above water: Onboarding, TAU plus GRIND, Sybil resilience — what brands buy.
+Below water: People, ADS, Data Annotation — what sustains it.
+Verified attention via on-chain proof of human activity.
+Brands pay JUICE. Users earn JUICE. Solana settles in seconds."
+
+[SLIDE 7 — WHY SOLANA]
+"One hundred percent Solana stack — not by trend.
+Privacy through Light Protocol's ZK Compression — five thousand times
+state cost reduction. Before that, writing a billion memos a year was impossible.
+Now it's trivial. KORA for gasless, Solana Pay for PIX settlement,
+Solana Attestations for proof of human activity, CLOAK for selective privacy.
+And Solana Mobile Seeker as native ramp for self-custody users."
+
+[SLIDE 8 — MOAT · BOTS DON'T CHARGE PHONES]
+"Bots don't charge phones.
+Physical Sybil resistance, in production, in five layers:
+Solana Attestation Service, server-side rules cap, eight-hour daily anti-bot,
+SHA-256 pseudonymity, Google Play Integrity. All live. Zero vaporware."
+
+[SLIDE 9 — ROADMAP]
+"Real roadmap, not slideware.
+Q2 this year: Android and iOS launch — done.
+Q3: one hundred thousand users and tokenomics on mainnet.
+Q4: B2B SDK and a two-million-dollar pre-seed.
+Q1 twenty-seven: LATAM expansion."
+
+[SLIDE 10 — TEAM + ASK]
+"I'm Rafael Mariano. Sold four hundred mining rigs in Brazil.
+CNPI certified, eight years in fintech — XP, Rico, Terra.
+Shipped the MVP solo — React Native plus Solana mainnet — before raising a cent.
+SENAI educator. Commercial pilot. Entrepreneur in financial markets.
+Carol Uchoas with me — CMO and CCO. Growth, B2B sales, brand and revenue funnel.
+We're asking for: grant and acceleration to scale to a hundred thousand users
+by Q3, Solana Foundation cosign for the LATAM track, and intros to Light
+Protocol and KORA for ZK Compression and gasless infrastructure.
+Brazil will be Solana's flagship market. It's not IF. It's WHEN.
+JUICE is the vehicle. Thank you."
+
+--------------------------------------------------------------------------------
+ROTINA DE ENSAIO (RECOMENDADO — 5 SESSÕES MÍNIMAS)
+--------------------------------------------------------------------------------
+
+Sessão 1 (45 min): leitura sentado, sem cronômetro. Marca o que travou.
+Sessão 2 (30 min): em pé, com cronômetro. Anota onde excedeu o tempo.
+Sessão 3 (30 min): grava em vídeo. Reassiste sem som — postura, gestos.
+Sessão 4 (30 min): grava em áudio. Reassiste só audio — pacing, hedging.
+Sessão 5 (30 min): pratica com alguém ouvindo. Q&A pós-pitch.
+
+Meta: 1m50 a 2m00. Se passar de 2m05 estás cozinhando — corte algo.
+
+--------------------------------------------------------------------------------
+CHECK FINAL — DIA DA APRESENTAÇÃO
+--------------------------------------------------------------------------------
+
+  [ ] Hidratado. Garrafa de água ao lado.
+  [ ] Slide aberto em https://usejuicemobile.com/demoday4 em fullscreen (F).
+  [ ] Backup: PDF do deck no celular caso a tela falhe.
+  [ ] Telefone com app JUICE aberto e logado — pode precisar mostrar live.
+  [ ] Solscan aberto numa aba: link pra account de memos como prova on-the-fly.
+  [ ] Postura: pés firmes, ombros pra trás, olhar no jurado.
+  [ ] Primeira frase decorada como número de telefone da mãe.
+  [ ] Última frase ensaiada com voz baixa e firme — "É WHEN."
+  [ ] Respira fundo antes de subir. Sorri. Vai.
+
+--------------------------------------------------------------------------------
+ÚLTIMA INSTRUÇÃO
+--------------------------------------------------------------------------------
+
+A primeira frase do pitch é a mais importante.
+Decora ela como decora o número de telefone da mãe.
+Diz ela com a voz firme. Olho no olho. Sem aquecimento.
+
+  "Você paga pelo celular.
+   O celular paga o Google."
+
+Pausa um segundo entre as duas frases. Deixa o jurado sentir o peso
+da inversão. Aí dropa o número — setecentos e cinquenta bilhões,
+concentrados em três empresas.
+
+Se essas duas frases vão como manteiga, o resto vem natural.
+
+================================================================================

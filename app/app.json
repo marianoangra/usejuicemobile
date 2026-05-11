@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "JUICE",
+    "slug": "cnbmobile",
+    "version": "1.2.38",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#0A0F1E"
+    },
+    "scheme": "com.cnb.cnbappv2",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cnb.cnbappv2",
+      "buildNumber": "181",
+      "usesAppleSignIn": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Usada para foto de perfil.",
+        "NSPhotoLibraryUsageDescription": "Usada para selecionar foto de perfil.",
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.cnb.cnbappv2",
+      "versionCode": 201,
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_DATA_SYNC"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0F1E"
+      },
+      "edgeToEdgeEnabled": false,
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "./plugins/withBackgroundActions",
+      "./plugins/withIOSFixes",
+      "expo-web-browser",
+      "@react-native-firebase/app",
+      "expo-localization",
+      "expo-apple-authentication",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#00FF7F",
+          "defaultChannel": "default"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "92b79039-a34d-43b2-b749-140b565e5a4c"
+      }
+    },
+    "owner": "marianoangra"
+  }
+}

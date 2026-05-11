@@ -1,0 +1,1079 @@
+{
+  "meta": {
+    "title": "CNB Mobile — Carga tu teléfono. Gana tokens reales.",
+    "description": "DePin de Actividad Humana en Solana. Cada minuto cargando tu celular genera tokens CNB verificables on-chain. Construido en Frontier Colosseum.",
+    "keywords": "DePin, actividad humana, Solana, CNB Mobile, blockchain, recompensa, carga, prueba on-chain, hackathon Frontier"
+  },
+  "nav": {
+    "features": "Funciones",
+    "howItWorks": "Cómo funciona",
+    "manifesto": "Manifesto",
+    "tokenomics": "Tokenomics",
+    "hackathon": "Hackathon",
+    "parceiros": "Socios",
+    "download": "Descargar App",
+    "connectWallet": "Conectar Cartera",
+    "comingSoon": "Próximamente",
+    "backToTop": "Volver arriba"
+  },
+  "hero": {
+    "badge": "DePIN · Solana · Frontier Colosseum",
+    "headlineLine1": "Carga tu teléfono",
+    "headlineLine2": "y gana recompensas.",
+    "headlineHighlight": "recompensas",
+    "subtitle": "Convierte el tiempo de carga en puntos valiosos.",
+    "ctaPrimary": "Descargar App",
+    "ctaSecondary": "Ver en Solana",
+    "statsLive": "Mainnet activa",
+    "statsToken": "SPL Token",
+    "statsBeta": "iOS · Android"
+  },
+  "partnersTrust": {
+    "badge": "Socios oficiales · Listados",
+    "title": "Respaldado por nombres que ya son referencia",
+    "subtitle": "Exchanges globales e infraestructura cripto que apuestan por el token CNB.",
+    "ctaAll": "Conoce todos los socios y formatos"
+  },
+  "features": {
+    "badge": "Por qué CNB",
+    "title": "Infraestructura física descentralizada que te paga",
+    "subtitle": "Es energía real convirtiéndose en recompensa real, prueba por prueba, on-chain.",
+    "items": {
+      "charging": {
+        "title": "Carga que paga",
+        "description": "Puntos por minuto cargando, con bonus en cada hora completa. Cada kWh cuenta."
+      },
+      "proof": {
+        "title": "Prueba on-chain",
+        "description": "Cada sesión se firma y se registra en Solana. Identidad pseudónima vía hash on-chain, sin caja negra."
+      },
+      "ranking": {
+        "title": "Ranking semanal",
+        "description": "Los usuarios más activos de la semana comparten un pool extra de CNB. Competencia real."
+      },
+      "token": {
+        "title": "CNB Token SPL",
+        "description": "Token SPL nativo en mainnet de Solana. Liquidez en DEXs, transferible, real."
+      },
+      "referral": {
+        "title": "Sistema de referidos",
+        "description": "+100 CNB por amigo registrado. Crece con tu red, gana en conjunto."
+      },
+      "depin": {
+        "title": "DePIN real",
+        "description": "Cada recompensa está respaldada por un minuto verificado de carga. Trabajo útil."
+      }
+    }
+  },
+  "community": {
+    "badge": "Comunidad",
+    "title": "Forma parte de nuestra comunidad",
+    "subtitle": "Más que una app, somos una comunidad. Únete a miles de personas que ya están ganando CNB e intercambiando experiencias sobre cripto.",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "instagram": "Instagram",
+    "x": "X (Twitter)"
+  },
+  "howItWorks": {
+    "badge": "En 3 pasos",
+    "title": "Empieza a ganar en menos de un minuto",
+    "subtitle": "Sin KYC pesado, sin inversión inicial, sin hardware especial. Solo el cable que ya tienes.",
+    "step1": {
+      "label": "Paso 01",
+      "title": "Conecta el cargador",
+      "description": "Enchufa tu teléfono como siempre. La app detecta automáticamente el inicio de la carga."
+    },
+    "step2": {
+      "label": "Paso 02",
+      "title": "Acumula puntos verificados",
+      "description": "Cada minuto, +10 CNB se acumulan y la sesión se firma para prueba on-chain."
+    },
+    "step3": {
+      "label": "Paso 03",
+      "title": "Canjea tus CNB",
+      "description": "Al alcanzar el saldo mínimo, canjea tokens CNB a tu cartera Solana o negocia en DEXs."
+    }
+  },
+  "hackathon": {
+    "badge": "Frontier Colosseum · Solana Foundation",
+    "title": "Construido en Frontier Colosseum",
+    "description": "CNB Mobile compite en Frontier Colosseum como solución DePIN de energía. Prueba de carga verificada on-chain, token SPL en mainnet, construido para el mercado brasileño y latinoamericano.",
+    "stats": {
+      "category": "Categoría",
+      "categoryValue": "DePIN",
+      "network": "Red",
+      "networkValue": "Solana Mainnet",
+      "market": "Mercado",
+      "marketValue": "Brasil + LATAM"
+    },
+    "cta": "Conoce más sobre el hackathon"
+  },
+  "token": {
+    "badge": "SPL Token · Mainnet · Solana",
+    "title": "CNB Token",
+    "subtitle": "El token de utilidad que mueve la red CNB. Distribuido por prueba de carga, transferible, con liquidez real.",
+    "mintAddress": "Dirección del mint",
+    "mintPlaceholder": "Será divulgado próximamente",
+    "stats": {
+      "supply": "Supply",
+      "supplyValue": "21,000,000,000",
+      "holders": "Holders",
+      "holdersValue": "En crecimiento",
+      "network": "Red",
+      "networkValue": "Solana"
+    },
+    "links": {
+      "solscan": "Ver en Solscan",
+      "jupiter": "Negociar en Jupiter"
+    }
+  },
+  "founder": {
+    "badge": "Founder & CEO",
+    "name": "Rafael Mariano",
+    "role": "CEO & Founder",
+    "bio1": "Analista de Inversiones CNPI, Piloto de Helicóptero, educador, empresario y desarrollador de soluciones innovadoras en el mercado financiero y cripto. Con paso por XP Inc., Rico y Terra Investimentos, fue condecorado como uno de los profesores más influyentes de su región por el SENAI.",
+    "bio2": "Desarrollador y programador, Rafael une tecnología con habilidades transformadoras, marcando la diferencia en la vida de miles de personas.",
+    "alt": "Rafael Mariano, fundador y CEO de CNB Mobile"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "title": "Preguntas frecuentes",
+    "subtitle": "Todo lo que necesitas saber sobre CNB Mobile."
+  },
+  "waitlist": {
+    "badge": "Lista de espera",
+    "title": "Sé el primero en saber cuándo se lance el token CNB",
+    "subtitle": "Acceso anticipado, drops de comunidad y novedades del hackathon directo en tu correo.",
+    "emailPlaceholder": "tu@email.com",
+    "submit": "Unirme a la lista",
+    "submitting": "Enviando...",
+    "success": "¡Listo! Estás en la lista.",
+    "errorEmail": "Email inválido.",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "walletButton": {
+    "connect": "Conectar cartera",
+    "connecting": "Conectando…",
+    "disconnect": "Desconectar cartera"
+  },
+  "footer": {
+    "tagline": "DePin de Actividad Humana.",
+    "company": "Empresa",
+    "companyLinks": {
+      "manifesto": "Manifesto",
+      "pitch": "Para inversores",
+      "hackathon": "Hackathon",
+      "founder": "Fundador"
+    },
+    "product": "Producto",
+    "productLinks": {
+      "features": "Funciones",
+      "howItWorks": "Cómo funciona",
+      "token": "Token",
+      "tokenomics": "Tokenomics",
+      "parceiros": "Socios",
+      "airdrop": "Airdrop $JUICE",
+      "download": "Descargar app"
+    },
+    "legal": "Legal",
+    "legalLinks": {
+      "terms": "Términos de Servicio",
+      "privacy": "Política de Privacidad",
+      "privacyEn": "Privacy Policy (EN)",
+      "copyright": "Copyright",
+      "cloakPrivacy": "Cloak Privacy"
+    },
+    "support": "Soporte",
+    "supportLinks": {
+      "helpCenter": "Centro de ayuda",
+      "faq": "FAQ",
+      "deleteAccount": "Eliminar mi cuenta"
+    },
+    "community": "Comunidad",
+    "poweredBy": "Powered by",
+    "copyright": "© 2026 CNB Mobile. Todos los derechos reservados.",
+    "downloadTitle": "Descarga CNB Mobile",
+    "downloadSubtitle": "Disponible ahora en App Store y Google Play. iOS y Android."
+  },
+  "common": {
+    "back": "Volver",
+    "loading": "Cargando..."
+  },
+  "tokenomics": {
+    "hero": {
+      "eyebrow": "Tokenomics",
+      "title": "El combustible del ecosistema JUICE",
+      "subtitle": "$JUICE es el token nativo de Solana que tokeniza cada minuto de carga. Sistema deflacionario, utilidad real y gobernanza comunitaria.",
+      "stats": {
+        "supplyLabel": "Supply Total",
+        "supplyValue": "1.000.000.000",
+        "chainLabel": "Blockchain",
+        "chainValue": "Solana",
+        "modelLabel": "Modelo",
+        "modelValue": "Deflacionario"
+      },
+      "ctaWhitepaper": "Leer whitepaper"
+    },
+    "overview": {
+      "badge": "Visión general",
+      "title": "Parámetros del token",
+      "subtitle": "Todo lo que necesitas saber sobre $JUICE en una tabla.",
+      "rows": {
+        "name": ["Nombre", "JUICE"],
+        "ticker": ["Ticker", "$JUICE"],
+        "chain": ["Blockchain", "Solana (SPL Token)"],
+        "supply": ["Supply Total", "1.000.000.000 (fijo)"],
+        "decimals": ["Decimales", "9"],
+        "address": ["Dirección del contrato", "Próximamente"]
+      }
+    },
+    "distribution": {
+      "badge": "Distribución",
+      "title": "Cómo se asigna el supply",
+      "subtitle": "Cada slice es interactivo — toca para ver el detalle de la asignación.",
+      "totalLabel": "Supply total",
+      "totalValue": "1B $JUICE",
+      "supplyLabel": "Cantidad",
+      "noteLabel": "Detalle",
+      "slices": {
+        "community": {
+          "label": "Community Rewards",
+          "tagline": "Charge-to-Earn",
+          "note": "Distribuido a lo largo de ~10 años vía curva de halving a los usuarios del app. Es el motor de crecimiento orgánico del ecosistema."
+        },
+        "ecosystem": {
+          "label": "Ecosystem & Partnerships",
+          "tagline": "Grants e integraciones",
+          "note": "Reservado para grants de ecosistema, integraciones con otros DePINs y patrocinios estratégicos. Liberación por propuesta DAO."
+        },
+        "team": {
+          "label": "Team & Advisors",
+          "tagline": "Vesting 4 años · cliff 12 meses",
+          "note": "Equipo y advisors. 12 meses de cliff seguidos de vesting lineal a lo largo de 36 meses para alinear incentivos a largo plazo."
+        },
+        "treasury": {
+          "label": "DAO Treasury",
+          "tagline": "Tesorería comunitaria",
+          "note": "Tesorería controlada por la DAO. Usada para emisión futura, bounties, auditorías y iniciativas decididas en gobernanza."
+        },
+        "liquidity": {
+          "label": "Liquidez",
+          "tagline": "Raydium + Orca · locked 2 años",
+          "note": "Pools iniciales en Raydium y Orca. LP tokens lockeados por 24 meses para garantizar profundidad de mercado al lanzamiento."
+        },
+        "airdrop": {
+          "label": "Airdrop Retroactivo",
+          "tagline": "Usuarios CNB Mobile / JUICE",
+          "note": "Recompensa para los usuarios que apoyaron el ecosistema antes del TGE. Distribuido en base a snapshot de puntos acumulados."
+        },
+        "private": {
+          "label": "Private Sale",
+          "tagline": "Vesting 24 meses",
+          "note": "Ronda estratégica cerrada. Vesting lineal de 24 meses sin cliff para evitar presión de venta en el listing."
+        },
+        "public": {
+          "label": "Public Sale / IDO",
+          "tagline": "Distribución abierta",
+          "note": "Venta pública vía launchpad partner. Sin lock — promueve descubrimiento de precio justo en el día 1 con float pequeño y controlado."
+        }
+      }
+    },
+    "emission": {
+      "badge": "Curva de emisión",
+      "title": "Emisión con halving",
+      "subtitle": "Inspirado en el halving de Bitcoin. Pool decreciente por año, distribuido proporcionalmente entre usuarios activos cada trimestre. Sin inflación al crecer la base.",
+      "yearLabel": "Año",
+      "amountLabel": "Emitido",
+      "amountSuffix": "M $JUICE",
+      "claim": {
+        "title": "Cómo funciona el claim",
+        "subtitle": "Self-balancing — supply fijo, share proporcional. Sin death spiral al crecer la base.",
+        "steps": {
+          "pool": { "label": "Pool fijo por trimestre", "body": "Y1 = 200M $JUICE ÷ 4 = 50M por trimestre. Curva determinística por halving — no se mueve con la adopción." },
+          "earn": { "label": "Acumulas puntos", "body": "1 minuto cargando = 10 pts. +50 por hora completa. +100 por referido. Cada sesión validada on-chain." },
+          "share": { "label": "Tu share = proporcional", "body": "(tus puntos ÷ total de la red en el trimestre) × pool. Más usuarios activos = tu porción más pequeña — supply emitido fijo." },
+          "redeem": { "label": "Claim on-chain", "body": "Al final del trimestre reclamas tu $JUICE directo a la wallet. O sigues acumulando para el próximo." }
+        }
+      }
+    },
+    "utility": {
+      "badge": "Utilidad",
+      "title": "Para qué sirve $JUICE",
+      "subtitle": "Cinco utilidades reales — no un token de gobernanza vacío.",
+      "items": {
+        "withdraw": {
+          "title": "Retiro sin tarifa",
+          "body": "Retirar en $JUICE: 0%. Retirar en PIX: 5% — 50% quemado, 50% al treasury."
+        },
+        "boost": {
+          "title": "Mining Boost",
+          "body": "Hace stake $JUICE para multiplicar puntos por minuto. Bronze (1k) 1.2x · Silver (10k) 1.5x · Gold (100k) 2x."
+        },
+        "nft": {
+          "title": "Charger NFTs",
+          "body": "Skins y boosters de cargador como cNFTs Solana. Multiplicador permanente, mint en centavos."
+        },
+        "dao": {
+          "title": "Gobernanza DAO",
+          "body": "Holders votan emisión, parámetros del app, nuevas alianzas y uso del treasury."
+        },
+        "marketplace": {
+          "title": "Marketplace de recompensas",
+          "body": "Power banks, gift cards y electrónicos pagados en $JUICE — con descuento vs. precio fiat."
+        }
+      }
+    },
+    "burn": {
+      "badge": "Mecánica deflacionaria",
+      "title": "Burn programado",
+      "subtitle": "$JUICE no solo se distribuye — también sale de circulación de forma transparente y auditable.",
+      "sourcesTitle": "Fuentes de quema",
+      "sources": {
+        "withdrawal": "50% de las tarifas de retiro PIX",
+        "marketplace": "30% de las ventas en el marketplace",
+        "nftMint": "100% de los NFT mints",
+        "quarterly": "Burn trimestral vía ingresos de ads"
+      },
+      "counterLabel": "Total quemado",
+      "counterUnit": "$JUICE",
+      "counterNote": "Contador on-chain · activo después del TGE"
+    },
+    "staking": {
+      "badge": "Staking",
+      "title": "Real Yield, sin APY inflacionario",
+      "subtitle": "Stakers reciben parte de las tarifas reales generadas por el app — pagado en USDC o $JUICE, a elección del staker.",
+      "tableHeaders": {
+        "lockup": "Lock-up",
+        "multiplier": "Multiplicador"
+      },
+      "tiers": {
+        "flexible": ["Flexible", "0x (solo gobernanza)"],
+        "thirty": ["30 días", "1x"],
+        "ninety": ["90 días", "1.5x"],
+        "oneeighty": ["180 días", "2.5x"]
+      }
+    },
+    "converter": {
+      "badge": "Conversión",
+      "title": "Los puntos del app se convierten en $JUICE",
+      "subtitle": "La regla de conversión es simple y fija — sin letra chica.",
+      "ratio": "1.000 puntos = 1 $JUICE",
+      "minWithdraw": "Retiro mínimo: 100 $JUICE (= 100.000 puntos)",
+      "calculatorTitle": "Calculadora",
+      "inputLabel": "Tus puntos",
+      "outputLabel": "Recibirías",
+      "outputUnit": "$JUICE",
+      "minWarning": "Por debajo del mínimo de retiro",
+      "minWarningSuffix": "puntos para retirar"
+    },
+    "whySolana": {
+      "badge": "Infra",
+      "title": "Por qué Solana",
+      "subtitle": "Tokenizar cada minuto de carga a escala solo es viable en una chain como Solana.",
+      "items": {
+        "fees": {
+          "title": "Tarifas de $0.0001",
+          "body": "Hacen económicamente viable tokenizar cada minuto sin consumir toda la recompensa del usuario."
+        },
+        "compression": {
+          "title": "ZK Compression",
+          "body": "Light Protocol comprime las cuentas on-chain de cada usuario con pruebas de Merkle — el costo de creación cae ~5000×, viabilizando 1 cuenta por cargador a escala de millones."
+        },
+        "cnft": {
+          "title": "cNFTs",
+          "body": "Compresión de NFTs permite millones de skins de cargador por centavos."
+        },
+        "depin": {
+          "title": "Ecosistema DePIN",
+          "body": "Vecindad con Helium, Hivemapper, Render — composabilidad real entre redes físicas."
+        },
+        "wallet": {
+          "title": "Phantom Wallet",
+          "body": "Cartera mobile-first nativa, UX que combina con nuestro público de smartphone."
+        }
+      }
+    },
+    "roadmap": {
+      "badge": "Roadmap",
+      "title": "Roadmap de lanzamiento",
+      "subtitle": "Del whitepaper al marketplace en vivo en 6 meses.",
+      "milestones": {
+        "whitepaper": {
+          "title": "Whitepaper + comunidad",
+          "when": "Mes 0",
+          "status": "done"
+        },
+        "audit": {
+          "title": "Auditoría de contrato",
+          "when": "Mes 1-2",
+          "status": "pending"
+        },
+        "snapshot": {
+          "title": "Snapshot para airdrop",
+          "when": "Mes 3",
+          "status": "pending"
+        },
+        "ido": {
+          "title": "IDO + listing en Raydium",
+          "when": "Mes 4",
+          "status": "pending"
+        },
+        "wallet": {
+          "title": "Wallet integrada en el app",
+          "when": "Mes 5",
+          "status": "pending"
+        },
+        "marketplace": {
+          "title": "Marketplace + NFTs en vivo",
+          "when": "Mes 6",
+          "status": "pending"
+        }
+      }
+    },
+    "faq": {
+      "badge": "Preguntas",
+      "title": "FAQ rápido",
+      "subtitle": "Las dudas más comunes sobre $JUICE — una frase cada una.",
+      "items": [
+        {
+          "q": "¿Cuándo se lanza?",
+          "a": "Estamos en camino al TGE en ~6 meses. Las fechas exactas dependen de la auditoría del contrato y del snapshot. Únete a la comunidad para ser avisado primero."
+        },
+        {
+          "q": "¿Voy a perder mis puntos actuales?",
+          "a": "No. Los puntos acumulados se preservan y se convierten en $JUICE a 1.000 puntos = 1 $JUICE en el momento del snapshot."
+        },
+        {
+          "q": "¿Necesito wallet para seguir usando el app?",
+          "a": "No. Puedes seguir usando el app solo con puntos. La wallet entra en juego solo si quieres retirar en $JUICE, hacer staking o comprar en el marketplace."
+        },
+        {
+          "q": "¿El token está regulado en Brasil?",
+          "a": "$JUICE es un token utilitario — no es valor mobiliario, oferta de inversión ni promesa de retorno. Tratamos compliance proactivamente con asesoría local."
+        },
+        {
+          "q": "¿Cómo participo del airdrop?",
+          "a": "Usa el app antes del snapshot (anunciado con al menos 30 días de antelación). Cuantos más puntos acumulados a esa fecha, mayor tu asignación retroactiva."
+        }
+      ]
+    },
+    "disclaimer": "$JUICE es un token utilitario del ecosistema JUICE. No constituye valor mobiliario, oferta de inversión ni promesa de retorno financiero. Cripto implica riesgos. Consulta siempre la regulación local.",
+    "finalCta": {
+      "title": "Únete a la comunidad antes del TGE",
+      "subtitle": "Holders activos de la comunidad tienen prioridad en el airdrop, en la whitelist del IDO y en los drops de NFT.",
+      "telegram": "Telegram",
+      "discord": "Discord",
+      "twitter": "X (Twitter)",
+      "whitepaper": "Whitepaper"
+    }
+  },
+  "pages": {
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdated": "Última actualización: 4 de abril de 2026",
+      "sections": [
+        {
+          "heading": "1. Introducción",
+          "body": ["CNB Mobile está comprometido en proteger la privacidad de nuestros usuarios."]
+        },
+        {
+          "heading": "2. Información Recopilada"
+        },
+        {
+          "heading": "2.1 Información de Cuenta",
+          "items": [
+            "Nombre de visualización",
+            "Dirección de correo electrónico",
+            "Foto de perfil (vía Google o Apple)",
+            "Identificador único de la cuenta"
+          ]
+        },
+        {
+          "heading": "2.2 Datos de Uso",
+          "items": [
+            "Fechas de acceso al App",
+            "Puntuación acumulada e historial de check-ins",
+            "Secuencia de días consecutivos",
+            "Posición en el ranking"
+          ]
+        },
+        {
+          "heading": "3. Cómo Usamos tu Información",
+          "items": [
+            "Crear y gestionar tu cuenta",
+            "Registrar check-ins y calcular puntuación",
+            "Mostrar el ranking de usuarios",
+            "Prevenir fraudes y abusos"
+          ]
+        },
+        {
+          "heading": "4. Compartir",
+          "body": ["No vendemos tu información personal."]
+        },
+        {
+          "heading": "5. Seguridad",
+          "body": ["Tus datos se almacenan con cifrado en tránsito y en reposo."]
+        },
+        {
+          "heading": "6. Tus Derechos",
+          "body": ["Acceso, corrección y eliminación de tus datos. Contacto: contato@criptonobolso.com.br"]
+        },
+        {
+          "heading": "7. Conformidad Apple",
+          "body": ["Este App cumple con las directrices de la Apple App Store y App Tracking Transparency (ATT)."]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Términos de Uso",
+      "lastUpdated": "Última actualización: 4 de abril de 2026",
+      "sections": [
+        {
+          "heading": "1. Aceptación de los Términos",
+          "body": [
+            "Al acceder y utilizar la aplicación CNB Mobile (\"App\"), aceptas cumplir y estar vinculado por estos Términos de Uso."
+          ]
+        },
+        {
+          "heading": "2. Descripción del Servicio",
+          "body": [
+            "CNB Mobile es una aplicación gamificada que recompensa a los usuarios con puntos virtuales por acceder al app diariamente.",
+            "Los puntos del CNB Mobile NO tienen valor monetario real y no constituyen ninguna forma de inversión."
+          ]
+        },
+        {
+          "heading": "3. Elegibilidad",
+          "body": ["Debes tener al menos 13 años de edad para utilizar el App."]
+        },
+        {
+          "heading": "4. Cuenta de Usuario",
+          "body": ["Para usar el App, es necesario crear una cuenta utilizando autenticación vía Google o Apple."]
+        },
+        {
+          "heading": "5. Reglas de Uso",
+          "items": [
+            "No utilizar el App para fines ilegales",
+            "No intentar manipular el sistema de puntos",
+            "No crear múltiples cuentas indebidamente",
+            "No utilizar bots o herramientas automatizadas"
+          ]
+        },
+        {
+          "heading": "6. Puntos y Ranking",
+          "body": ["Los puntos se conceden exclusivamente como forma de gamificación. Nos reservamos el derecho de modificar el sistema en cualquier momento."]
+        },
+        {
+          "heading": "7. Propiedad Intelectual",
+          "body": ["Todo el contenido del App es propiedad exclusiva de CNB Mobile."]
+        },
+        {
+          "heading": "8. Limitación de Responsabilidad",
+          "body": ["El App se proporciona \"tal como está\". No nos responsabilizamos por daños derivados del uso del App."]
+        },
+        {
+          "heading": "9. Modificaciones",
+          "body": ["Nos reservamos el derecho de modificar estos Términos en cualquier momento."]
+        },
+        {
+          "heading": "10. Contacto",
+          "body": ["contato@criptonobolso.com.br"]
+        }
+      ]
+    },
+    "support": {
+      "title": "Soporte",
+      "intro": "¿Necesitas ayuda? Contáctanos.",
+      "contactTitle": "Contacto por Correo",
+      "emailDescription": "Para dudas, sugerencias o problemas técnicos:",
+      "email": "contato@criptonobolso.com.br",
+      "responseTime": "Respondemos en hasta 48 horas hábiles.",
+      "faqTitle": "Preguntas Frecuentes",
+      "items": [
+        {
+          "q": "¿Cómo gano puntos?",
+          "a": "Solo abre la app una vez al día para recibir 10 puntos."
+        },
+        {
+          "q": "¿Los puntos tienen valor monetario?",
+          "a": "No. Los puntos son exclusivamente para fines de entretenimiento y ranking."
+        },
+        {
+          "q": "¿Cómo elimino mi cuenta?",
+          "a": "Envía un correo a contato@criptonobolso.com.br."
+        },
+        {
+          "q": "¿La app recopila datos sensibles?",
+          "a": "No. Solo información básica de perfil vía Google o Apple."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "intro": "Todo lo que necesitas saber sobre CNB Mobile.",
+      "items": [
+        {
+          "q": "¿Qué es CNB Mobile?",
+          "a": "Una app DePIN que te recompensa con tokens CNB por cada minuto de carga verificado on-chain en Solana."
+        },
+        {
+          "q": "¿Cómo gano tokens?",
+          "a": "Conecta el cargador y abre la app. Cada minuto de carga, +10 CNB se acumulan, con bonus de +50 en cada hora completa."
+        },
+        {
+          "q": "¿Necesito cartera Solana?",
+          "a": "Para el uso diario de la app, no. Para canjear los CNB tokens a tu propia cartera, sí — cualquier cartera Solana funciona."
+        },
+        {
+          "q": "¿Es seguro?",
+          "a": "Sí. Tu carga se monitorea solo localmente, y cada sesión verificada se firma y se envía a Solana como prueba."
+        },
+        {
+          "q": "¿Cuándo se listará el token?",
+          "a": "Estamos en etapa de hackathon. Apúntate a la lista de espera para ser notificado."
+        }
+      ]
+    },
+    "token": {
+      "title": "CNB Token",
+      "intro": "Detalles técnicos del token SPL en mainnet de Solana."
+    },
+    "tokenomics": {
+      "title": "Tokenomics",
+      "intro": "El modelo económico de $JUICE — distribución, emisión, quema y utilidad.",
+      "metaTitle": "Tokenomics de $JUICE — Distribución, Emisión y Utilidad",
+      "metaDescription": "Modelo económico completo del token $JUICE en Solana: 1B de supply fijo, distribución, curva de halving, staking real-yield y mecánica deflacionaria."
+    },
+    "manifesto": {
+      "metaTitle": "Manifesto Juice — De CNB Mobile al mundo",
+      "metaDescription": "La historia, la transición CNB Mobile → Juice, por qué Solana y qué sigue igual. Manifesto del equipo Juice."
+    },
+    "hackathon": {
+      "title": "Frontier Colosseum",
+      "intro": "Cómo CNB Mobile compite en el hackathon de Solana Foundation."
+    },
+    "wallet": {
+      "title": "Cartera",
+      "intro": "Conecta tu cartera Solana para canjear y gestionar tus tokens CNB.",
+      "comingSoon": "Próximamente"
+    },
+    "airdrop": {
+      "metaTitle": "Airdrop $JUICE — Lista de Espera",
+      "metaDescription": "Quien carga primero, gana primero. Únete a la lista del airdrop $JUICE — DePIN de Solana que paga en token real.",
+      "badge": "Lista de espera · Pre-TGE",
+      "title": "Airdrop $JUICE",
+      "subtitle": "Quien carga primero, gana primero. Registra tu correo y (opcional) tu cartera Solana para asegurar prioridad en el airdrop.",
+      "fromAppBadge": "Vienes desde la app — bono de prioridad aplicado",
+      "step1Label": "1. Tu correo",
+      "emailPlaceholder": "tu@email.com",
+      "step2Label": "2. Tu cartera Solana",
+      "step2Optional": "(opcional, pero recomendado)",
+      "step2Help": "Conectar ahora hace que el drop caiga directo en tu cartera. ¿Sin cartera? Te enviamos instrucciones por correo en el TGE.",
+      "submit": "Unirme a la lista",
+      "submitting": "Enviando…",
+      "success": "¡Estás dentro!",
+      "successWithWallet": "Tu cartera está marcada para el airdrop. Te avisamos por correo cuando se cierre el snapshot.",
+      "successWithoutWallet": "Correo confirmado. Vuelve a conectar la cartera antes del snapshot — tu lugar está asegurado.",
+      "errorEmail": "Por favor, ingresa un correo válido.",
+      "errorGeneric": "No pudimos registrarte ahora. Intenta de nuevo en un momento.",
+      "reassurance": {
+        "noSpam": "Sin spam. Solo aviso del snapshot.",
+        "firstAccess": "Acceso prioritario en el TGE",
+        "noPurchase": "No es compra — solo lista"
+      }
+    },
+    "copyright": {
+      "title": "Copyright y Propiedad Intelectual",
+      "lastUpdated": "Última actualización: 16 de abril de 2026",
+      "sections": [
+        {
+          "heading": "1. Titularidad",
+          "body": ["La aplicación CNB Mobile es propiedad exclusiva de Cripto no Bolso, São Paulo, Brasil. Protegida por la Ley nº 9.610/98 y la Ley nº 9.279/96."]
+        },
+        {
+          "heading": "2. Conformidad Legal",
+          "items": [
+            "LGPD — Ley nº 13.709/2018",
+            "Marco Civil da Internet — Ley nº 12.965/2014",
+            "Directrices de Apple App Store y Google Play"
+          ]
+        },
+        {
+          "heading": "3. Restricciones",
+          "items": [
+            "Prohibido reproducir, distribuir o modificar cualquier parte de la aplicación",
+            "Prohibida la ingeniería inversa o descompilación",
+            "Prohibido el uso de la marca en productos de terceros"
+          ]
+        },
+        {
+          "heading": "4. Contacto",
+          "body": ["Cripto no Bolso — contato@criptonobolso.com.br"]
+        }
+      ],
+      "closing": "© 2026 CNB Mobile — Cripto no Bolso. Todos los derechos reservados."
+    },
+    "deleteAccount": {
+      "title": "Eliminar mi cuenta",
+      "lastUpdated": "Última actualización: 29 de abril de 2026",
+      "sections": [
+        {
+          "heading": "1. Visión general",
+          "body": [
+            "Puedes solicitar la eliminación de tu cuenta CNB Mobile en cualquier momento. Esta página describe cómo solicitarla, qué se elimina y qué puede ser retenido por exigencia legal."
+          ]
+        },
+        {
+          "heading": "2. Eliminar desde la app",
+          "body": [
+            "La forma más rápida es eliminarla directamente desde la app:"
+          ],
+          "items": [
+            "Abre la app CNB Mobile en tu teléfono.",
+            "Ve a Perfil → Ajustes → Cuenta.",
+            "Toca \"Eliminar cuenta\" y confirma.",
+            "Tu cuenta se desactiva al instante y los datos personales se eliminan en hasta 30 días."
+          ]
+        },
+        {
+          "heading": "3. Eliminar por correo",
+          "body": [
+            "Si ya no tienes acceso a la app, envía una solicitud de eliminación desde tu correo registrado a contato@criptonobolso.com.br con el asunto \"Solicitud de eliminación de cuenta — CNB Mobile\". Confirmamos la recepción en hasta 7 días hábiles y completamos la eliminación en hasta 30 días."
+          ]
+        },
+        {
+          "heading": "4. Datos que eliminamos",
+          "items": [
+            "Datos de la cuenta (nombre, correo, foto de perfil)",
+            "Historial de check-ins, puntuación y rachas",
+            "Posición y participación en el ranking",
+            "Dirección de cartera vinculada",
+            "Preferencias, identificadores de dispositivo y registros de uso personales"
+          ]
+        },
+        {
+          "heading": "5. Datos que podemos retener",
+          "body": [
+            "Algunos registros pueden conservarse tras la eliminación por obligaciones legales y de seguridad:"
+          ],
+          "items": [
+            "Transacciones on-chain de CNB ya realizadas — públicas e inmutables en la red Solana, fuera de nuestro control",
+            "Registros financieros y fiscales exigidos por la legislación brasileña",
+            "Registros de seguridad anónimos por hasta 12 meses para prevenir fraudes"
+          ]
+        },
+        {
+          "heading": "6. Avisos importantes",
+          "body": [
+            "La eliminación es definitiva y no puede revertirse. Los puntos no canjeados se pierden. Los tokens CNB ya enviados a tu cartera Solana siguen siendo tuyos — fuera de nuestro control. Recomendamos canjear cualquier saldo pendiente antes de solicitar la eliminación."
+          ]
+        },
+        {
+          "heading": "7. Contacto",
+          "body": [
+            "Cripto no Bolso — contato@criptonobolso.com.br"
+          ]
+        }
+      ],
+      "closing": "© 2026 CNB Mobile — Cripto no Bolso. Todos los derechos reservados."
+    },
+    "parceiros": {
+      "title": "Socios",
+      "intro": "Conecta tu marca a una red DePIN con prueba on-chain — misiones patrocinadas, banners nativos e integraciones de token en Solana.",
+      "hero": {
+        "badge": "Alianzas B2B · Solana DePIN",
+        "headlineLine1": "Tu marca, en la rutina",
+        "headlineLine2": "de una red DePIN activa.",
+        "subtitle": "CNB Mobile es el primer DePIN de Actividad Humana de Brasil. Cada minuto de uso es prueba on-chain. Coloca tu marca dentro de misiones patrocinadas, banners nativos e integraciones de token — y mide el resultado por completion, no por impresión.",
+        "ctaPrimary": "Quiero ser socio",
+        "ctaSecondary": "Ver formatos",
+        "partnerStamp": "Socia oficial",
+        "partnerStampHint": "Exchange socia en la trayectoria del token CNB",
+        "billboard": {
+          "liveLabel": "EN VIVO",
+          "availableLabel": "Espacio abierto",
+          "yourBrandHere": "Tu marca aquí",
+          "availableSub": "Próxima rotación disponible",
+          "currentLabel": "En rotación ahora",
+          "statDownloads": "Descargas",
+          "statDau": "Activos/día",
+          "statTime": "Min/día"
+        }
+      },
+      "kpi": {
+        "badge": "Por qué CNB",
+        "title": "Audiencia activa, on-chain y en crecimiento",
+        "subtitle": "Los números que importan a quien patrocina. Actualizamos en cada release.",
+        "items": {
+          "downloads": {
+            "label": "Descargas (iOS + Android)",
+            "value": "10 mil",
+            "note": "App Store + Google Play · Brasil"
+          },
+          "dau": {
+            "label": "Usuarios activos diarios",
+            "value": "4 mil",
+            "note": "Sesiones con prueba on-chain"
+          },
+          "retention": {
+            "label": "Tiempo de engagement",
+            "value": "23 min",
+            "note": "Promedio diario en la app"
+          },
+          "sessions": {
+            "label": "Nuevas cuentas / día",
+            "value": "500",
+            "note": "Crecimiento orgánico mes a mes"
+          },
+          "geo": {
+            "label": "Geografía primaria",
+            "value": "Brasil + LATAM",
+            "note": "Foco SP, RJ, MG, RS"
+          },
+          "demo": {
+            "label": "Perfil dominante",
+            "value": "18–45, urbano",
+            "note": "Mobile-first, on-chain savvy"
+          }
+        },
+        "disclaimer": "Números actualizados en cada release. Métricas detalladas (cohorts, desglose geográfico, fuentes de tráfico) disponibles bajo NDA."
+      },
+      "audience": {
+        "badge": "Quién usa CNB",
+        "title": "No es audiencia genérica. Es hábito diario con cartera en mano.",
+        "subtitle": "Cada usuario se registró, abrió el app y activó prueba on-chain. Filtro de calidad que ninguna ad-network entrega.",
+        "personas": {
+          "mobile": {
+            "title": "Mobile-first",
+            "description": "100% en el celular. La sesión empieza con el cable del cargador. Atención real, no scroll pasivo."
+          },
+          "sustainable": {
+            "title": "Consciente de la energía",
+            "description": "Quien usa CNB piensa en su consumo eléctrico. Marcas verdes, EV, movilidad urbana y energía hablan directo."
+          },
+          "web3": {
+            "title": "On-chain savvy",
+            "description": "Cartera Solana activa, cómodos con tokens, abiertos a nuevos protocolos. Cripto no necesita explicación."
+          },
+          "urban": {
+            "title": "Urbano y joven",
+            "description": "18–45 años, principalmente en capitales. Renta media/alta, alta predisposición a probar productos nuevos."
+          }
+        }
+      },
+      "offerings": {
+        "badge": "El catálogo",
+        "title": "Cómo aparece tu marca",
+        "subtitle": "Elige un formato o combina varios. Medición end-to-end con prueba on-chain opcional.",
+        "labels": {
+          "metric": "Métrica",
+          "example": "Ejemplo"
+        },
+        "items": {
+          "missions": {
+            "title": "Misiones Patrocinadas",
+            "description": "Tu marca brifea una misión (ej.: visita una tienda, prueba el app, comparte contenido). El usuario completa, recibe CNB + tu recompensa, y mides por completion real.",
+            "metric": "CPCM · Costo Por Completion de Misión",
+            "example": "Ej.: \"Visita una estación de carga X\" → +500 CNB + cupón de la marca",
+            "featured": "Formato destacado"
+          },
+          "banners": {
+            "title": "Banners In-App Nativos",
+            "description": "Posicionamiento dentro del feed — sin pop-up, sin interrupción. Modelo CPM o CPC, con targeting por perfil de usuario.",
+            "metric": "CPM · CPC",
+            "example": "Ej.: card patrocinado entre misiones, con hasta 2 CTAs"
+          },
+          "cashback": {
+            "title": "Cashback / Pago en CNB",
+            "description": "Tu marca acepta CNB como pago (con auto-conversión a BRL vía gateway socio) o emite cashback en CNB para acciones fuera del app.",
+            "metric": "GMV · Volumen Tokenizado",
+            "example": "Ej.: cliente paga el café, recibe 5% en CNB"
+          },
+          "geo": {
+            "title": "Campañas Geo-fenced",
+            "description": "Misiones y banners activados por ubicación. Ideal para retail físico, estaciones, eventos, activaciones IRL con medición de flujo.",
+            "metric": "Visit Rate · Footfall Lift",
+            "example": "Ej.: usuario entra en un radio de 200m → misión dispara"
+          },
+          "loyalty": {
+            "title": "Loyalty Bridge",
+            "description": "Conecta tu programa de puntos con CNB. El usuario quema puntos de tu marca, gana CNB. Reverso: gasta CNB, gana tus puntos. Fidelización cruzada.",
+            "metric": "Active Loyalty · Conversion Rate",
+            "example": "Ej.: \"500 puntos socio = 50 CNB\""
+          },
+          "irl": {
+            "title": "Activaciones IRL",
+            "description": "Co-branding en meetups, hackathons, festivales y acciones de calle. CNB Mobile + Superteam Brasil + tu marca, con cobertura digital integrada.",
+            "metric": "Reach · Mentions · UGC",
+            "example": "Ej.: stand co-branded en hackathon Solana"
+          }
+        }
+      },
+      "flow": {
+        "badge": "Cómo funciona",
+        "title": "Del briefing a la recompensa, en 4 etapas",
+        "subtitle": "Curaduría humana, ejecución automatizada, medición on-chain.",
+        "steps": {
+          "brief": {
+            "label": "Etapa 01",
+            "title": "Briefing de la marca",
+            "description": "Defines objetivo, público, formato (misión/banner/integración), región y budget. Reunión de 30 min."
+          },
+          "curate": {
+            "label": "Etapa 02",
+            "title": "Curaduría CNB",
+            "description": "Nuestro equipo diseña la mecánica, valida con compliance y prepara la misión dentro del app. Aprobación compartida antes del go-live."
+          },
+          "deliver": {
+            "label": "Etapa 03",
+            "title": "Misión al aire",
+            "description": "Usuarios la ven, completan y reciben CNB on-chain + la recompensa de tu marca. Tiempo real."
+          },
+          "measure": {
+            "label": "Etapa 04",
+            "title": "Reporte + pago",
+            "description": "Dashboard con completion rate, perfil de quien completó, costo unitario y prueba on-chain. Pago en factura o en CNB."
+          }
+        }
+      },
+      "cases": {
+        "badge": "Quién está con nosotros",
+        "title": "Socios que ya usaron la App",
+        "subtitle": "Comunidad real, alianza real, prueba real.",
+        "affiliateDisclosure": "Los enlaces de alianza arriba incluyen programas de afiliados — CNB Mobile puede recibir comisión por registros y operaciones realizadas mediante estos enlaces, sin costo adicional para ti.",
+        "items": {
+          "bingx": {
+            "name": "BingX",
+            "role": "Exchange socia",
+            "description": "Exchange global socia de CNB Mobile y Official Crypto Exchange Partner del Chelsea FC. Liquidez, infraestructura y alcance internacional para el token CNB.",
+            "cta": "Conocer BingX"
+          },
+          "okx": {
+            "name": "OKX",
+            "role": "Exchange & Pagos",
+            "description": "OKX es socia de CNB Mobile en el ecosistema cripto — una de las exchanges líderes globales, creadora de X Pay para pagos cripto end-to-end.",
+            "cta": "Conocer OKX"
+          },
+          "kast": {
+            "name": "KAST",
+            "role": "Tarjeta cripto socia",
+            "description": "KAST es socia de CNB Mobile con tarjeta Visa Platinum cripto — lleva el saldo on-chain a los pagos del día a día, en la misma dirección del CNB.",
+            "cta": "Conocer KAST"
+          },
+          "kaxis": {
+            "name": "Kaxis Club",
+            "role": "Neobank brasileño en Solana",
+            "description": "Kaxis es el neobank brasileño construido sobre Solana — cuenta, tarjeta y cripto en una sola app, alineado con la misión de CNB de llevar Web3 al día a día.",
+            "cta": "Conocer Kaxis"
+          },
+          "solflare": {
+            "name": "Solflare",
+            "role": "La wallet más potente de Solana",
+            "description": "Solflare es la wallet más potente de Solana — staking, swap y NFTs nativos. Encaja natural para quien gana puntos CNB y quiere autocustodia segura.",
+            "cta": "Conocer Solflare"
+          },
+          "mind": {
+            "name": "Mind Protocol",
+            "role": "Capa de liquidación A2A en Solana",
+            "description": "Mind Protocol convierte a Solana en la capa de liquidación agente-a-agente (A2A) — infraestructura para la próxima generación de pagos automatizados on-chain.",
+            "cta": "Conocer Mind"
+          }
+        }
+      },
+      "tiers": {
+        "badge": "Inversión",
+        "title": "Modelos de alianza",
+        "subtitle": "Paquetes de partida — toda alianza es customizable. Negocia en el formulario.",
+        "cta": "Quiero este formato",
+        "items": {
+          "pilot": {
+            "name": "Pilot",
+            "tagline": "Prueba rápida y mensurable",
+            "price": "Bajo consulta",
+            "duration": "30 días",
+            "features": [
+              "1 misión patrocinada con hasta 5.000 completions",
+              "Targeting por perfil de usuario",
+              "Dashboard de medición + reporte final",
+              "Pago en BRL"
+            ]
+          },
+          "growth": {
+            "name": "Growth",
+            "tagline": "Presencia continua",
+            "price": "Bajo consulta",
+            "duration": "90 días",
+            "features": [
+              "Hasta 3 misiones + banners en el feed",
+              "Geo-fencing incluido",
+              "Co-marketing en redes sociales CNB",
+              "Pago en BRL o CNB"
+            ]
+          },
+          "enterprise": {
+            "name": "Enterprise",
+            "tagline": "Integración estratégica",
+            "price": "Negociado",
+            "duration": "12 meses+",
+            "features": [
+              "Misiones customizadas ilimitadas",
+              "Loyalty bridge o integración de token",
+              "Activación IRL co-producida",
+              "Account manager dedicado",
+              "Cláusula de exclusividad negociable"
+            ]
+          }
+        }
+      },
+      "faqSection": {
+        "badge": "FAQ Socios",
+        "title": "Preguntas frecuentes",
+        "subtitle": "Todo lo que necesitas saber antes de cerrar.",
+        "items": [
+          {
+            "q": "¿Cómo funciona el pago?",
+            "a": "Por defecto, pago en BRL vía factura mensual. En paquetes Growth y Enterprise podemos recibir en CNB con auto-conversión. Las recompensas a usuarios siempre salen en CNB on-chain."
+          },
+          {
+            "q": "¿En cuánto tiempo la misión va al aire?",
+            "a": "De briefing aprobado a misión al aire: 7 a 14 días. Depende de la complejidad de la mecánica y la revisión de compliance."
+          },
+          {
+            "q": "¿Qué métricas recibo?",
+            "a": "Dashboard con completion rate, sesiones, perfil demográfico de quien completó, costo unitario, prueba on-chain de las recompensas pagadas. Reporte consolidado al fin de cada ciclo."
+          },
+          {
+            "q": "¿Puedo tener exclusividad de categoría?",
+            "a": "En paquetes Enterprise, sí — exclusividad negociable por categoría y región. En Pilot y Growth operamos no-exclusivo, pero garantizamos no-concurrencia el mismo día."
+          },
+          {
+            "q": "¿Y sobre LGPD y compliance?",
+            "a": "Toda alianza pasa por revisión LGPD y de defensa del consumidor antes del go-live. Recolección mínima de datos, opt-in explícito del usuario, contratos específicos por región."
+          },
+          {
+            "q": "¿Hay contrato mínimo?",
+            "a": "Pilot es 30 días. Growth, 90 días. Enterprise, 12 meses. Siempre con opción de upgrade entre paquetes durante el ciclo."
+          },
+          {
+            "q": "¿Cómo apruebo la misión antes de salir al aire?",
+            "a": "Compartimos un borrador vía Notion o Figma; tú apruebas o pides ajustes. Solo sale al aire con aprobación por escrito de la marca."
+          },
+          {
+            "q": "¿Quién opera la alianza de mi lado?",
+            "a": "Pilot y Growth los gestiona el equipo CNB directamente. Enterprise incluye un Account Manager dedicado, con SLA de respuesta en 4h hábiles."
+          }
+        ]
+      },
+      "contact": {
+        "badge": "Conversemos",
+        "title": "¿Listos para construir juntos?",
+        "subtitle": "Mándame un email con la idea. Yo mismo respondo — sin filtro de SDR, sin fila de formulario. Respuesta inicial en hasta 24h hábiles.",
+        "ctaEmail": "Enviar propuesta",
+        "ctaX": "DM en X",
+        "founderLabel": "Directo con el founder",
+        "founderName": "Rafael Mariano",
+        "founderRole": "CEO & Founder, CNB Mobile",
+        "note": "Respuesta en hasta 24h hábiles."
+      }
+    }
+  }
+}

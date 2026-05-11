@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment & secrets
+.env
+.env.*
+**/.env
+**/.env.*
+**/sa-key.json
+**/google-services.json
+**/GoogleService-Info.plist
+**/credentials.yml
+
+# Build outputs
+.expo/
+dist/
+.next/
+out/
+build/
+android/
+ios/
+
+# Firebase
+**/.firebase/
+**/functions/.env.*
+
+# Misc
+.DS_Store
+*.log
+.vercel

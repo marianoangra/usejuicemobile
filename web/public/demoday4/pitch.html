@@ -1,0 +1,3587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Juice — Pitch Deck 2026</title>
+  <meta name="description" content="Pitch deck do Juice — carregue o celular, ganhe pontos, saque via PIX." />
+
+  <!-- Inter from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700;900&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #091323;
+      --bg2: #0c1d36;
+      --card: #0d1f0d;
+      --border: #1a3a1a;
+      --primary: #a8db3a;
+      --primary-dim: rgba(168, 219, 58, 0.16);
+      --text: #ffffff;
+      --secondary: #8a9a8a;
+      --accent: #a8db3a;
+      --shadow-glow: 0 0 80px rgba(168, 219, 58, 0.25);
+      --transition: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Single source-of-truth font: Inter on every text element of the deck.
+       Smaller text inherits the same family, only size/weight differ. */
+    .slide, .slide *, .deck, .deck * {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0a1a2e;
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* === Deck system === */
+    .deck {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      transform: translateX(calc(var(--i, 0) * -100vw));
+      transition: transform var(--transition);
+      will-change: transform;
+    }
+
+    .slide {
+      position: relative;
+      flex: 0 0 100vw;
+      height: 100vh;
+      /* top | horizontal | bottom — anchor content toward the upper
+         third of the viewport so the area below the cluster breathes.
+         Editorial layout instead of vertical-center default. */
+      padding: clamp(72px, 14vh, 180px) clamp(24px, 5vw, 80px) clamp(24px, 5vh, 56px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-inner {
+      width: 100%;
+      max-width: 1200px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 600ms ease, transform 600ms ease;
+    }
+
+    .slide.active .slide-inner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slide ambient backgrounds — disabled (solid dark blue requested) */
+    .slide::before {
+      content: none;
+    }
+
+    /* === Typography === */
+    .eyebrow {
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 24px;
+    }
+    h1 {
+      font-size: clamp(36px, 6vw, 80px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: var(--text);
+    }
+    h2 {
+      font-size: clamp(28px, 4.5vw, 56px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin: 0 0 16px;
+    }
+    h3 {
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+    }
+    .subtitle {
+      font-size: clamp(16px, 1.6vw, 22px);
+      color: var(--secondary);
+      line-height: 1.55;
+      max-width: 64ch;
+      margin: 24px 0 0;
+      font-weight: 400;
+    }
+    .number-xl {
+      font-size: clamp(48px, 8vw, 112px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--primary);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(168, 219, 58, 0.35);
+    }
+    .number-lg {
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .mono {
+      font-family: 'Inter', system-ui;
+      font-feature-settings: 'tnum';
+      font-variant-numeric: tabular-nums;
+    }
+    .text-secondary { color: var(--secondary); }
+    .text-primary { color: var(--primary); }
+    .text-accent { color: var(--accent); }
+
+    /* Metallic text effect (mirror of cnbweb's .metal-text — static version,
+       no mouse-following highlight since pitch slides don't track cursor). */
+    .metal-text {
+      background:
+        linear-gradient(
+          135deg,
+          #eaf5b8 0%,
+          #c5d97c 16%,
+          #94b048 32%,
+          #d4e58c 48%,
+          #f0f8c8 56%,
+          #b8cd6b 72%,
+          #8aa83d 88%,
+          #c5d97c 100%
+        );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter:
+        drop-shadow(0 1px 0 rgba(255, 255, 255, 0.05))
+        drop-shadow(0 2px 10px rgba(168, 219, 58, 0.18));
+    }
+
+    /* === Cards === */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: clamp(20px, 2.5vw, 32px);
+      transition: border-color 220ms ease, transform 320ms ease;
+    }
+    .card:hover {
+      border-color: rgba(168, 219, 58, 0.45);
+    }
+    .card-glow {
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* === Layout helpers === */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(20px, 3vw, 48px);
+      align-items: center;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(16px, 2.5vw, 32px);
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(16px, 2vw, 28px);
+    }
+    .stack { display: flex; flex-direction: column; gap: 16px; }
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* === iPhone frame for mockups === */
+    .iphone-frame {
+      position: relative;
+      border: 8px solid #000;
+      border-radius: 40px;
+      background: #000;
+      padding: 4px;
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(168, 219, 58, 0.10),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      max-width: 280px;
+      margin: 0 auto;
+      aspect-ratio: 9 / 19.5;
+    }
+    .iphone-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 28px;
+    }
+    .mockup-caption {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* === iPhone 17 Pro Max — slide 2 (live mockup) === */
+    .iphone-17 {
+      position: relative;
+      border: 7px solid #131313;
+      border-radius: 52px;
+      background: #000;
+      padding: 5px;
+      max-width: 270px;
+      width: 100%;
+      aspect-ratio: 9 / 19.5;
+      box-shadow:
+        0 40px 70px rgba(0, 0, 0, 0.7),
+        0 0 80px rgba(168, 219, 58, 0.18),
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.08),
+        inset 0 0 0 3px rgba(0, 0, 0, 0.5);
+      margin: 0 auto;
+    }
+    .iphone-17::before,
+    .iphone-17::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 1px;
+    }
+    /* side button (right) */
+    .iphone-17::before {
+      right: -3px;
+      top: 18%;
+      width: 3px;
+      height: 64px;
+      border-radius: 0 1.5px 1.5px 0;
+      background: linear-gradient(180deg, #2c2c2c, #131313);
+    }
+    /* volume buttons (left) */
+    .iphone-17::after {
+      left: -3px;
+      top: 14%;
+      width: 3px;
+      height: 110px;
+      border-radius: 1.5px 0 0 1.5px;
+      background: linear-gradient(180deg, #2c2c2c, #131313);
+    }
+    .iphone-17-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 44px;
+      overflow: hidden;
+      background: #050805;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    /* Dynamic Island */
+    .dynamic-island {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 24px;
+      border-radius: 20px;
+      background: #000;
+      z-index: 20;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    /* Status bar — over Dynamic Island */
+    .ph-status {
+      position: relative;
+      z-index: 21;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .ph-status .icons { display: flex; gap: 4px; align-items: center; color: #fff; }
+
+    /* Greeting row */
+    .ph-greeting {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 16px 14px;
+    }
+    .ph-greeting .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #a8db3a, #5e8520);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(168, 219, 58, 0.45);
+    }
+    .ph-greeting .who {
+      flex: 1;
+      line-height: 1.2;
+    }
+    .ph-greeting .who .name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .ph-greeting .who .sub {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 2px;
+    }
+    .ph-greeting .bell {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Points card */
+    .ph-points-card {
+      margin: 0 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #0e1a10, #0a130c);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .ph-points-card::before {
+      content: '';
+      position: absolute;
+      inset-x: 0;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168, 219, 58, 0.6), transparent);
+      animation: scan 3s ease-in-out infinite;
+    }
+    @keyframes scan {
+      0% { transform: translateX(-100%); opacity: 0; }
+      40% { opacity: 1; }
+      80% { transform: translateX(100%); opacity: 0; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
+    .ph-points-card .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .ph-points-card .badge-active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(168, 219, 58, 0.4);
+      background: rgba(168, 219, 58, 0.08);
+      color: #a8db3a;
+      font-size: 9px;
+      font-weight: 600;
+    }
+    .ph-points-card .num {
+      margin-top: 4px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .ph-points-card .num .value {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: #a8db3a;
+      line-height: 1;
+      font-feature-settings: 'tnum';
+      font-variant-numeric: tabular-nums;
+    }
+    .ph-points-card .num .unit {
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(168, 219, 58, 0.85);
+    }
+    .ph-points-card .meter {
+      margin-top: 12px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+    .ph-points-card .meter > i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #7fb028, #a8db3a);
+    }
+    .ph-points-card .meter-row {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .ph-points-card .meter-row b {
+      color: #a8db3a;
+      font-weight: 700;
+    }
+    .ph-points-card .actions {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .ph-points-card .actions > * {
+      padding: 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .ph-points-card .actions .saque {
+      background: linear-gradient(135deg, #a8db3a, #93c530);
+      color: #0a1502;
+    }
+    .ph-points-card .actions .secondary {
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 600;
+    }
+
+    /* Quick actions */
+    .ph-quick {
+      margin: 12px 14px 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .ph-quick > div {
+      padding: 10px 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.025);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ph-quick svg { color: rgba(255, 255, 255, 0.75); }
+    .ph-quick span { font-size: 9px; color: rgba(255, 255, 255, 0.7); font-weight: 600; }
+
+    /* Tab bar */
+    .ph-tabs {
+      margin-top: auto;
+      padding: 14px 16px 18px;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      position: relative;
+    }
+    .ph-tabs .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .ph-tabs .tab span {
+      font-size: 8px;
+      font-weight: 600;
+    }
+    .ph-tabs .center {
+      position: relative;
+      margin-top: -16px;
+    }
+    .ph-tabs .center .halo {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(168, 219, 58, 0.45) 0%, rgba(168, 219, 58, 0.15) 40%, transparent 70%);
+      animation: halo-pulse 2s ease-in-out infinite;
+    }
+    .ph-tabs .center .btn {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: #a8db3a;
+      box-shadow: 0 6px 20px rgba(168, 219, 58, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes halo-pulse {
+      0%, 100% { transform: translateX(-50%) scale(0.92); opacity: 0.65; }
+      50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+    }
+
+    /* Floating "+10 pts" indicators rising over the points number */
+    .points-flyup {
+      position: absolute;
+      pointer-events: none;
+      font-size: 11px;
+      font-weight: 800;
+      color: #a8db3a;
+      text-shadow: 0 0 8px rgba(168, 219, 58, 0.7);
+      animation: fly-up 1.6s ease-out forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes fly-up {
+      0% { transform: translateY(0); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(-32px); opacity: 0; }
+    }
+
+    /* === Slide 2 alt: charging hero + R$ 0,00 (problem hook) === */
+    .ph-charge {
+      background:
+        radial-gradient(120% 60% at 50% 0%, rgba(168, 219, 58, 0.10) 0%, transparent 55%),
+        radial-gradient(120% 60% at 50% 100%, rgba(255, 50, 70, 0.14) 0%, transparent 55%),
+        #050805;
+    }
+    .ph-charge-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 22px 28px;
+      gap: 14px;
+    }
+    .ph-charge-label {
+      font-size: 9px;
+      letter-spacing: 0.34em;
+      color: rgba(168, 219, 58, 0.85);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .ph-charge-time {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 14px rgba(255, 255, 255, 0.18);
+    }
+    .ph-battery-wrap {
+      position: relative;
+      width: 22%;
+      margin: 8px auto 4px;
+    }
+    .ph-battery-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 22px rgba(168, 219, 58, 0.55));
+    }
+    .ph-battery-fill {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: bat-fill 4.5s cubic-bezier(0.55, 0, 0.3, 1) infinite;
+    }
+    @keyframes bat-fill {
+      0%   { transform: scaleY(0.18); }
+      85%  { transform: scaleY(1); }
+      100% { transform: scaleY(1); }
+    }
+    .ph-battery-bolt {
+      animation: bolt-pulse 1.9s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    @keyframes bolt-pulse {
+      0%, 100% { opacity: 0.85; }
+      50%      { opacity: 1; }
+    }
+    .ph-divider {
+      width: 56%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      margin: 6px 0 2px;
+    }
+    .ph-zero-label {
+      font-size: 9px;
+      letter-spacing: 0.34em;
+      color: rgba(255, 90, 110, 0.9);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .ph-zero-value {
+      font-size: 44px;
+      font-weight: 900;
+      color: #a8db3a;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-shadow:
+        0 0 14px rgba(168, 219, 58, 0.75),
+        0 0 28px rgba(168, 219, 58, 0.45),
+        0 0 56px rgba(168, 219, 58, 0.22);
+      animation: zero-pulse 2.6s ease-in-out infinite;
+    }
+    @keyframes zero-pulse {
+      0%, 100% {
+        text-shadow:
+          0 0 14px rgba(168, 219, 58, 0.75),
+          0 0 28px rgba(168, 219, 58, 0.45);
+      }
+      50% {
+        text-shadow:
+          0 0 18px rgba(168, 219, 58, 0.95),
+          0 0 36px rgba(168, 219, 58, 0.6),
+          0 0 72px rgba(168, 219, 58, 0.3);
+      }
+    }
+    .ph-zero-sub {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    /* === Shatter sequence (slide 2 narrative) ===========================
+       Loop: 6s normal → 0.45s shake → 6s shattered → reset. Drives the
+       "hours charging, device dies, you got nothing" visual beat. */
+    .ph-cracks {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease-in 0.1s;
+      filter: drop-shadow(0 0 0.6px rgba(255, 255, 255, 0.5));
+    }
+    .ph-charge {
+      transition: background 0.4s ease-out;
+    }
+    .ph-status,
+    .ph-charge-body {
+      transition: opacity 0.35s ease-out, filter 0.35s ease-out;
+    }
+    .ph-charge.shattering {
+      animation: ph-shake 0.45s cubic-bezier(.36, .07, .19, .97) both;
+    }
+    @keyframes ph-shake {
+      0%, 100% { transform: translateX(0) rotate(0); }
+      10% { transform: translateX(-2px) rotate(-0.4deg); }
+      25% { transform: translateX(3px) rotate(0.5deg); }
+      45% { transform: translateX(-4px) rotate(-0.6deg); }
+      65% { transform: translateX(3px) rotate(0.4deg); }
+      85% { transform: translateX(-2px) rotate(-0.2deg); }
+    }
+    .ph-charge.shattered {
+      background:
+        radial-gradient(80% 50% at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+        #000 !important;
+    }
+    .ph-charge.shattered .ph-status,
+    .ph-charge.shattered .ph-charge-body {
+      opacity: 0;
+      filter: blur(6px);
+    }
+    .ph-charge.shattered .ph-cracks {
+      opacity: 1;
+    }
+
+    /* === Corner logo (decorative, slides 4+) ============================
+       Mantém a marca presente nos slides que não têm o wordmark hero. */
+    .slide-corner-logo {
+      position: absolute;
+      top: clamp(20px, 2.6vh, 32px);
+      right: clamp(24px, 2.5vw, 40px);
+      height: clamp(40px, 3.8vw, 52px);
+      opacity: 0.42;
+      z-index: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 0 12px rgba(168, 219, 58, 0.18));
+    }
+
+    /* === Journey step card (slide Como Funciona) ======================== */
+    .journey-step {
+      text-align: center;
+      padding: clamp(16px, 2vw, 24px) clamp(14px, 1.6vw, 20px);
+    }
+    .journey-step-num {
+      font-family: 'Inter', system-ui;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 10px;
+    }
+    /* iPhone inside a journey-step shrinks with viewport height so the
+       three columns + slide chrome always fit inside 100vh, even on
+       1366×768 / 1280×800 laptops. */
+    .journey-step .iphone-frame {
+      max-width: clamp(105px, 16vh, 165px);
+      margin: 10px auto 12px;
+    }
+    .journey-step-icon {
+      font-size: clamp(32px, 3.6vw, 42px);
+      line-height: 1;
+      margin-bottom: 14px;
+      color: var(--primary);
+    }
+    /* === SVG icon used to replace emoji tiles in slides 5/7/8/9 ========
+       Sized via parent's font-size; stroke uses currentColor so it inherits
+       the JUICE primary green from the parent .tile-icon-wrap or context. */
+    .tile-icon {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: middle;
+      color: var(--primary);
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .tile-icon-bullet {
+      width: 1.1em;
+      height: 1.1em;
+      display: inline-block;
+      vertical-align: -0.2em;
+      color: var(--primary);
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      margin-right: 6px;
+    }
+    .journey-step-title {
+      font-size: clamp(15px, 1.4vw, 18px);
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    .journey-step-desc {
+      font-size: clamp(11px, 1vw, 13px);
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* === Market funnel infographic (slide Mercado) ===================== */
+    .market-tier {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin: 0 0 14px;
+      font-family: 'Inter', system-ui;
+    }
+    .market-tier.is-focus {
+      color: var(--primary);
+    }
+    .market-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.5;
+      margin: 12px 0 0;
+    }
+    .market-source {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.32);
+      margin: 18px 0 0;
+      font-family: 'Inter', system-ui;
+    }
+    .market-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .market-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(168, 219, 58, 0.45), rgba(168, 219, 58, 0.95));
+      border-radius: 3px;
+      box-shadow: 0 0 12px rgba(168, 219, 58, 0.3);
+    }
+    .market-card-focus {
+      border-color: rgba(168, 219, 58, 0.30) !important;
+      box-shadow: 0 0 28px rgba(168, 219, 58, 0.12);
+    }
+    .market-engagement {
+      margin-top: clamp(36px, 4vw, 56px);
+      padding: 18px 24px;
+      border-left: 2px solid var(--primary);
+      background: rgba(168, 219, 58, 0.04);
+      border-radius: 0 8px 8px 0;
+      font-size: clamp(13px, 1.15vw, 15px);
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.55;
+    }
+
+    /* === Stat row === */
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label {
+      flex: 1;
+      font-size: clamp(15px, 1.5vw, 18px);
+      color: var(--text);
+    }
+    .stat-value {
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 900;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    /* === Badges === */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      background: rgba(168, 219, 58, 0.06);
+      color: var(--primary);
+    }
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+    }
+    .badge-purple {
+      background: rgba(168, 219, 58, 0.10);
+      border-color: rgba(168, 219, 58, 0.32);
+      color: var(--accent);
+    }
+    .badge-purple::before {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* === Progress dots & controls === */
+    .controls {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 50;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(13, 31, 13, 0.55);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: width 220ms ease, background 220ms ease;
+    }
+    .dot:hover { background: rgba(255, 255, 255, 0.35); }
+    .dot.active {
+      width: 28px;
+      background: var(--primary);
+      box-shadow: 0 0 12px rgba(168, 219, 58, 0.5);
+    }
+    .counter {
+      font-size: 11px;
+      color: var(--secondary);
+      letter-spacing: 0.08em;
+      margin-right: 8px;
+      font-feature-settings: 'tnum';
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .btn-fs {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(13, 31, 13, 0.55);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 220ms ease;
+    }
+    .btn-fs:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* === Slide-specific bits === */
+
+    /* Slide 1 — Capa
+       Cover positioning is now handled by .slide's flex-start +
+       padding-top, so no extra margin needed here. */
+    .cover {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    /* Golden-ratio rhythm on the cover stack:
+         logo → tagline gap = φ × tagline → footer gap. */
+    .cover-tagline { margin-top: clamp(36px, 5vh, 64px); }
+    .cover-footer  { margin-top: clamp(22px, 3vh, 40px); }
+    .cover-logo {
+      position: relative;
+      width: clamp(220px, 36vw, 480px);
+      filter: drop-shadow(0 0 32px rgba(168, 219, 58, 0.30));
+    }
+    .cover-logo img,
+    .cover-logo svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .cover-tagline {
+      /* Tagline ≈ footer × φ — golden hierarchy with the line below. */
+      font-size: clamp(20px, 2.2vw, 30px);
+      color: #ffffff;
+      font-weight: 300;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      text-shadow: 0 0 24px rgba(255, 255, 255, 0.25);
+    }
+    .cover-tagline strong {
+      color: #ffffff;
+      font-weight: 300;
+    }
+    /* === Stars background — fixed full-screen, behind everything ===
+       Structure: .stars-bg > .stars-track > [.stars-field x2]. Track
+       translates upward as user moves the mouse; the second field is
+       positioned at top: 100% so it seamlessly fills the gap as the
+       first scrolls out, giving an infinite parallax. */
+    .stars-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .stars-bg::after {
+      content: none;
+    }
+    .stars-track {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+    .stars-field {
+      position: absolute;
+      inset-inline: 0;
+      top: 0;
+      height: 100%;
+    }
+    .stars-field.below { top: 100%; }
+
+    /* === Occasional satellite passes (off-screen → off-screen) === */
+    .satellite {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow:
+        0 0 3px rgba(255, 255, 255, 0.9),
+        0 0 8px rgba(200, 220, 255, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      will-change: left, top, opacity;
+    }
+    .satellite-1 {
+      animation: sat-cross-1 90s linear infinite;
+      animation-delay: -67s;
+    }
+    .satellite-2 {
+      animation: sat-cross-2 110s linear infinite;
+      animation-delay: -10s;
+    }
+    @keyframes sat-cross-1 {
+      0%, 86%   { left: -4%;  top: 14%; opacity: 0; }
+      88%       { opacity: 0.85; }
+      98%       { opacity: 0.85; }
+      100%      { left: 104%; top: 38%; opacity: 0; }
+    }
+    @keyframes sat-cross-2 {
+      0%, 88%   { left: 105%; top: 22%; opacity: 0; }
+      90%       { opacity: 0.7; }
+      98%       { opacity: 0.7; }
+      100%      { left: -5%;  top: 56%; opacity: 0; }
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 999px;
+      background: #ffffff;
+      will-change: opacity;
+    }
+    .star.dim    { opacity: 0.14; }
+    .star.normal { opacity: 0.26; }
+    .star.bright { opacity: 0.42; box-shadow: 0 0 2px rgba(255, 255, 255, 0.28), 0 0 4px rgba(180, 200, 255, 0.10); }
+    .star.twinkle { animation: star-twinkle var(--p, 3s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+    @keyframes star-twinkle {
+      0%, 100% { opacity: var(--o, 0.25); }
+      50%      { opacity: calc(var(--o, 0.25) + 0.10); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .star.twinkle { animation: none; }
+    }
+    /* Make the deck transparent so stars show through */
+    .deck { background: transparent; }
+    .slide { background: transparent; }
+
+    /* Slide 2 — neon line divider between "+2 trilhões" and "Zero" */
+    .neon-line {
+      position: relative;
+      width: clamp(140px, 28vw, 320px);
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 18%,
+        #a8db3a 50%,
+        rgba(255, 255, 255, 0.55) 82%,
+        transparent 100%
+      );
+      box-shadow:
+        0 0 8px rgba(168, 219, 58, 0.65),
+        0 0 18px rgba(168, 219, 58, 0.45),
+        0 0 36px rgba(168, 219, 58, 0.25);
+      animation: neon-pulse 2.4s ease-in-out infinite;
+      overflow: hidden;
+    }
+    .neon-line::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -40%;
+      width: 40%;
+      height: calc(100% + 2px);
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.95) 50%,
+        transparent 100%
+      );
+      filter: blur(1.5px);
+      animation: neon-scan 2.8s ease-in-out infinite;
+    }
+    @keyframes neon-pulse {
+      0%, 100% {
+        box-shadow:
+          0 0 8px rgba(168, 219, 58, 0.55),
+          0 0 18px rgba(168, 219, 58, 0.35),
+          0 0 36px rgba(168, 219, 58, 0.18);
+        opacity: 0.92;
+      }
+      50% {
+        box-shadow:
+          0 0 12px rgba(168, 219, 58, 0.85),
+          0 0 28px rgba(168, 219, 58, 0.6),
+          0 0 56px rgba(168, 219, 58, 0.35);
+        opacity: 1;
+      }
+    }
+    @keyframes neon-scan {
+      0%   { left: -40%; }
+      55%  { left: 100%; }
+      100% { left: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .neon-line { animation: none; }
+      .neon-line::before { animation: none; display: none; }
+    }
+
+    .cover-footer {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-feature-settings: 'tnum';
+      /* Footer = tagline / φ — base unit of the golden hierarchy. */
+      font-size: clamp(14px, 1.4vw, 18px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      opacity: 0.7;
+    }
+
+    /* Slide 4 — Mercado: lift content + lime-accented compact cards */
+    .slide-mercado .slide-inner {
+      margin-top: clamp(-80px, -7vh, -40px);
+    }
+    /* Mid-tone olive metallic cards — luxury-watch-dial vibe: dark
+       olive base + metallic sheen overlay using the logo's bright/
+       shadow palette. Visible against the navy slide bg, but not the
+       cream-paper look that came before. White text retained. */
+    .slide-mercado .card {
+      padding: clamp(14px, 1.8vw, 22px);
+      border: 1px solid rgba(168, 219, 58, 0.4);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(212, 232, 122, 0.22) 0%,
+          rgba(90, 122, 24, 0.08) 28%,
+          rgba(251, 255, 232, 0.32) 50%,
+          rgba(90, 122, 24, 0.08) 72%,
+          rgba(212, 232, 122, 0.22) 100%
+        ),
+        rgba(45, 65, 18, 0.78);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(212, 232, 122, 0.18);
+    }
+    .slide-mercado .card:hover {
+      border-color: rgba(168, 219, 58, 0.6);
+    }
+    .slide-mercado .card.market-card-focus {
+      border-color: rgba(168, 219, 58, 0.32) !important;
+      background: #081208;
+      box-shadow: 0 0 22px rgba(168, 219, 58, 0.10);
+    }
+    /* Text reverts to white-on-dark hierarchy — readable on the new
+       darker base + visible against the metallic sheen highlights. */
+    .slide-mercado .market-tier { color: rgba(255, 255, 255, 0.55); }
+    .slide-mercado .market-tier.is-focus { color: var(--primary); }
+    .slide-mercado .number-xl {
+      color: #ffffff;
+      text-shadow: none;
+    }
+    .slide-mercado .market-desc { color: rgba(255, 255, 255, 0.72); }
+    .slide-mercado .market-bar { background: rgba(255, 255, 255, 0.14); }
+    .slide-mercado .market-bar-fill {
+      background: linear-gradient(90deg, rgba(168, 219, 58, 0.85), #d4e87a);
+      box-shadow: none;
+    }
+
+    /* Slide 4 (Mercado) — animated reveal + gentle floating motion.
+       (a) staggered fade-in/translate-up on slide active,
+       (b) continuous gentle vertical float per card with offset phases,
+       (c) market-bar fills horizontally from scaleX(0) to scaleX(1). */
+    .slide-mercado .grid-3 .card {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide-mercado.active .grid-3 .card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .slide-mercado.active .grid-3 .card:nth-child(1) { transition-delay: 200ms; }
+    .slide-mercado.active .grid-3 .card:nth-child(2) { transition-delay: 500ms; }
+    .slide-mercado.active .grid-3 .card:nth-child(3) { transition-delay: 800ms; }
+
+    /* Bar grows horizontally from 0 to its inline width on slide reveal. */
+    .slide-mercado .market-bar-fill {
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .slide-mercado.active .market-bar-fill {
+      transform: scaleX(1);
+    }
+    .slide-mercado.active .grid-3 .card:nth-child(1) .market-bar-fill { transition-delay: 700ms; }
+    .slide-mercado.active .grid-3 .card:nth-child(2) .market-bar-fill { transition-delay: 1000ms; }
+    .slide-mercado.active .grid-3 .card:nth-child(3) .market-bar-fill { transition-delay: 1300ms; }
+
+    /* After the bars settle, a continuous "data flowing" shimmer sweeps
+       across each card's bar TRACK — placed on the parent .market-bar
+       (not the fill) so the sweep reads identically on cards 2 & 3 even
+       though their fill is only 4% / 1% wide. */
+    .slide-mercado .market-bar {
+      position: relative;
+    }
+    .slide-mercado .market-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0) 25%,
+        rgba(255, 255, 255, 0.95) 50%,
+        rgba(255, 255, 255, 0) 75%,
+        transparent 100%
+      );
+      transform: translateX(-100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .slide-mercado.active .market-bar::after {
+      animation: marketBarShimmer 2.4s ease-in-out infinite;
+    }
+    .slide-mercado.active .grid-3 .card:nth-child(1) .market-bar::after { animation-delay: 2.0s; }
+    .slide-mercado.active .grid-3 .card:nth-child(2) .market-bar::after { animation-delay: 2.4s; }
+    .slide-mercado.active .grid-3 .card:nth-child(3) .market-bar::after { animation-delay: 2.8s; }
+    @keyframes marketBarShimmer {
+      0%   { transform: translateX(-100%); }
+      55%  { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Brightness "breathe" — pulse so all 3 bars feel alive, even
+       SAM/SOM where the shimmer sweep is too brief to read. */
+    .slide-mercado.active .market-bar-fill {
+      animation: marketBarBreathe 2.4s ease-in-out 1.8s infinite;
+    }
+    .slide-mercado.active .grid-3 .card:nth-child(2) .market-bar-fill { animation-delay: 2.2s; }
+    .slide-mercado.active .grid-3 .card:nth-child(3) .market-bar-fill { animation-delay: 2.6s; }
+    @keyframes marketBarBreathe {
+      0%, 100% { filter: brightness(1) saturate(1); }
+      50%      { filter: brightness(1.45) saturate(1.3); }
+    }
+    /* Outer halo on the bar track — box-shadow on the parent so it isn't
+       clipped, and pulses bigger so it reads from the back of the room. */
+    .slide-mercado.active .market-bar {
+      animation: marketBarHalo 2.4s ease-in-out 1.8s infinite;
+    }
+    .slide-mercado.active .grid-3 .card:nth-child(2) .market-bar { animation-delay: 2.2s; }
+    .slide-mercado.active .grid-3 .card:nth-child(3) .market-bar { animation-delay: 2.6s; }
+    @keyframes marketBarHalo {
+      0%, 100% { box-shadow: 0 0 0 rgba(168, 219, 58, 0); }
+      50%      { box-shadow: 0 0 28px rgba(168, 219, 58, 0.65); }
+    }
+
+    /* Concentration row (GLOBAL / LATAM / Brasil) — same staggered
+       fade-in + translate-up reveal as the TAM/SAM/SOM cards above,
+       but with delays continuing after the top row's stagger so the
+       sequence reads top → bottom. */
+    .slide-mercado .concentration-row > div {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide-mercado.active .concentration-row > div {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .slide-mercado.active .concentration-row > div:nth-child(1) { transition-delay: 1100ms; }
+    .slide-mercado.active .concentration-row > div:nth-child(2) { transition-delay: 1400ms; }
+    .slide-mercado.active .concentration-row > div:nth-child(3) { transition-delay: 1700ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide-mercado .grid-3 .card {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .slide-mercado.active .grid-3 .card { animation: none; }
+      .slide-mercado .market-bar-fill { transform: scaleX(1); transition: none; animation: none; }
+      .slide-mercado .market-bar::after { animation: none; }
+      .slide-mercado .concentration-row > div {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* Slide 6 — Onde estamos no mapa: lift content cluster (matches slide 1 feel) */
+    .slide-mapa .slide-inner {
+      margin-top: clamp(-80px, -7vh, -40px);
+    }
+
+    /* Slide 9 — Modelo de Negócio: same lift treatment as slides 4/6. */
+    .slide-modelo .slide-inner {
+      margin-top: clamp(-80px, -7vh, -40px);
+    }
+
+    /* Slide 7 — Produto: drop card chrome around the journey steps so
+       the iPhone mockups + text float on the slide directly. */
+    .slide-produto .card.journey-step {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+    .slide-produto .card.journey-step:hover {
+      border: 0 !important;
+      transform: none;
+    }
+
+    /* Slide 8 — Sustentabilidade: lighter olive metallic cards (one
+       step brighter than slide 4 so the sustentabilidade pillars
+       feel a touch more 'lifted' than the market sizing). */
+    .slide-sustentabilidade .card.pillar {
+      border: 1px solid rgba(168, 219, 58, 0.45);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(212, 232, 122, 0.30) 0%,
+          rgba(90, 122, 24, 0.10) 28%,
+          rgba(251, 255, 232, 0.42) 50%,
+          rgba(90, 122, 24, 0.10) 72%,
+          rgba(212, 232, 122, 0.30) 100%
+        ),
+        rgba(80, 110, 38, 0.85);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(212, 232, 122, 0.28);
+    }
+    .slide-sustentabilidade .card.pillar:hover {
+      border-color: rgba(168, 219, 58, 0.65);
+    }
+    /* Fix legibility on the lighter olive cards — secondary text on
+       this surface needs higher contrast than the deck default. */
+    .slide-sustentabilidade .card.pillar h3 { color: #ffffff; }
+    .slide-sustentabilidade .card.pillar .text-secondary {
+      color: rgba(255, 255, 255, 0.92) !important;
+    }
+
+    /* Slide 5 — Why Now: flatter pillar cards (no icons, less padding) */
+    .slide-why-now .card.pillar {
+      padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.8vw, 22px);
+    }
+    .slide-why-now .card.pillar h3 {
+      font-size: clamp(15px, 1.4vw, 18px);
+      margin: 0 0 8px;
+    }
+
+    /* Slide 5 — Why Now: traction pill bar (responsive) */
+    .traction-pillbar {
+      margin-top: clamp(24px, 3vw, 36px);
+      padding: 14px clamp(18px, 2vw, 24px);
+      border-radius: 14px;
+      border: 1px solid rgba(168, 219, 58, 0.24);
+      background: linear-gradient(90deg, rgba(168, 219, 58, 0.08) 0%, rgba(168, 219, 58, 0.015) 100%);
+      display: flex;
+      gap: clamp(16px, 2.5vw, 28px);
+      align-items: center;
+      justify-content: space-between;
+    }
+    .traction-label {
+      font-size: clamp(16px, 2vw, 22px);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 700;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .traction-stats {
+      display: flex;
+      gap: clamp(16px, 2.5vw, 32px);
+      flex-wrap: wrap;
+    }
+    .traction-stats > span {
+      font-size: clamp(22px, 2.6vw, 32px);
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .traction-source {
+      font-size: clamp(11px, 1.05vw, 13px);
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.4);
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      flex-shrink: 0;
+    }
+    /* Stack vertically on narrower viewports — fixes ugly wrapping
+       between ~900-1100px where label/stats/source collide. */
+    @media (max-width: 1100px) {
+      .traction-pillbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .traction-source { align-self: flex-end; }
+    }
+
+    /* Slide 4 — Como Funciona table */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: clamp(16px, 2vw, 28px) clamp(20px, 2.8vw, 40px);
+    }
+
+    /* Slide 7 — Pillars */
+    .pillar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pillar-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(168, 219, 58, 0.10);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    /* Slide 10 — Roadmap */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(12px, 2vw, 24px);
+      position: relative;
+      margin-top: 32px;
+    }
+    /* Track dim — base do roadmap */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 7px;
+      left: 6%;
+      right: 6%;
+      height: 12px;
+      border-radius: 6px;
+      background: rgba(168, 219, 58, 0.20);
+      z-index: 0;
+    }
+    .milestone {
+      position: relative;
+      padding-top: 32px;
+    }
+    .milestone-dot {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(168, 219, 58, 0.15);
+      border: 2px solid var(--primary);
+      z-index: 1;
+    }
+    .milestone.done .milestone-dot {
+      background: var(--primary);
+      box-shadow: 0 0 16px var(--primary);
+    }
+    .milestone-quarter {
+      font-size: clamp(18px, 1.5vw, 22px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .milestone-title {
+      font-size: clamp(20px, 2vw, 28px);
+      color: var(--text);
+      margin-top: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    /* Timeline animations — runs when the slide becomes active.
+       Theatrical mode: dramatic stagger reveal, double-ring pulse on the
+       done dot, brilliant scanner sweep along the connector line.
+       Each milestone gets a moment on stage. */
+    .timeline .milestone {
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+      transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active .timeline .milestone {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .slide.active .timeline .milestone:nth-child(1) { transition-delay: 300ms; }
+    .slide.active .timeline .milestone:nth-child(2) { transition-delay: 750ms; }
+    .slide.active .timeline .milestone:nth-child(3) { transition-delay: 1200ms; }
+    .slide.active .timeline .milestone:nth-child(4) { transition-delay: 1650ms; }
+
+    /* Double-ring pulse — two concentric ripples expanding from the dot,
+       offset by half a cycle so the green halo is always alive. */
+    @keyframes milestoneDotPulse {
+      0% {
+        box-shadow: 0 0 24px var(--primary),
+                    0 0 0 0 rgba(168, 219, 58, 0.85),
+                    0 0 0 0 rgba(168, 219, 58, 0.55);
+      }
+      50% {
+        box-shadow: 0 0 36px var(--primary),
+                    0 0 0 12px rgba(168, 219, 58, 0.0),
+                    0 0 0 8px rgba(168, 219, 58, 0.25);
+      }
+      100% {
+        box-shadow: 0 0 24px var(--primary),
+                    0 0 0 22px rgba(168, 219, 58, 0.0),
+                    0 0 0 18px rgba(168, 219, 58, 0.0);
+      }
+    }
+    .slide.active .milestone.done .milestone-dot {
+      animation: milestoneDotPulse 3.2s ease-out 2.2s infinite;
+    }
+
+    /* Progressive fill — bar lime que avança seguindo Q2 → Q3 → Q4 → Q1
+       com pausa em cada milestone. Pseudo-element ::after sobre o track. */
+    .timeline::after {
+      content: '';
+      position: absolute;
+      top: 7px;
+      left: 6%;
+      width: 0;
+      height: 12px;
+      border-radius: 6px;
+      background: var(--primary);
+      box-shadow: 0 0 18px rgba(168, 219, 58, 0.55);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .slide.active .timeline::after {
+      animation: roadmap-fill 4.2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s forwards;
+    }
+    @keyframes roadmap-fill {
+      0%   { width: 0;     opacity: 0; }
+      6%   { opacity: 1; }
+      40%  { width: 6.5%;  }    /* alcança Q2 (12.5% timeline) */
+      55%  { width: 6.5%;  }    /* pausa em Q2 */
+      95%  { width: 31.5%; }    /* alcança Q3 (37.5%) */
+      100% { width: 31.5%; opacity: 1; }   /* para em Q3 — sobra Q4/Q1 fica dim */
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .timeline .milestone {
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+      .slide.active .milestone.done .milestone-dot { animation: none; }
+      .slide.active .timeline::after { animation: none; opacity: 0; }
+    }
+
+    /* Slide 2 (Solução) — gentle floating motion on the iPhone frame.
+       Subtle vertical drift + micro-rotation, suggests "alive". */
+    @keyframes solucaoPhoneFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25%      { transform: translateY(-9px) rotate(0.5deg); }
+      50%      { transform: translateY(-14px) rotate(0deg); }
+      75%      { transform: translateY(-9px) rotate(-0.5deg); }
+    }
+    .slide-solucao .iphone-frame {
+      will-change: transform;
+    }
+    .slide-solucao.active .iphone-frame {
+      animation: solucaoPhoneFloat 5.6s ease-in-out 0.6s infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide-solucao.active .iphone-frame { animation: none; }
+    }
+
+    /* =================================================================
+       Slide 2 — JUICE phone hero
+       Uses juice-phone-hero-clean.png — a flood-filled cut-out where
+       the olive-green musgo backdrop has been keyed to alpha 0. The
+       phone (with its baked-in glow) sits on a true transparent
+       canvas, so it composites cleanly against the slide's dark
+       surface without any rectangular halo.
+       ================================================================= */
+    .juice-phone-hero-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .juice-phone-hero {
+      display: block;
+      position: relative;
+      width: clamp(260px, 30vw, 460px);
+      height: auto;
+      margin: 0 auto;
+      z-index: 1;
+      will-change: transform, filter;
+      filter:
+        contrast(1.06)
+        saturate(1.1)
+        drop-shadow(0 20px 44px rgba(0, 0, 0, 0.6));
+      image-rendering: -webkit-optimize-contrast;
+      backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    /* Stage wraps the phone img + the live points overlay. Width is
+       locked to the img's clamp so the absolute-positioned overlay
+       anchors precisely to the phone bounds (not the wider flex
+       parent). Float animation lives here so img + overlay sync. */
+    .juice-phone-stage {
+      position: relative;
+      width: clamp(260px, 30vw, 460px);
+      line-height: 0;
+      flex: 0 0 auto;          /* don't stretch in the flex parent */
+    }
+    .juice-phone-stage .juice-phone-hero {
+      display: block;
+      width: 100%;             /* fill the stage exactly */
+      height: auto;
+    }
+    .slide-solucao.active .juice-phone-stage {
+      animation: juicePhoneFloat 7s ease-in-out infinite;
+    }
+    .juice-phone-stage .juice-phone-points {
+      position: absolute;
+      top: 24.7%;              /* matches where "120.700" sat in the asset */
+      left: 25.7%;             /* left edge of the original digit "1" */
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      font-size: clamp(22px, 2.5vw, 38px);   /* fallback */
+      font-weight: 800;
+      color: #cbf35e;          /* sampled from the original baked digits */
+      letter-spacing: -0.02em;
+      line-height: 1;
+      pointer-events: none;
+      z-index: 2;
+    }
+    /* When supported, lock font-size to a precise % of the stage width
+       so the overlay scales 1:1 with the phone art at any viewport. */
+    @supports (container-type: inline-size) {
+      .juice-phone-stage { container-type: inline-size; }
+      .juice-phone-stage .juice-phone-points { font-size: 7.5cqw; }
+    }
+    @media (max-width: 900px) {
+      .juice-phone-stage { width: clamp(220px, 60vw, 320px); }
+    }
+    @keyframes juicePhoneFloat {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50%      { transform: translate3d(0, -10px, 0); }
+    }
+    /* Slide 3 phone 2 — alterna Superteam <-> Solflare a cada 4s */
+    .juice-phone-stage--alt .juice-phone-hero--top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      opacity: 0;
+      animation: juicePhoneCrossfade 8s ease-in-out infinite;
+      z-index: 1;
+    }
+    @keyframes juicePhoneCrossfade {
+      0%, 45%, 100% { opacity: 0; }
+      50%, 95%      { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide-solucao.active .juice-phone-stage { animation: none; }
+      .juice-phone-stage--alt .juice-phone-hero--top { animation: none; }
+    }
+    @media (max-width: 900px) {
+      .solucao-grid { grid-template-columns: 1fr !important; }
+      .juice-phone-hero { width: clamp(220px, 60vw, 320px); }
+    }
+
+    @media (max-width: 768px) {
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+      .timeline::before {
+        left: 18px;
+        right: auto;
+        top: 24px;
+        bottom: 24px;
+        width: 2px;
+        height: auto;
+        background: linear-gradient(
+          to bottom,
+          var(--primary) 0%,
+          var(--primary) 25%,
+          rgba(168, 219, 58, 0.20) 25%,
+          rgba(168, 219, 58, 0.20) 100%
+        );
+      }
+      .milestone { padding-top: 0; padding-left: 48px; }
+      .milestone-dot { left: 18px; top: 8px; }
+    }
+
+    /* Slide 11 — Team */
+    .team-card {
+      text-align: center;
+    }
+    .team-photo {
+      width: 88px;
+      height: 88px;
+      border-radius: 999px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, rgba(168, 219, 58, 0.20), rgba(168, 219, 58, 0.18));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: var(--primary);
+    }
+
+    /* Slide 10 — CTA button (Founder + Ask) */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 16px;
+      background: var(--primary);
+      color: #042009;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      box-shadow:
+        0 8px 24px rgba(168, 219, 58, 0.35),
+        0 0 0 1px rgba(0, 0, 0, 0.18);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 32px rgba(168, 219, 58, 0.50),
+        0 0 0 1px rgba(0, 0, 0, 0.18);
+    }
+
+    /* === Reduced motion === */
+    @media (prefers-reduced-motion: reduce) {
+      .deck { transition: none; }
+      .slide-inner { transition: none; opacity: 1; transform: none; }
+      .number-xl { text-shadow: none; }
+    }
+
+    /* === Stacked export mode (?stacked=1) ====================================
+       Renders all 10 slides as a vertical stack so the deck can be printed
+       to PDF or captured as a long screenshot. Used as offline brief / Canva
+       reference. No interactivity; controls hidden. */
+    @media print {
+      @page { size: 1920px 1080px; margin: 0; }
+    }
+    body.stacked { overflow: auto !important; height: auto !important; }
+    body.stacked .deck {
+      flex-direction: column !important;
+      transform: none !important;
+      width: 100vw;
+      height: auto;
+      transition: none !important;
+    }
+    body.stacked .slide {
+      flex: 0 0 auto !important;
+      width: 100vw;
+      height: 100vh;
+      page-break-after: always;
+      break-after: page;
+    }
+    body.stacked .slide-inner {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    body.stacked .controls,
+    body.stacked .btn-fs { display: none !important; }
+
+    /* TV legibility pass — softer rendering for big-screen presentation.
+       Tested on a TV display (overly saturated by default), this reduces
+       harsh blowouts and prevents awkward text wraps without weakening
+       the brand. Slides 1 & 2 already tested well; these rules apply to
+       all slides but are conservative enough to leave them intact. */
+    h1, h2, h3 { text-wrap: balance; }
+    .subtitle, p { text-wrap: pretty; }
+    .slide-inner h2 { max-width: 22ch; }
+    .slide-mercado h2,
+    .slide-why-now h2,
+    .slide-mapa h2 { max-width: 28ch; }
+    /* Soften white-on-black to reduce TV halation */
+    .metal-text { filter: brightness(0.96); }
+
+    /* Slide 2 já tem a logomarca grande no centro — esconder o canto */
+    .slide-solucao .slide-corner-logo { display: none; }
+
+    /* Slide 6 (Modelo de Negócio) — chips reveal + float contínuo.
+       Reveal: fade-in + slide horizontal com stagger ao ativar slide.
+       Float: deslocamento sutil em loop com fases escalonadas. */
+    .modelo-chips > div {
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+    .slide-modelo.active .modelo-chips > div {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .slide-modelo.active .modelo-chips > div:nth-child(1) { transition-delay: 200ms; }
+    .slide-modelo.active .modelo-chips > div:nth-child(2) { transition-delay: 350ms; }
+    .slide-modelo.active .modelo-chips > div:nth-child(3) { transition-delay: 500ms; }
+    .slide-modelo.active .modelo-chips > div:nth-child(4) { transition-delay: 650ms; }
+    .slide-modelo.active .modelo-chips > div:nth-child(5) { transition-delay: 800ms; }
+    .slide-modelo.active .modelo-chips > div:nth-child(6) { transition-delay: 950ms; }
+    /* Float contínuo após o reveal — fases escalonadas pra dar respiração */
+    .slide-modelo.active .modelo-chips > div {
+      animation: modelo-chip-float 5.4s ease-in-out infinite;
+    }
+    .slide-modelo.active .modelo-chips > div:nth-child(1) { animation-delay: 1.4s; }
+    .slide-modelo.active .modelo-chips > div:nth-child(2) { animation-delay: 1.9s; }
+    .slide-modelo.active .modelo-chips > div:nth-child(3) { animation-delay: 2.4s; }
+    .slide-modelo.active .modelo-chips > div:nth-child(4) { animation-delay: 2.9s; }
+    .slide-modelo.active .modelo-chips > div:nth-child(5) { animation-delay: 3.4s; }
+    .slide-modelo.active .modelo-chips > div:nth-child(6) { animation-delay: 3.9s; }
+    @keyframes modelo-chip-float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-4px); }
+    }
+
+    /* ADS = modelo de negócio · principal · maior que os outros chips
+       com pulse contínuo pós-reveal */
+    .slide-modelo.active .modelo-chips > div:nth-child(4) {
+      animation: modelo-ads-pulse 3.6s ease-in-out infinite;
+      animation-delay: 2.0s;
+      transform-origin: left center;
+      box-shadow: 0 6px 32px rgba(168, 219, 58, 0.40);
+      border-color: rgba(168, 219, 58, 0.70) !important;
+      background: rgba(168, 219, 58, 0.16) !important;
+      padding: 14px 28px !important;
+    }
+    .slide-modelo.active .modelo-chips > div:nth-child(4) svg {
+      width: 22px !important;
+      height: 22px !important;
+    }
+    .slide-modelo.active .modelo-chips > div:nth-child(4) span {
+      font-size: clamp(18px, 1.9vw, 24px) !important;
+      letter-spacing: 0.10em !important;
+    }
+    @keyframes modelo-ads-pulse {
+      0%, 100% {
+        transform: translateY(0) scale(1.32);
+        box-shadow: 0 6px 32px rgba(168, 219, 58, 0.40);
+      }
+      50% {
+        transform: translateY(-5px) scale(1.40);
+        box-shadow: 0 10px 44px rgba(168, 219, 58, 0.60);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .modelo-chips > div { transition: none; animation: none; opacity: 1; transform: none; }
+      .slide-modelo.active .modelo-chips > div:nth-child(4) { transform: scale(1.32); animation: none; }
+    }
+
+    /* Slide 9 (Road Map) — 4 mini phones com float suave escalonado */
+    .roadmap-phone {
+      animation: roadmap-phone-float 5.8s ease-in-out infinite;
+      will-change: transform;
+    }
+    .roadmap-phone:nth-child(1) { animation-delay: 0s;    }
+    .roadmap-phone:nth-child(2) { animation-delay: 0.7s;  }
+    .roadmap-phone:nth-child(3) { animation-delay: 1.4s;  }
+    .roadmap-phone:nth-child(4) { animation-delay: 2.1s;  }
+    @keyframes roadmap-phone-float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-6px) scale(1.02); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .roadmap-phone { animation: none; }
+    }
+
+    /* =================================================================
+       Slide 6 — Realistic 3D phone chassis (Modelo de Negócio)
+       Wraps the existing juice-phone-hero-solflare.png screen content
+       inside a CSS-built Android-style chassis with side buttons,
+       glossy edge highlights, camera punch-hole and a subtle 3D tilt.
+       The screenshot inside is oversized + offset to crop out the
+       PNG's baked bezel, so only the in-app content shows.
+       ================================================================= */
+    .phone3d-stage {
+      position: relative;
+      aspect-ratio: 9 / 19.2;
+      flex: 0 0 auto;
+      perspective: 1600px;
+      perspective-origin: 65% 50%;
+      filter:
+        drop-shadow(0 22px 44px rgba(0, 0, 0, 0.55))
+        drop-shadow(0 4px 14px rgba(168, 219, 58, 0.05));
+      will-change: transform;
+      container-type: inline-size;
+    }
+    .slide-modelo.active .phone3d-stage {
+      animation: phone3dFloat 7s ease-in-out infinite;
+    }
+    @keyframes phone3dFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+
+    /* Body — chassis with brushed-metal gradient + subtle 3D tilt.
+       The rotateY/X is necessary so the side buttons (vol/power) read
+       as edge-protrusions on the chassis. Tilt is mild (-4deg / 1deg)
+       so the head-on screenshot inside still feels coherent. */
+    .phone3d-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 13.5% / 6.4%;
+      transform: rotateY(-4deg) rotateX(1deg);
+      transform-style: preserve-3d;
+      background:
+        linear-gradient(135deg,
+          rgba(255,255,255,0.14) 0%,
+          rgba(255,255,255,0.04) 9%,
+          transparent 24%,
+          transparent 76%,
+          rgba(0,0,0,0.45) 100%),
+        linear-gradient(150deg,
+          #2c3845 0%,
+          #1a2230 22%,
+          #0b1119 60%,
+          #060a10 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.55),
+        inset 1.2px 1.2px 0 rgba(255, 255, 255, 0.10),
+        inset -1px -1px 0 rgba(0, 0, 0, 0.45);
+    }
+
+    /* Frame — inner black bezel surrounding the screen + camera.
+       Thin bezel (2% of body) to mimic modern Pixel/Galaxy proportions
+       — earlier 4.6% looked like an old smartphone. Border-radius
+       slightly larger than the screen's so the frame's curve sits
+       cleanly outside the screen at every corner. */
+    .phone3d-frame {
+      position: absolute;
+      inset: 2%;
+      border-radius: 19% / 9%;
+      background: #000;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 0 18px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Screen — clip the existing PNG so only the inner app content shows.
+       Border-radius bumped to 18%/8.4% so the screen's rounded corners
+       fully contain the source body's tighter circular arc — eliminates
+       the dark triangular gap that was visible especially in the upper-
+       left (accentuated by the rotateY(-8deg) tilt). */
+    .phone3d-screen {
+      position: absolute;
+      inset: 0.6%;
+      border-radius: 18% / 8.4%;
+      overflow: hidden;
+      background: #050608;
+    }
+    /* Wrapper sized to the FULL original PNG; sits oversized + offset
+       inside the screen so the source's chassis + bezel are fully
+       cropped out and ONLY the lit screen content shows. Measured
+       precisely (pure-black pixel detection) on source PNG (439×806):
+       the LIT area occupies 74.94% of width starting at x=16.17%, and
+       86.97% of height starting at y=7.44%. Aspect of lit area =
+       0.4693 ≈ 9:19.18 (matches chassis 9:19.2 within 0.1%). Scale =
+       1/0.7494 = 1.334 → wrapper width 133.4% of screen. Top offset
+       = -7.44% × 1.334 × (806/439 × 9/19.2) = -8.5%; left offset =
+       -16.17% × 1.334 = -21.6%. The source body slightly overflows
+       the chassis screen (~0.75% per side, clipped by overflow:hidden)
+       so the source's bezel ring is invisible. The points overlay is
+       a child of this wrapper so the 24.7%/25.7% coordinates remain
+       valid relative to the source PNG. */
+    .phone3d-screen-wrap {
+      position: absolute;
+      top: -8.5%;
+      left: -21.6%;
+      width: 133.4%;
+      height: auto;
+      pointer-events: none;
+    }
+    .phone3d-screen-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: contrast(1.04) saturate(1.06);
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+    .phone3d-screen-wrap .juice-phone-points {
+      position: absolute;
+      top: 24.7%;
+      left: 25.7%;
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      font-weight: 800;
+      color: #cbf35e;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      font-size: 7.5cqw;
+      pointer-events: none;
+      z-index: 5;
+    }
+    @supports not (container-type: inline-size) {
+      .phone3d-screen-wrap .juice-phone-points {
+        font-size: clamp(20px, 2.4vw, 36px);
+      }
+    }
+
+    /* Camera punch-hole at top-center of screen */
+    .phone3d-camera {
+      position: absolute;
+      top: 1.6%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 30%,
+          #232b38 0%,
+          #0b0e14 55%,
+          #000 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.10),
+        0 0 4px rgba(0, 0, 0, 0.6);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Glass reflection — soft diagonal sheen on top of the screen */
+    .phone3d-glint {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(118deg,
+        rgba(255, 255, 255, 0.10) 0%,
+        rgba(255, 255, 255, 0.03) 14%,
+        transparent 30%,
+        transparent 72%,
+        rgba(255, 255, 255, 0.025) 92%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Side buttons — peek from the chassis edge with metallic gradient */
+    .phone3d-btn {
+      position: absolute;
+      background: linear-gradient(90deg,
+        #424d5c 0%,
+        #2a3340 35%,
+        #161d27 70%,
+        #08101a 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+        -1px 0 1.5px rgba(0, 0, 0, 0.55);
+      z-index: 0;
+    }
+    .phone3d-btn--vol-up {
+      left: -1.4%;
+      top: 21.5%;
+      width: 1.6%;
+      height: 4.6%;
+      border-radius: 1.5px 0 0 1.5px;
+    }
+    .phone3d-btn--vol-dn {
+      left: -1.4%;
+      top: 28.4%;
+      width: 1.6%;
+      height: 7.4%;
+      border-radius: 1.5px 0 0 1.5px;
+    }
+    .phone3d-btn--power {
+      right: -1.4%;
+      top: 24.5%;
+      width: 1.6%;
+      height: 5.2%;
+      border-radius: 0 1.5px 1.5px 0;
+      background: linear-gradient(270deg,
+        #424d5c 0%,
+        #2a3340 35%,
+        #161d27 70%,
+        #08101a 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+        1px 0 1.5px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Edge highlights — thin glossy strips along chassis curves */
+    .phone3d-edge {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .phone3d-edge--top {
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 1.2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.32) 38%,
+        rgba(255, 255, 255, 0.20) 62%,
+        transparent 100%);
+    }
+    .phone3d-edge--right {
+      top: 8%;
+      bottom: 8%;
+      right: 0;
+      width: 1.2px;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.12) 30%,
+        rgba(255, 255, 255, 0.05) 75%,
+        transparent 100%);
+    }
+    .phone3d-edge--bottom {
+      bottom: 0;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.06) 50%,
+        transparent 100%);
+    }
+
+    /* Soft contact shadow under the phone */
+    .phone3d-floor {
+      position: absolute;
+      bottom: -7%;
+      left: 8%;
+      right: 8%;
+      height: 7%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse,
+        rgba(0, 0, 0, 0.5) 0%,
+        rgba(0, 0, 0, 0.22) 45%,
+        transparent 72%);
+      filter: blur(5px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide-modelo.active .phone3d-stage { animation: none; }
+    }
+    @media (max-width: 900px) {
+      .phone3d-stage { width: clamp(170px, 48vw, 230px) !important; }
+    }
+
+    /* Slide 4 — partner banners (Solflare / X Pay / BingX) gentle
+       float. Same pattern as the partner-banner class — translateY
+       + scale leve com fases escalonadas. */
+    .tracao-banner {
+      animation: tracao-banner-float 6.4s ease-in-out infinite;
+      will-change: transform;
+    }
+    .tracao-banner:nth-child(1) { animation-delay: 0s;   }
+    .tracao-banner:nth-child(2) { animation-delay: 0.9s; }
+    .tracao-banner:nth-child(3) { animation-delay: 1.8s; }
+    @keyframes tracao-banner-float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-7px) scale(1.014); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tracao-banner { animation: none; }
+    }
+
+    /* Slide 3 — phone 2 (charging) rotating green arc.
+       Posicionado sobre o anel central da tela de charging (lightning
+       bolt). Arco fino de borda verde que gira continuamente, dando
+       sensação de "carregando ao vivo". */
+    .juice-phone-stage .charging-arc {
+      position: absolute;
+      top: 24.3%;
+      left: 32.8%;
+      width: 42%;
+      aspect-ratio: 1;
+      border: 2px solid transparent;
+      border-top-color: #cbf35e;
+      border-right-color: #cbf35e;
+      border-radius: 50%;
+      box-shadow:
+        0 0 6px rgba(203, 243, 94, 0.65),
+        0 0 14px rgba(168, 219, 58, 0.35);
+      filter: drop-shadow(0 0 3px rgba(203, 243, 94, 0.5));
+      animation: charging-arc-spin 2.6s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform;
+    }
+    @keyframes charging-arc-spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .juice-phone-stage .charging-arc { animation: none; }
+    }
+
+    /* Slide 5 — partner banners gentle float. Each banner drifts on its
+       own phase so the grid breathes instead of moving in lockstep. */
+    .partner-banner {
+      animation: partner-float 6.4s ease-in-out infinite;
+      will-change: transform;
+    }
+    .partner-banner:nth-child(1) { animation-delay: 0s;    }
+    .partner-banner:nth-child(2) { animation-delay: 0.8s;  }
+    .partner-banner:nth-child(3) { animation-delay: 1.6s;  }
+    .partner-banner:nth-child(4) { animation-delay: 2.4s;  }
+    .partner-banner:nth-child(5) { animation-delay: 3.2s;  }
+    .partner-banner:nth-child(6) { animation-delay: 4.0s;  }
+    @keyframes partner-float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-6px) scale(1.012); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .partner-banner { animation: none; }
+    }
+
+    /* Brand logo strip — used in slide 4 concentration cards. All logos
+       normalized to monochrome white via filter so any source SVG (mono
+       or full-color) renders consistently on the dark deck. */
+    .brand-logo-strip {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: clamp(12px, 1.6vw, 22px);
+    }
+    .brand-logo-strip img {
+      display: block;
+      height: clamp(22px, 2.2vw, 30px);
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+    }
+    .brand-logo-strip .logo-wordmark { height: clamp(24px, 2.4vw, 32px); }
+
+    /* Slide 4 (Mercado) — slightly darker card surfaces for TV legibility */
+    .slide-mercado .card {
+      background: #060d06;
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+    .slide-mercado .market-card-focus {
+      border-color: rgba(168, 219, 58, 0.32);
+    }
+
+    /* Iceberg flow arrows — animated paths connecting the below-water
+       infrastructure pills (Suporte Automatizado, ADS, Sybil, Raw data) up to the
+       above-water market pills (User on-ramp, Cliente Qualificado). Tells the
+       story "infra alimenta o produto visível" without extra copy. */
+    .iceberg-flow {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: visible;
+    }
+    .iceberg-flow path {
+      fill: none;
+      stroke: rgba(168, 219, 58, 0.55);
+      stroke-width: 0.55;
+      stroke-linecap: round;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      filter: drop-shadow(0 0 1px rgba(168, 219, 58, 0.4));
+    }
+    .iceberg-flow .arrow-head {
+      fill: rgba(168, 219, 58, 0.85);
+      opacity: 0;
+    }
+    /* Iceberg-flow arrows desativadas — sem animação na slide 6 */
+    .iceberg-flow { display: none; }
+    @keyframes icebergFlowDraw {
+      0%, 4%   { stroke-dashoffset: 100; opacity: 0; }
+      10%      { opacity: 1; }
+      26%      { stroke-dashoffset: 0; opacity: 1; }
+      85%      { stroke-dashoffset: 0; opacity: 1; }
+      100%     { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes icebergFlowHead {
+      0%, 24%  { opacity: 0; transform: scale(0.6); }
+      28%      { opacity: 1; transform: scale(1); }
+      85%      { opacity: 1; }
+      100%     { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .iceberg-flow path { stroke-dashoffset: 0; opacity: 1; animation: none; }
+      .iceberg-flow .arrow-head { opacity: 1; animation: none; }
+    }
+
+    /* Solana brand effect — subtle purple→white→green gradient with halo,
+       used to highlight "DePin Solana" on the slide-6 ribbon. */
+    .solana-text-effect {
+      background: linear-gradient(120deg,
+        #c8b8ff 0%,
+        #ffffff 35%,
+        #e0f8ec 65%,
+        #8cffc7 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      filter: drop-shadow(0 0 14px rgba(153, 69, 255, 0.18))
+              drop-shadow(0 0 14px rgba(20, 241, 149, 0.18));
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Stars background — generated + animated by JS at the bottom of
+       this file. Ambient upward drift + mouse-boost; track wraps over
+       a duplicate field for infinite parallax. Satellites + starlink
+       train sit OUTSIDE the moving track so they pass independently. -->
+  <main class="deck" id="deck" aria-roledescription="apresentação">
+
+    <!-- SLIDE 1: ABERTURA — número-mestre solo, fonte no canto inferior esquerdo. -->
+    <section class="slide" data-slide="1" aria-label="R$ 42,7 bilhões em publicidade digital no Brasil em 2025">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner" style="text-align: center;">
+        <h2 style="font-size: clamp(32px, 4.8vw, 72px); font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.94); max-width: 100%; margin: clamp(80px, 12vh, 180px) auto 0;">
+          Publicidade digital concentrou <span class="metal-text">US$ 750 bilhões</span> em apenas 3 empresas (2025)
+        </h2>
+      </div>
+      <p style="position: absolute; left: clamp(24px, 4vw, 56px); bottom: clamp(88px, 13vh, 180px); margin: 0; max-width: 60ch; font-size: 11px; color: var(--secondary); letter-spacing: 0.06em; opacity: 0.55; line-height: 1.55; text-align: left;">
+        Fontes: IAB Brasil + Kantar Ibope, Digital Adspend 2026.
+      </p>
+    </section>
+
+    <!-- SLIDE 2: SOLUÇÃO ===================================================
+         Hero 3D phone — neobankless-style stage. JUICE home screen on
+         display, ambient green glow, blurred ground shadow, subtle float.
+         ================================================================== -->
+    <section class="slide slide-solucao" data-slide="4" aria-label="A Solução">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <div class="solucao-grid"
+             style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 4vw, 72px); align-items: center; min-height: 72vh; transform: translateY(clamp(-96px, -10vh, -56px));">
+
+          <!-- Copy + store buttons -->
+          <div class="solucao-copy" style="transform: translateY(-clamp(24px, 4vh, 56px));">
+            <h2 style="font-size: clamp(22px, 2.8vw, 44px); font-weight: 900; line-height: 1.14; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.96); margin: 0 0 clamp(28px, 3.4vw, 44px);">
+              <span class="metal-text" style="font-size: 1.25em; white-space: nowrap;">APP de Publicidade</span><br /><span class="metal-text" style="white-space: nowrap;">DePin Solana</span><br /><span style="font-size: 0.9em; font-weight: 700; color: #ffffff;">Recarrega, assiste e ganha</span>
+            </h2>
+
+            <div style="display: flex; align-items: center; gap: clamp(8px, 1.2vw, 14px); flex-wrap: wrap;">
+              <a href="https://solanamobile.com/seeker" target="_blank" rel="noopener noreferrer"
+                 aria-label="Get it on Seeker — Solana Mobile"
+                 style="display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; height: 40px; min-width: 140px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: #000; text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="seeker-sol-grad-slide2" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#9945ff"/>
+                      <stop offset="50%" stop-color="#14f195"/>
+                      <stop offset="100%" stop-color="#19fb9b"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M4.5 17.6 L7.6 14.5 L20 14.5 L16.9 17.6 Z" fill="url(#seeker-sol-grad-slide2)"/>
+                  <path d="M4.5 12 L7.6 8.9 L20 8.9 L16.9 12 Z" fill="url(#seeker-sol-grad-slide2)"/>
+                  <path d="M4.5 6.4 L7.6 3.3 L20 3.3 L16.9 6.4 Z" fill="url(#seeker-sol-grad-slide2)"/>
+                </svg>
+                <span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1;">
+                  <span style="font-size: 8px; color: rgba(255,255,255,0.75);">Get it on</span>
+                  <span style="font-size: 12px; font-weight: 600; color: #fff;">Seeker</span>
+                </span>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.cnb.cnbappv2" target="_blank" rel="noopener noreferrer"
+                 aria-label="Get it on Google Play"
+                 style="display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; height: 40px; min-width: 140px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: #000; text-decoration: none;">
+                <svg viewBox="0 0 512 512" width="18" height="18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path fill="#00d4ff" d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z"/>
+                  <path fill="#ffce00" d="m104.6 499 220.7-221.3 60.1 60.1L104.6 499z"/>
+                  <path fill="#ff3a44" d="m385.4 337.8-60.1-60.1 76.7-76.7 76.7 44.1c19.5 11 19.5 33.3 0 44.4l-93.3 48.3z"/>
+                  <path fill="#00f076" d="M104.6 13c-7.4 5.4-12.9 13.6-12.9 24.2v437.5c0 10.6 5.5 18.8 12.9 24.2l220.7-221.3L104.6 13z"/>
+                </svg>
+                <span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1;">
+                  <span style="font-size: 8px; color: rgba(255,255,255,0.75);">Get it on</span>
+                  <span style="font-size: 12px; font-weight: 600; color: #fff;">Google Play</span>
+                </span>
+              </a>
+              <a href="https://apps.apple.com/br/app/cnb-mobile/id6762065336" target="_blank" rel="noopener noreferrer"
+                 aria-label="Download on the App Store"
+                 style="display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; height: 40px; min-width: 140px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: #000; text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M17.05 12.04c-.03-3.16 2.58-4.68 2.7-4.75-1.47-2.15-3.76-2.45-4.57-2.49-1.95-.2-3.8 1.15-4.79 1.15-.99 0-2.51-1.12-4.13-1.09-2.13.03-4.09 1.24-5.18 3.14-2.21 3.83-.57 9.5 1.59 12.61 1.05 1.52 2.31 3.23 3.96 3.17 1.59-.06 2.19-1.03 4.11-1.03 1.92 0 2.46 1.03 4.14.99 1.71-.03 2.79-1.55 3.83-3.08 1.21-1.77 1.71-3.49 1.74-3.58-.04-.02-3.34-1.28-3.4-5.04zM13.92 3.05C14.79 1.99 15.38.52 15.21-.95c-1.26.05-2.79.84-3.69 1.89-.81.94-1.51 2.44-1.32 3.88 1.4.11 2.84-.71 3.72-1.77z" />
+                </svg>
+                <span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1;">
+                  <span style="font-size: 8px; color: rgba(255,255,255,0.75);">Download on the</span>
+                  <span style="font-size: 12px; font-weight: 600; color: #fff;">App Store</span>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Direita: logomarca JUICE como único elemento visual -->
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <img src="brand/juice-wordmark-pitch.svg" alt="JUICE"
+                 style="width: clamp(280px, 38vw, 540px); height: auto; display: block; filter: drop-shadow(0 0 28px rgba(168, 219, 58, 0.18));" />
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: MERCADO — moved up to follow SOLUÇÃO ========================== -->
+    <section class="slide slide-mercado" data-slide="3" aria-label="Mercado">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <p class="eyebrow" style="margin-bottom: 14px;">Concentração de Mercado</p>
+
+        <div class="grid-3" style="margin-top: clamp(80px, 12vh, 180px);">
+          <!-- TAM — Global digital ad spend -->
+          <div class="card">
+            <p class="market-tier">TAM · Global</p>
+            <div class="number-xl">$750<span style="font-size: 0.55em; margin-left: 6px;">B</span></div>
+            <div class="market-bar" aria-hidden="true">
+              <div class="market-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- SAM — LATAM digital ad spend -->
+          <div class="card">
+            <p class="market-tier">SAM · LATAM</p>
+            <div class="number-xl">$28<span style="font-size: 0.55em; margin-left: 6px;">B</span></div>
+            <div class="market-bar" aria-hidden="true">
+              <div class="market-bar-fill" style="width: 50%;"></div>
+            </div>
+          </div>
+
+          <!-- SOM — Brasil digital ad spend ICP -->
+          <div class="card market-card-focus">
+            <p class="market-tier is-focus">SOM · Brasil · ICP inicial</p>
+            <div class="number-xl">$9<span style="font-size: 0.55em; margin-left: 6px;">B</span></div>
+            <div class="market-bar" aria-hidden="true">
+              <div class="market-bar-fill" style="width: 33.33%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concentration row — quem leva o bolo em cada escopo -->
+        <div class="concentration-row" style="margin-top: clamp(8px, 1vw, 14px); display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 1.6vw, 22px);">
+          <div style="padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.8vw, 22px); border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.07); background: #060d06;">
+            <p style="font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.28em; text-transform: uppercase; color: var(--primary); font-weight: 700; margin: 0 0 10px; opacity: 0.85;">GLOBAL</p>
+            <div class="brand-logo-strip" style="margin: 0 0 14px;">
+              <img src="brand/logos/google.svg" alt="Alphabet" />
+              <img src="brand/logos/meta.svg" alt="Meta" />
+              <img src="brand/logos/amazon.svg" alt="Amazon" class="logo-wordmark" />
+            </div>
+            <p style="font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.01em;">&asymp; 62%</p>
+          </div>
+          <div style="padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.8vw, 22px); border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.07); background: #060d06;">
+            <p style="font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.28em; text-transform: uppercase; color: var(--primary); font-weight: 700; margin: 0 0 10px; opacity: 0.85;">LATAM</p>
+            <div class="brand-logo-strip" style="margin: 0 0 14px;">
+              <img src="brand/logos/google.svg" alt="Google" />
+              <img src="brand/logos/meta.svg" alt="Meta" />
+              <img src="brand/logos/mercadolivre.svg" alt="Mercado Livre" class="logo-wordmark" />
+            </div>
+            <p style="font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.01em;">&asymp; 90%</p>
+          </div>
+          <div style="padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.8vw, 22px); border-radius: 14px; border: 1px solid rgba(168, 219, 58, 0.30); background: #081208;">
+            <p style="font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.28em; text-transform: uppercase; color: var(--primary); font-weight: 800; margin: 0 0 10px;">Brasil</p>
+            <div class="brand-logo-strip" style="margin: 0 0 14px;">
+              <img src="brand/logos/google.svg" alt="Google" />
+              <img src="brand/logos/meta.svg" alt="Meta" />
+            </div>
+            <p style="font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.01em;">&asymp; 96%</p>
+          </div>
+        </div>
+
+      </div>
+      <p style="position: absolute; left: clamp(24px, 4vw, 56px); bottom: clamp(48px, 6vh, 96px); margin: 0; max-width: 60ch; font-size: 11px; color: var(--secondary); letter-spacing: 0.06em; opacity: 0.55; line-height: 1.55; text-align: left;">
+        Fontes: WARC / Magna Global Ad Outlook 2025 · Statista LATAM Digital Advertising 2025 · IAB Brasil.
+      </p>
+    </section>
+
+    <!-- SLIDE 4: COMO FUNCIONA ================================================= -->
+    <section class="slide slide-produto" data-slide="3" aria-label="Produto">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <h2 class="metal-text" style="font-size: clamp(24px, 3.4vw, 42px); margin: 0; text-align: center;">
+          <span class="metal-text">Publicidade sem fricção</span>
+        </h2>
+
+        <!-- JUICE phone hero — 3 unidades lado a lado -->
+        <div class="juice-phone-hero-wrap" style="display: flex; align-items: center; justify-content: center; gap: clamp(20px, 2.6vw, 40px); margin-top: clamp(18px, 2.4vw, 28px);">
+          <div class="juice-phone-stage" style="width: clamp(160px, 17vw, 240px);">
+            <img class="juice-phone-hero" src="brand/juice-phone-hero-blank.png"
+                 alt="JUICE app — tela inicial: pontos sobem ao vivo, ações rápidas, parceiros e atividades"
+                 style="width: 100%;" />
+            <span class="juice-phone-points" id="juice-phone-points"
+                  data-from="120700" data-to="122300" aria-hidden="true">120.700</span>
+          </div>
+          <div class="juice-phone-stage" style="width: clamp(160px, 17vw, 240px);">
+            <img class="juice-phone-hero" src="brand/juice-phone-hero-charging.png"
+                 alt="JUICE app — sessão de carregamento ativa (+10 pts)"
+                 style="width: 100%;" />
+            <div class="charging-arc" aria-hidden="true"></div>
+          </div>
+          <div class="juice-phone-stage juice-phone-stage--alt" style="width: clamp(160px, 17vw, 240px);">
+            <img class="juice-phone-hero" src="brand/juice-phone-hero-superteam.png"
+                 alt="JUICE app — banner Superteam Brasil em destaque no card de parceiros"
+                 style="width: 100%;" />
+            <img class="juice-phone-hero juice-phone-hero--top" src="brand/juice-phone-hero-solflare.png"
+                 alt="JUICE app — banner Solflare em destaque no card de parceiros"
+                 aria-hidden="true" />
+            <span class="juice-phone-points" aria-hidden="true">122.300</span>
+          </div>
+          <div class="juice-phone-stage" style="width: clamp(160px, 17vw, 240px);">
+            <img class="juice-phone-hero" src="brand/juice-phone-hero-ranking.png"
+                 alt="JUICE app — Ranking Semanal: top 3 + posição do usuário"
+                 style="width: 100%;" />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SLIDE 5: TRAÇÃO ======================================================= -->
+    <section class="slide" data-slide="5" aria-label="Tração & Roadmap">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <p class="eyebrow">Solana mainnet</p>
+
+        <!-- 3 stat cards FIRST — biggest impact, Credible-style -->
+        <div class="grid-3" style="margin-top: clamp(20px, 2.4vw, 32px); gap: clamp(10px, 1.4vw, 16px);">
+          <div class="card" style="padding: clamp(14px, 1.6vw, 20px); border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%);">
+            <p class="number-lg" style="font-size: clamp(36px, 4.8vw, 64px); margin: 0; color: #ffffff;">5k</p>
+            <p style="font-size: clamp(13px, 1.3vw, 16px); letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff; font-weight: 700; margin: 6px 0 1px;">Usuários reais</p>
+          </div>
+          <div class="card" style="padding: clamp(14px, 1.6vw, 20px); border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%);">
+            <p class="number-lg" style="font-size: clamp(36px, 4.8vw, 64px); margin: 0; color: #ffffff;"><span id="minutos-counter" data-from="753153" data-to="802400">753.153</span></p>
+            <p style="font-size: clamp(13px, 1.3vw, 16px); letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff; font-weight: 700; margin: 6px 0 1px;">Minutos validados</p>
+          </div>
+          <div class="card" style="padding: clamp(14px, 1.6vw, 20px); border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%);">
+            <p class="number-lg" style="font-size: clamp(36px, 4.8vw, 64px); margin: 0; color: #ffffff;">+10k</p>
+            <p style="font-size: clamp(13px, 1.3vw, 16px); letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff; font-weight: 700; margin: 6px 0 1px;">Downloads</p>
+          </div>
+        </div>
+
+        <!-- 3 banners de parceiros — alinhados abaixo dos cards de tração -->
+        <p class="eyebrow" style="margin-top: clamp(20px, 2.6vw, 32px); margin-bottom: 10px;">Publicidade Ativa</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.4vw, 16px);">
+          <div class="tracao-banner" role="img" aria-label="Solflare — wallet Solana" style="aspect-ratio: 16 / 9; border-radius: 14px; background-image: url('brand/partners/banner-solflare.png'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #000; -webkit-mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%); mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%);"></div>
+          <div class="tracao-banner" role="img" aria-label="X Pay — pagamentos USDT" style="aspect-ratio: 16 / 9; border-radius: 14px; background-image: url('brand/partners/banner-xpay.png'); background-size: cover; background-position: center; background-repeat: no-repeat; -webkit-mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%); mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%);"></div>
+          <div class="tracao-banner" role="img" aria-label="BingX — Official Crypto Exchange Partner of Chelsea FC" style="aspect-ratio: 16 / 9; border-radius: 14px; background-image: url('brand/partners/banner-bingx.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; -webkit-mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%); mask-image: radial-gradient(130% 140% at 50% 50%, #000 76%, transparent 100%);"></div>
+        </div>
+
+      </div>
+      <p style="position: absolute; left: clamp(24px, 4vw, 56px); bottom: clamp(88px, 13vh, 180px); margin: 0; max-width: 60ch; font-size: 11px; color: var(--secondary); letter-spacing: 0.06em; opacity: 0.55; line-height: 1.55; text-align: left;">
+        Fonte: stats/public Firebase + Solana mainnet memo · 2026-05-05
+      </p>
+    </section>
+
+    <!-- SLIDE 6: MODELO DE NEGÓCIO — Iceberg viz refinada.
+         Visual hero: glow radial + iceberg multi-facetado + chips com blur,
+         linha d'água com glow, reflexo sutil. Income streams num card
+         elegante com numeração ordinal. -->
+    <section class="slide slide-modelo" data-slide="8" aria-label="JUICE — Modelo de Negócio">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <p class="eyebrow">Modelo de Negócio</p>
+
+        <div style="margin-top: clamp(56px, 7vh, 88px); display: flex; justify-content: center; align-items: center; gap: clamp(20px, 3vw, 56px);">
+
+          <!-- Coluna de chips (separada do raio, mais à esquerda) -->
+          <div class="modelo-chips" style="display: flex; flex-direction: column; align-items: flex-start; gap: clamp(18px, 2.2vw, 28px); flex-shrink: 0;">
+
+            <!-- 1. Entrada (primary) -->
+            <div style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(168, 219, 58, 0.40); background: rgba(168, 219, 58, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 18px rgba(168, 219, 58, 0.10);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);" aria-hidden="true">
+                <path d="M5 12h14M13 5l7 7-7 7"/>
+              </svg>
+              <span style="font-size: clamp(13px, 1.3vw, 17px); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff;">Entrada</span>
+            </div>
+
+            <!-- 2. Cliente Qualificado (primary) -->
+            <div style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(168, 219, 58, 0.40); background: rgba(168, 219, 58, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 18px rgba(168, 219, 58, 0.10);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/>
+              </svg>
+              <span style="font-size: clamp(13px, 1.3vw, 17px); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff;">Cliente Qualificado</span>
+            </div>
+
+            <!-- 3. Suporte Automatizado (dim) -->
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: rgba(255,255,255,0.7);" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span style="font-size: clamp(12px, 1.2vw, 15px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92);">Suporte Automatizado</span>
+            </div>
+
+            <!-- 4. ADS (dim) -->
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: rgba(255,255,255,0.7);" aria-hidden="true">
+                <path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+              </svg>
+              <span style="font-size: clamp(12px, 1.2vw, 15px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92);">ADS</span>
+            </div>
+
+            <!-- 5. Sybil resilience (primary, mesmo estilo de Cliente Qualificado) -->
+            <div style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(168, 219, 58, 0.40); background: rgba(168, 219, 58, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 18px rgba(168, 219, 58, 0.10);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span style="font-size: clamp(13px, 1.3vw, 17px); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff;">Sybil resilience</span>
+            </div>
+
+            <!-- 6. Data Annotation (dim) -->
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: rgba(255,255,255,0.7);" aria-hidden="true">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
+              <span style="font-size: clamp(12px, 1.2vw, 15px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92);">Data Annotation</span>
+            </div>
+
+          </div>
+
+          <!-- Iceberg hero — só o raio agora, sem chips dentro -->
+          <div style="position: relative; flex: 0 0 auto; width: clamp(260px, 30vw, 400px); min-height: clamp(280px, 42vh, 420px);" aria-hidden="true">
+
+            <!-- Iceberg SVG with depth + glow -->
+            <svg viewBox="0 0 600 560" preserveAspectRatio="xMidYMid meet"
+                 style="position: absolute; inset: 0; width: 100%; height: 100%;">
+              <defs>
+                <!-- 3D bolt body — diagonal lime gradient (light top-left → dark bottom-right) -->
+                <linearGradient id="bolt-body-grad" x1="0.2" y1="0" x2="0.85" y2="1">
+                  <stop offset="0%"   stop-color="#f4faca" />
+                  <stop offset="28%"  stop-color="#d4e87a" />
+                  <stop offset="55%"  stop-color="#a8db3a" />
+                  <stop offset="85%"  stop-color="#5e8520" />
+                  <stop offset="100%" stop-color="#3a5310" />
+                </linearGradient>
+                <!-- Front-face highlight — mimics light catching the left edge -->
+                <linearGradient id="bolt-highlight-grad" x1="0" y1="0" x2="1" y2="0.4">
+                  <stop offset="0%"   stop-color="rgba(255, 255, 255, 0.55)" />
+                  <stop offset="40%"  stop-color="rgba(255, 255, 255, 0.18)" />
+                  <stop offset="100%" stop-color="rgba(255, 255, 255, 0)" />
+                </linearGradient>
+                <!-- Soft outer aura -->
+                <radialGradient id="bolt-aura" cx="0.5" cy="0.5" r="0.55">
+                  <stop offset="0%"   stop-color="rgba(168, 219, 58, 0.32)" />
+                  <stop offset="55%"  stop-color="rgba(168, 219, 58, 0.08)" />
+                  <stop offset="100%" stop-color="transparent" />
+                </radialGradient>
+                <!-- Water line gradient -->
+                <linearGradient id="water-line-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"   stop-color="rgba(168, 219, 58, 0.05)" />
+                  <stop offset="20%"  stop-color="rgba(168, 219, 58, 0.55)" />
+                  <stop offset="50%"  stop-color="rgba(168, 219, 58, 0.95)" />
+                  <stop offset="80%"  stop-color="rgba(168, 219, 58, 0.55)" />
+                  <stop offset="100%" stop-color="rgba(168, 219, 58, 0.05)" />
+                </linearGradient>
+                <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="8" />
+                </filter>
+                <filter id="bolt-blur-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="14" />
+                </filter>
+              </defs>
+
+              <!-- Outer aura — soft halo behind the bolt -->
+              <ellipse cx="300" cy="290" rx="280" ry="240" fill="url(#bolt-aura)" />
+
+              <!-- Bolt blurred backdrop — creates the radiant glow -->
+              <path d="M 340 40 L 190 280 L 290 280 L 250 520 L 410 280 L 310 280 Z"
+                    fill="rgba(168, 219, 58, 0.42)"
+                    filter="url(#bolt-blur-glow)" />
+
+              <!-- Drop shadow (subtle, offset down-right) -->
+              <path d="M 340 40 L 190 280 L 290 280 L 250 520 L 410 280 L 310 280 Z"
+                    fill="rgba(0, 0, 0, 0.45)"
+                    transform="translate(6, 14)"
+                    filter="url(#soft-glow)"
+                    opacity="0.7" />
+
+              <!-- Main bolt body — gradient gives the 3D form -->
+              <path d="M 340 40 L 190 280 L 290 280 L 250 520 L 410 280 L 310 280 Z"
+                    fill="url(#bolt-body-grad)"
+                    stroke="rgba(255, 255, 255, 0.32)"
+                    stroke-width="1.5"
+                    stroke-linejoin="round" />
+
+              <!-- 3D facet — front face highlight (left edge of bolt) -->
+              <path d="M 340 40 L 215 268 L 280 268 L 290 280 L 250 520 L 252 510 L 287 270 L 295 270 L 340 40 Z"
+                    fill="url(#bolt-highlight-grad)"
+                    opacity="0.85" />
+
+              <!-- Inner core highlight — bright spine down the bolt -->
+              <path d="M 332 70 L 270 250 L 280 250 L 252 480"
+                    stroke="rgba(255, 255, 255, 0.42)"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round" />
+
+              <!-- Water line — glow + crisp line layered -->
+              <line x1="0" y1="280" x2="600" y2="280"
+                    stroke="url(#water-line-grad)" stroke-width="6"
+                    filter="url(#soft-glow)" opacity="0.7" />
+              <line x1="0" y1="280" x2="600" y2="280"
+                    stroke="url(#water-line-grad)" stroke-width="1.5" />
+
+              <!-- Water reflection ripples (subtle) -->
+              <line x1="80" y1="288" x2="170" y2="288" stroke="rgba(168, 219, 58, 0.15)" stroke-width="1" stroke-dasharray="2,6" />
+              <line x1="430" y1="288" x2="520" y2="288" stroke="rgba(168, 219, 58, 0.15)" stroke-width="1" stroke-dasharray="2,6" />
+            </svg>
+
+            <!-- Iceberg flow arrows — connect below-water infra pills up to
+                 above-water market pills. Sequential animation tells the
+                 narrative "infra alimenta o produto visível". -->
+            <svg class="iceberg-flow" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <!-- Path 1: Suporte Automatizado → User on-ramp (left vertical) -->
+              <path d="M 15 60 C 12 52, 12 42, 14 36" pathLength="100" vector-effect="non-scaling-stroke" />
+              <!-- Path 2: ADS → Cliente Qualificado (right vertical) -->
+              <path d="M 89 60 C 88 50, 87 30, 86 22" pathLength="100" vector-effect="non-scaling-stroke" />
+              <!-- Path 3: Sybil resilience → User on-ramp (left diagonal) -->
+              <path d="M 28 77 C 24 65, 18 48, 16 38" pathLength="100" vector-effect="non-scaling-stroke" />
+              <!-- Path 4: Raw data → Cliente Qualificado (right diagonal) -->
+              <path d="M 72 77 C 76 65, 82 40, 84 24" pathLength="100" vector-effect="non-scaling-stroke" />
+
+              <!-- Arrow heads at each path end (small upward triangles) -->
+              <polygon class="arrow-head" data-flow="1" points="14,35 12.6,38.5 15.4,38.5" />
+              <polygon class="arrow-head" data-flow="2" points="86,21 84.6,24.5 87.4,24.5" />
+              <polygon class="arrow-head" data-flow="3" points="16,37 14.6,40.5 17.4,40.5" />
+              <polygon class="arrow-head" data-flow="4" points="84,23 82.6,26.5 85.4,26.5" />
+            </svg>
+
+          </div>
+
+          <!-- JUICE phone hero — realistic 3D Android-style chassis (slide 6 only).
+               Uses the existing juice-phone-hero-solflare.png screen content,
+               cropped via the .phone3d-screen-wrap oversize/offset, and wraps it
+               in a CSS-built chassis with side buttons, glossy edges, camera
+               punch-hole and a subtle perspective tilt. -->
+          <div class="phone3d-hero-wrap" style="display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div class="phone3d-stage" style="width: clamp(180px, 17vw, 250px);">
+              <span class="phone3d-floor" aria-hidden="true"></span>
+              <div class="phone3d-body">
+                <span class="phone3d-btn phone3d-btn--vol-up" aria-hidden="true"></span>
+                <span class="phone3d-btn phone3d-btn--vol-dn" aria-hidden="true"></span>
+                <span class="phone3d-btn phone3d-btn--power" aria-hidden="true"></span>
+                <div class="phone3d-frame">
+                  <div class="phone3d-screen">
+                    <div class="phone3d-screen-wrap">
+                      <img class="phone3d-screen-img" src="brand/juice-phone-hero-solflare.png"
+                           alt="JUICE app — tela inicial com banner Solflare em PARCEIROS" />
+                      <span class="juice-phone-points" data-from="120700" data-to="122300" aria-hidden="true">120.700</span>
+                    </div>
+                    <span class="phone3d-glint" aria-hidden="true"></span>
+                  </div>
+                  <span class="phone3d-camera" aria-hidden="true"></span>
+                </div>
+                <span class="phone3d-edge phone3d-edge--top" aria-hidden="true"></span>
+                <span class="phone3d-edge phone3d-edge--right" aria-hidden="true"></span>
+                <span class="phone3d-edge phone3d-edge--bottom" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: WHY NOW — moved after MODELO ================================= -->
+    <section class="slide slide-why-now" data-slide="3" aria-label="Somente na Solana">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <p class="eyebrow">Somente na Solana</p>
+        <h2 class="metal-text" style="font-size: clamp(24px, 3.4vw, 42px); margin: 0; max-width: none; white-space: nowrap;">
+          DePIN na Solana <span class="metal-text">prova de</span> <span style="color: #ffffff; -webkit-text-fill-color: #ffffff; background: none;">Atividade Humana</span>
+        </h2>
+
+        <div class="grid-3" style="margin-top: clamp(28px, 3.5vw, 44px); gap: clamp(16px, 2vw, 24px);">
+
+          <!-- Card 01 — ZK Compression -->
+          <div class="card pillar why-now-card" style="position: relative; display: flex; flex-direction: column; border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%); padding: clamp(20px, 2.4vw, 28px); border-radius: 18px;">
+            <div style="display: flex; align-items: center; gap: clamp(12px, 1.4vw, 18px); margin-bottom: clamp(16px, 2vw, 22px);">
+              <img src="brand/cloak-icon-white.png" alt="Cloak" style="width: clamp(100px, 10vw, 132px); height: clamp(100px, 10vw, 132px); object-fit: contain; display: block;" />
+              <span style="font-size: clamp(20px, 1.9vw, 26px); font-weight: 800; color: rgba(255, 255, 255, 0.96); letter-spacing: -0.01em;">CLOAK</span>
+            </div>
+            <h3 style="margin: 0 0 clamp(14px, 1.5vw, 18px); font-size: clamp(20px, 1.9vw, 26px); font-weight: 800; line-height: 1.22; color: rgba(255, 255, 255, 0.96); letter-spacing: -0.01em;">Privacidade<br /><span style="font-size: clamp(18px, 1.7vw, 24px); font-weight: 600; color: rgba(168, 219, 58, 0.9); letter-spacing: 0.04em;">ZK Compression</span></h3>
+          </div>
+
+          <!-- Card 02 — Stack 100% Solana -->
+          <div class="card pillar why-now-card" style="position: relative; display: flex; flex-direction: column; border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%); padding: clamp(20px, 2.4vw, 28px); border-radius: 18px;">
+            <h3 style="margin: 0 0 clamp(14px, 1.5vw, 18px); font-size: clamp(20px, 1.9vw, 26px); font-weight: 800; line-height: 1.22; color: rgba(255, 255, 255, 0.96); letter-spacing: -0.01em;">Stack 100% Solana</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 2vw, 28px); align-items: center;">
+              <div style="display: inline-flex; align-items: center; gap: 10px;">
+                <img src="brand/kora-icon.png" alt="Kora" style="width: clamp(40px, 4vw, 52px); height: clamp(40px, 4vw, 52px); border-radius: 10px; display: block;" />
+                <span style="font-size: clamp(18px, 1.6vw, 22px); font-weight: 700; color: #fff; letter-spacing: 0.02em;">KORA</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 10px;">
+                <div style="width: clamp(40px, 4vw, 52px); height: clamp(40px, 4vw, 52px); border-radius: 10px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 4px; box-sizing: border-box;">
+                  <img src="brand/solana-pay-badge.png" alt="Solana Pay" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;" />
+                </div>
+                <span style="font-size: clamp(18px, 1.6vw, 22px); font-weight: 700; color: #fff; letter-spacing: 0.02em;">Solana Pay/PIX</span>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 10px;">
+                <img src="brand/attestations-icon.png" alt="Solana Attestations" style="width: clamp(40px, 4vw, 52px); height: clamp(40px, 4vw, 52px); border-radius: 10px; display: block;" />
+                <span style="font-size: clamp(18px, 1.6vw, 22px); font-weight: 700; color: #fff; letter-spacing: 0.02em;">Attestations</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 03 — Solana Mobile -->
+          <div class="card pillar why-now-card" style="position: relative; display: flex; flex-direction: column; border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%); padding: clamp(20px, 2.4vw, 28px); border-radius: 18px;">
+            <h3 style="margin: 0 0 clamp(14px, 1.5vw, 18px); font-size: clamp(20px, 1.9vw, 26px); font-weight: 800; line-height: 1.22; color: rgba(255, 255, 255, 0.96); letter-spacing: -0.01em; text-align: center;">Seeker Mobile</h3>
+            <div style="width: 100%; aspect-ratio: 5 / 4; border-radius: 14px; overflow: hidden; border: 1px solid rgba(168, 219, 58, 0.22); background: #000;">
+              <img src="brand/seeker-phones.png" alt="Solana Mobile Seeker" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: MOAT TÉCNICO (Bot não recarrega celular) — moved up ============ -->
+    <section class="slide" data-slide="10" aria-label="Moat Técnico">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <h2 class="metal-text">Bot não recarrega celular</h2>
+        <div class="grid-2" style="margin-top: clamp(14px, 1.6vw, 22px); gap: clamp(20px, 3vw, 32px); align-items: stretch;">
+
+          <!-- COLUNA 1 — HOJE / EM PRODUÇÃO -->
+          <div class="card" style="border-color: rgba(168, 219, 58, 0.26); background: linear-gradient(180deg, rgba(168, 219, 58, 0.025) 0%, transparent 70%);">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px;">
+              <p style="font-size: clamp(15px, 1.45vw, 18px); letter-spacing: 0.28em; text-transform: uppercase; color: var(--primary); font-weight: 700; margin: 0;">
+                ✓ Hoje · em produção
+              </p>
+              <p style="font-size: clamp(15px, 1.45vw, 18px); color: rgba(168, 219, 58, 0.6); margin: 0; font-weight: 600;">6 meses</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--primary); font-size: 26px; line-height: 1.3; flex-shrink: 0;">✓</span>
+                <div>
+                  <p style="font-size: clamp(20px, 2vw, 26px); font-weight: 700; color: #fff; margin: 0; line-height: 1.3;">SAS · Solana Attestation Service</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--primary); font-size: 26px; line-height: 1.3; flex-shrink: 0;">✓</span>
+                <div>
+                  <p style="font-size: clamp(20px, 2vw, 26px); font-weight: 700; color: #fff; margin: 0; line-height: 1.3;">Rules cap server-side</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--primary); font-size: 26px; line-height: 1.3; flex-shrink: 0;">✓</span>
+                <div>
+                  <p style="font-size: clamp(20px, 2vw, 26px); font-weight: 700; color: #fff; margin: 0; line-height: 1.3;">Anti-bot 8h diário</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--primary); font-size: 26px; line-height: 1.3; flex-shrink: 0;">✓</span>
+                <div>
+                  <p style="font-size: clamp(20px, 2vw, 26px); font-weight: 700; color: #fff; margin: 0; line-height: 1.3;">Pseudonymity SHA-256</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="color: var(--primary); font-size: 26px; line-height: 1.3; flex-shrink: 0;">✓</span>
+                <div>
+                  <p style="font-size: clamp(20px, 2vw, 26px); font-weight: 700; color: #fff; margin: 0; line-height: 1.3;">Play Integrity</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUNA 2 — Vídeo de demo do moat (12s loop, sem som) -->
+          <div style="border-radius: 18px; overflow: hidden; border: 1px solid rgba(168, 219, 58, 0.26); background: #050805; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); position: relative; aspect-ratio: 16 / 11;">
+            <video src="/demoday4/moat-demo-12s.mp4"
+                   autoplay muted loop playsinline preload="auto"
+                   aria-label="Demo do moat técnico — 12s"
+                   style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: CRESCIMENTO / ROADMAP — moved after MOAT ====================== -->
+    <section class="slide" data-slide="9" aria-label="Crescimento e roadmap">
+      <img src="brand/juice-wordmark.svg" alt="" aria-hidden="true" class="slide-corner-logo" />
+      <div class="slide-inner">
+        <h2 class="metal-text" style="font-size: clamp(24px, 3.4vw, 42px); margin: 0;">
+          Road <span class="metal-text">Map</span>
+        </h2>
+
+        <div class="timeline" style="margin-top: clamp(140px, 18vh, 240px);">
+          <div class="milestone done">
+            <div class="milestone-dot"></div>
+            <div class="milestone-quarter">Q1 · 2026</div>
+            <div class="milestone-title">
+              Lançamento<br />Seeker<br />Android<br />iOS · MVP
+              <span style="display: inline-block; margin-left: 6px; color: var(--primary);">✓</span>
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-dot"></div>
+            <div class="milestone-quarter">Q2 · 2026</div>
+            <div class="milestone-title">
+              Mainnet<br />100k usuários<br />Tokenomics
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-dot"></div>
+            <div class="milestone-quarter">Q4 · 2026</div>
+            <div class="milestone-title">
+              SDK B2B<br />Pre-Seed U$2M
+            </div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-dot"></div>
+            <div class="milestone-quarter">Q3 · 2027</div>
+            <div class="milestone-title">
+              Expansão LATAM
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SLIDE 10: ASK / FOUNDER / CTA ========================================= -->
+    <section class="slide" data-slide="12" aria-label="Ask & Founder">
+      <div class="slide-inner" style="margin-top: clamp(-80px, -7vh, -40px);">
+        <p class="eyebrow">Equipe</p>
+
+        <!-- Founder section — Rafael à esquerda, Carol à direita (posição em destaque) -->
+        <div class="grid-2" style="align-items: flex-start; gap: clamp(28px, 3.5vw, 48px);">
+          <!-- Rafael: foto + formações + tese -->
+          <div style="display: flex; gap: clamp(18px, 2.2vw, 28px); align-items: flex-start;">
+            <div style="text-align: center; flex-shrink: 0;">
+              <div style="width: clamp(200px, 19vw, 260px); height: clamp(200px, 19vw, 260px); overflow: hidden; border: 2px solid rgba(168, 219, 58, 0.40); box-shadow: 0 0 56px rgba(168, 219, 58, 0.28);">
+                <img src="images/founder.jpg" alt="Rafael Mariano" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+              </div>
+              <h3 style="font-size: clamp(14px, 1.4vw, 18px); font-weight: 900; margin: 12px 0 3px; letter-spacing: -0.02em;">
+                Rafael Mariano
+              </h3>
+              <p style="font-size: clamp(10px, 0.95vw, 13px); color: var(--primary); font-weight: 600; letter-spacing: 0.04em; margin: 0;">
+                CEO &amp; Founder
+              </p>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="font-family: 'Inter', system-ui; font-size: 11px; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); margin: 0 0 10px;">
+                Track record
+              </p>
+              <ul style="list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 6px;">
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span>Vendeu <strong style="color: #fff;">400 Rigs de Mineração</strong></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">CNPI</strong> + 8 anos em fintech (<strong style="color: #fff;">XP, Rico, Terra</strong>)</span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">Educador SENAI</strong> · empresário no mercado financeiro · piloto comercial</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Carol: foto + formações MKT & Comercial -->
+          <div style="display: flex; gap: clamp(18px, 2.2vw, 28px); align-items: flex-start;">
+            <div style="text-align: center; flex-shrink: 0;">
+              <div style="width: clamp(200px, 19vw, 260px); height: clamp(200px, 19vw, 260px); overflow: hidden; border: 2px solid rgba(168, 219, 58, 0.40); box-shadow: 0 0 56px rgba(168, 219, 58, 0.28);">
+                <img src="images/carol.png" alt="Carol Uchoas" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+              </div>
+              <h3 style="font-size: clamp(14px, 1.4vw, 18px); font-weight: 900; margin: 12px 0 3px; letter-spacing: -0.02em;">
+                Carol Uchoas
+              </h3>
+              <p style="font-size: clamp(10px, 0.95vw, 13px); color: var(--primary); font-weight: 600; letter-spacing: 0.04em; margin: 0;">
+                CMO &amp; CCO
+              </p>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="font-family: 'Inter', system-ui; font-size: 11px; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); margin: 0 0 10px;">
+                Track record
+              </p>
+              <ul style="list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 6px;">
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">Growth &amp; Aquisição</strong></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">Vendas B2B &amp; Parcerias</strong></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">Brand &amp; Comunidade</strong></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); color: rgba(255, 255, 255, 0.9); line-height: 1.45;">
+                  <span style="color: var(--primary); flex-shrink: 0; margin-top: 2px;">▸</span>
+                  <span><strong style="color: #fff;">Performance &amp; Funil de Receita</strong></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider editorial conectando team → CTA Telegram -->
+        <div style="margin: clamp(28px, 3.5vw, 44px) 0 clamp(16px, 2vw, 24px); display: flex; align-items: center; gap: 14px;">
+          <div aria-hidden="true" style="flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14));"></div>
+          <span style="font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); font-weight: 700; flex-shrink: 0;">
+            MUITO OBRIGADO
+          </span>
+          <div aria-hidden="true" style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), transparent);"></div>
+        </div>
+
+        <!-- CTA HERO — headline + Telegram QR (agora abaixo da equipe) -->
+        <div style="padding: clamp(10px, 1.4vw, 16px) clamp(14px, 1.8vw, 22px); border-radius: 16px; border: 1px solid rgba(168, 219, 58, 0.18); background: linear-gradient(135deg, rgba(168, 219, 58, 0.05) 0%, rgba(168, 219, 58, 0.01) 100%);">
+          <div style="display: flex; gap: clamp(12px, 1.8vw, 22px); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 240px;">
+              <h2 class="metal-text" style="font-size: clamp(16px, 2.1vw, 26px); font-weight: 900; letter-spacing: -0.02em; margin: 0; line-height: 1.45;">
+                www.usejuicemobile.com<br />
+                <span style="color: #ffffff; -webkit-text-fill-color: #ffffff; background: none; white-space: nowrap;">A primeira DePIN brasileira na Solana.</span>
+              </h2>
+            </div>
+            <div style="flex: 0 0 auto; display: flex; align-items: center; gap: clamp(12px, 1.4vw, 18px);">
+              <img src="brand/juice-wordmark-pitch.svg" alt="JUICE" style="height: clamp(38px, 3.6vw, 54px); width: auto; display: block; filter: drop-shadow(0 0 18px rgba(168, 219, 58, 0.22));" />
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <p style="margin: 0; font-size: clamp(10px, 0.9vw, 12px); font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary);">Baixe Aqui</p>
+                <a href="https://www.usejuicemobile.com/" target="_blank" rel="noopener noreferrer"
+                   aria-label="Acessar usejuicemobile.com via QR Code"
+                   style="display: inline-flex;">
+                  <img src="images/qr-juice-site.png" alt="QR Code → usejuicemobile.com" style="width: clamp(62px, 6vw, 84px); height: auto; display: block; border-radius: 8px; padding: 5px; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer — Apoiadores (selo verde) + linha separadora + Eventos (chips brancos) -->
+      <div aria-label="Apoiadores e eventos"
+           style="position: absolute; left: 50%; transform: translateX(-50%); bottom: clamp(96px, 12vh, 156px); display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(820px, 86vw); pointer-events: none;">
+
+        <!-- Linha 1 — Apoiadores (selo verde original) -->
+        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: clamp(16px, 2.4vw, 32px);">
+          <img src="brand/partners/solana-logo.png" alt="Solana" style="height: clamp(10px, 1.1vw, 15px); width: auto; object-fit: contain; opacity: 0.85; display: block;" />
+          <img src="brand/partners/superteam-logo.png" alt="Superteam Brasil" style="height: clamp(13px, 1.4vw, 19px); width: auto; object-fit: contain; opacity: 0.85; display: block;" />
+          <img src="brand/partners/colosseum-logo.png" alt="Colosseum" style="height: clamp(10px, 1.1vw, 15px); width: auto; object-fit: contain; opacity: 0.85; display: block;" />
+          <img src="brand/partners/the-garage-logo.png" alt="The Garage" style="height: clamp(10px, 1.1vw, 15px); width: auto; object-fit: contain; opacity: 0.85; display: block;" />
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Progress + counter -->
+  <nav class="controls" aria-label="Navegação dos slides">
+    <span class="counter mono" id="counter">01 / 10</span>
+    <button class="dot active" data-go="0" aria-label="Slide 1"></button>
+    <button class="dot" data-go="1" aria-label="Slide 2"></button>
+    <button class="dot" data-go="2" aria-label="Slide 3"></button>
+    <button class="dot" data-go="3" aria-label="Slide 4"></button>
+    <button class="dot" data-go="4" aria-label="Slide 5"></button>
+    <button class="dot" data-go="5" aria-label="Slide 6"></button>
+    <button class="dot" data-go="6" aria-label="Slide 7"></button>
+    <button class="dot" data-go="7" aria-label="Slide 8"></button>
+    <button class="dot" data-go="8" aria-label="Slide 9"></button>
+    <button class="dot" data-go="9" aria-label="Slide 10"></button>
+  </nav>
+
+  <button class="btn-fs" id="btn-fs" aria-label="Tela cheia" title="Tela cheia (F)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M2 5V2H5M14 5V2H11M2 11V14H5M14 11V14H11" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Stacked export mode (?stacked=1): all slides visible at once,
+      // no slider, no controls. Used to generate the offline PDF brief.
+      var STACKED = /(?:^|[?&])stacked(?:=1)?(?:&|$)/.test(location.search);
+      if (STACKED) {
+        document.body.classList.add('stacked');
+        document.querySelectorAll('.slide').forEach(function (s) { s.classList.add('active'); });
+      }
+
+      var deck = document.getElementById('deck');
+      var slides = deck.querySelectorAll('.slide');
+      var dots = document.querySelectorAll('.dot');
+      var counter = document.getElementById('counter');
+      var btnFs = document.getElementById('btn-fs');
+      var total = slides.length;
+      var current = 0;
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+      function setSlide(n) {
+        if (n < 0) n = 0;
+        if (n >= total) n = total - 1;
+        current = n;
+        deck.style.setProperty('--i', current);
+        slides.forEach(function (s, i) {
+          var isActive = i === current;
+          s.classList.toggle('active', isActive);
+          // Auto-play videos on active slide; pause + reset on inactive slides
+          var v = s.querySelector('video');
+          if (v) {
+            if (isActive) {
+              v.muted = true;        // ensure muted (required for autoplay)
+              var p = v.play();
+              if (p && typeof p.catch === 'function') {
+                p.catch(function () { /* swallow autoplay block */ });
+              }
+            } else {
+              v.pause();
+              try { v.currentTime = 0; } catch (e) {}
+            }
+          }
+        });
+        dots.forEach(function (d, i) {
+          d.classList.toggle('active', i === current);
+        });
+        counter.textContent = pad(current + 1) + ' / ' + pad(total);
+      }
+
+      function next() { setSlide(current + 1); }
+      function prev() { setSlide(current - 1); }
+
+      if (STACKED) {
+        // Stacked export — every slide visible, no slider/keyboard/swipe.
+        slides.forEach(function (s) { s.classList.add('active'); });
+      } else {
+        // Initial state — mark first slide active
+        setSlide(0);
+
+        // Keyboard nav
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+            e.preventDefault();
+            next();
+          } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            e.preventDefault();
+            prev();
+          } else if (e.key === 'Escape') {
+            // Esc returns to slide 1 (the "index"/cover)
+            if (document.fullscreenElement) document.exitFullscreen();
+            setSlide(0);
+          } else if (e.key === 'Home') {
+            setSlide(0);
+          } else if (e.key === 'End') {
+            setSlide(total - 1);
+          } else if (e.key === 'f' || e.key === 'F') {
+            toggleFs();
+          }
+        });
+
+        // Dots
+        dots.forEach(function (d) {
+          d.addEventListener('click', function () {
+            setSlide(parseInt(d.getAttribute('data-go'), 10));
+          });
+        });
+
+        // Touch swipe
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var touchActive = false;
+        document.addEventListener('touchstart', function (e) {
+          if (e.touches.length !== 1) return;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchActive = true;
+        }, { passive: true });
+        document.addEventListener('touchend', function (e) {
+          if (!touchActive) return;
+          touchActive = false;
+          var t = e.changedTouches[0];
+          var dx = t.clientX - touchStartX;
+          var dy = t.clientY - touchStartY;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) next();
+            else prev();
+          }
+        }, { passive: true });
+      }
+
+      // Fullscreen
+      function toggleFs() {
+        var el = document.documentElement;
+        if (!document.fullscreenElement) {
+          (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+        } else {
+          (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document);
+        }
+      }
+      btnFs.addEventListener('click', toggleFs);
+
+      // Stars background — deterministic layout (mulberry32, seed 73)
+      // rendered into two stacked fields. Mousemove → upward velocity;
+      // RAF integrates velocity into a position that wraps within
+      // [-height, 0]. The duplicate field at top: 100% fills the gap
+      // as the track translates upward, giving infinite parallax.
+      var starsTrack = document.getElementById('stars-track');
+      var starsField1 = document.getElementById('stars-field-1');
+      var starsField2 = document.getElementById('stars-field-2');
+      var prefersReduceMotion =
+        window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (starsTrack && starsField1 && starsField2) {
+        function mulberry(seed) {
+          return function () {
+            seed = (seed + 0x6d2b79f5) | 0;
+            var t = seed;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        function makeSpec() {
+          var rnd = mulberry(73);
+          var COUNT = 100;
+          var out = [];
+          for (var i = 0; i < COUNT; i++) {
+            var top = rnd() * 100;
+            var left = rnd() * 100;
+            var sizeBias = Math.pow(rnd(), 2.8);
+            var size = +(0.55 + sizeBias * 2.3).toFixed(2);
+            var tier = size > 2.0 ? 'bright' : size > 1.2 ? 'normal' : 'dim';
+            var baseOp =
+              tier === 'dim'    ? 0.07 + rnd() * 0.13 :
+              tier === 'normal' ? 0.16 + rnd() * 0.20 :
+                                  0.30 + rnd() * 0.18;
+            var twinkleRoll = rnd();
+            var shouldTwinkle =
+              (tier === 'dim'    && twinkleRoll < 0.25) ||
+              (tier === 'normal' && twinkleRoll < 0.55) ||
+              (tier === 'bright' && twinkleRoll < 0.70);
+            var period = +(1.8 + rnd() * 4).toFixed(2);
+            var delay = +(rnd() * 5).toFixed(2);
+            out.push({
+              top: top, left: left, size: size, tier: tier,
+              baseOp: baseOp, twinkle: shouldTwinkle,
+              period: period, delay: delay,
+            });
+          }
+          return out;
+        }
+        function renderInto(el, spec) {
+          var frag = document.createDocumentFragment();
+          for (var i = 0; i < spec.length; i++) {
+            var s = spec[i];
+            var node = document.createElement('span');
+            node.className =
+              'star ' + s.tier + (s.twinkle && !prefersReduceMotion ? ' twinkle' : '');
+            node.style.top = s.top + '%';
+            node.style.left = s.left + '%';
+            node.style.width = s.size + 'px';
+            node.style.height = s.size + 'px';
+            node.style.setProperty('--o', s.baseOp.toFixed(2));
+            node.style.setProperty('--p', s.period + 's');
+            node.style.setProperty('--d', s.delay + 's');
+            if (!s.twinkle) node.style.opacity = s.baseOp.toFixed(2);
+            frag.appendChild(node);
+          }
+          el.innerHTML = '';
+          el.appendChild(frag);
+        }
+        function buildStars() {
+          var spec = makeSpec();
+          renderInto(starsField1, spec);
+          renderInto(starsField2, spec);
+        }
+        buildStars();
+
+        var resizeT;
+        window.addEventListener('resize', function () {
+          clearTimeout(resizeT);
+          resizeT = setTimeout(buildStars, 200);
+        });
+
+        // === Parallax: ambient drift + mouse boost ===
+        // Ambient: a slow, constant upward drift (~1 px/sec) keeps the
+        // sky alive even when the mouse is still — gentle, "suave."
+        // Mouse: each move adds extra upward velocity (decays back to
+        // baseline). Track wraps over a duplicate field for infinity.
+        if (!prefersReduceMotion) {
+          var pos = 0;
+          var boost = 0;
+          var AMBIENT = -0.038; // px/frame (~2.3 px/sec at 60fps)
+          var raf = 0;
+
+          function onMouseMove() {
+            boost = Math.max(boost - 0.045, -0.30);
+          }
+
+          function tick() {
+            // Mouse boost decays; ambient is permanent.
+            boost *= 0.985;
+            if (Math.abs(boost) < 0.002) boost = 0;
+
+            pos += AMBIENT + boost;
+
+            var h = window.innerHeight;
+            if (h > 0) {
+              var wrapped = pos % h;
+              if (wrapped > 0) wrapped -= h;
+              starsTrack.style.transform =
+                'translate3d(0, ' + wrapped.toFixed(2) + 'px, 0)';
+            }
+            raf = requestAnimationFrame(tick);
+          }
+          raf = requestAnimationFrame(tick);
+          window.addEventListener('mousemove', onMouseMove, { passive: true });
+        }
+      }
+
+      // Slide 3 — "Minutos validados" counter creeps from 460 → 468
+      // when the card scrolls into view. Sells "isto está crescendo
+      // enquanto eu falo." Slow ramp (~12s) + tiny twitch = organic.
+      var minutosEl = document.getElementById('minutos-counter');
+      if (minutosEl && !prefersReduceMotion) {
+        // Fallback values from data attrs (used if /api/total-minutes falha)
+        var fromN = parseInt(minutosEl.dataset.from, 10) || 468120;
+        var toN   = parseInt(minutosEl.dataset.to,   10) || 468800;
+        var started = false;
+
+        function rampMinutos() {
+          if (started) return;
+          started = true;
+          var current = fromN;
+          var start = performance.now();
+          var DURATION = 12000; // 12s, slow drift
+          function step(now) {
+            var t = Math.min((now - start) / DURATION, 1);
+            var eased = 1 - Math.pow(1 - t, 2);
+            current = fromN + (toN - fromN) * eased;
+            minutosEl.textContent = Math.round(current).toLocaleString('pt-BR');
+            if (t < 1) requestAnimationFrame(step);
+            else minutosEl.textContent = toN.toLocaleString('pt-BR');
+          }
+          requestAnimationFrame(step);
+        }
+
+        // Tenta puxar valor real do Firebase via /api/total-minutes; se ok,
+        // substitui fromN/toN antes de animar. Falha silenciosa = fallback
+        // pros valores hardcoded.
+        function loadAndRamp() {
+          if (started) return;
+          var ctrl = ('AbortController' in window) ? new AbortController() : null;
+          var timeout = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+          fetch('/api/total-minutes', { signal: ctrl ? ctrl.signal : undefined })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (data) {
+              clearTimeout(timeout);
+              var live = data && typeof data.minutes === 'number' ? data.minutes : null;
+              if (live && live > 0) {
+                fromN = live;
+                // delta estimado pra animação parecer ao vivo (~+0.15% no ciclo)
+                toN = live + Math.max(120, Math.round(live * 0.0015));
+                minutosEl.textContent = fromN.toLocaleString('pt-BR');
+              }
+            })
+            .catch(function () { /* mantém fallback */ })
+            .finally(function () { rampMinutos(); });
+        }
+
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) {
+                loadAndRamp();
+                io.disconnect();
+              }
+            });
+          }, { threshold: 0.4 });
+          io.observe(minutosEl);
+        } else {
+          loadAndRamp();
+        }
+      }
+
+      // Slide 2 — JUICE phone live points counter inside the screen.
+      // Climbs 120.700 → 122.300 over 12s (BR thousands separator).
+      // Starts when the slide becomes active.
+      var pointsEl = document.getElementById('juice-phone-points');
+      if (pointsEl && !prefersReduceMotion) {
+        var pFrom = parseInt(pointsEl.dataset.from, 10) || 120700;
+        var pTo   = parseInt(pointsEl.dataset.to,   10) || 122300;
+        var pStarted = false;
+        function fmtBR(n) {
+          return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        function rampPoints() {
+          if (pStarted) return;
+          pStarted = true;
+          var startTs = performance.now();
+          var DURATION = 12000;
+          function step(now) {
+            var t = Math.min((now - startTs) / DURATION, 1);
+            var eased = 1 - Math.pow(1 - t, 2);
+            pointsEl.textContent = fmtBR(pFrom + (pTo - pFrom) * eased);
+            if (t < 1) requestAnimationFrame(step);
+            else pointsEl.textContent = fmtBR(pTo);
+          }
+          requestAnimationFrame(step);
+        }
+        var solucaoSlide = pointsEl.closest('.slide');
+        if (solucaoSlide && 'MutationObserver' in window) {
+          if (solucaoSlide.classList.contains('active')) rampPoints();
+          else {
+            var mo = new MutationObserver(function () {
+              if (solucaoSlide.classList.contains('active')) {
+                rampPoints();
+                mo.disconnect();
+              }
+            });
+            mo.observe(solucaoSlide, { attributes: true, attributeFilter: ['class'] });
+          }
+        } else {
+          rampPoints();
+        }
+      }
+
+      // Slide 2 narrative cycle — loops forever:
+      //   0–10s    : screen normal, percentage climbs 0% → 100%
+      //   10–10.45 : screen shakes (impact)
+      //   10.45–16.45 : screen shattered, dark + cracks visible
+      //   16.45    : reset → cycle repeats
+      // Hammers home "you charge for hours and end up with nothing."
+      var chargeTime = document.getElementById('charge-time');
+      var phoneScreen = document.querySelector('.iphone-17-screen.ph-charge');
+      var chargeInterval = null;
+      var pct = 0;
+
+      function renderPct() {
+        if (chargeTime) chargeTime.textContent = pct + '%';
+      }
+
+      function startCounter() {
+        pct = 0;
+        renderPct();
+        if (chargeInterval) clearInterval(chargeInterval);
+        chargeInterval = setInterval(function () {
+          pct = Math.min(pct + 1, 100); // climbs to 100% over ~10s
+          renderPct();
+        }, 100);
+      }
+
+      function stopCounter() {
+        if (chargeInterval) {
+          clearInterval(chargeInterval);
+          chargeInterval = null;
+        }
+      }
+
+      function runCycle() {
+        if (!phoneScreen) return;
+        // Reset state — bring screen back to life
+        phoneScreen.classList.remove('shattered');
+        startCounter();
+
+        // After 10s, shake
+        setTimeout(function () {
+          phoneScreen.classList.add('shattering');
+          // After the shake completes, swap to dead state
+          setTimeout(function () {
+            phoneScreen.classList.remove('shattering');
+            phoneScreen.classList.add('shattered');
+            stopCounter();
+            // Stay shattered for 6s, then loop back to start
+            setTimeout(runCycle, 6000);
+          }, 450); // matches ph-shake duration
+        }, 10000);
+      }
+
+      if (chargeTime || phoneScreen) {
+        runCycle();
+      }
+    })();
+  </script>
+
+  <!-- Slide 3 — "Usuários on-line" counter from GA4 Realtime API.
+       Hits /api/active-users every 30s. Endpoint cached server-side and
+       returns null if env vars are missing. On any failure the dash "—"
+       stays — never a fake number. -->
+  <script>
+    (function () {
+      var el = document.getElementById('usuarios-online-counter');
+      if (!el) return;
+
+      function formatBR(n) {
+        if (!Number.isFinite(n)) return null;
+        if (n < 1000) return String(n);
+        if (n < 100000) return (n / 1000).toFixed(1).replace('.', ',') + 'k';
+        return Math.floor(n / 1000) + 'k';
+      }
+
+      function refresh() {
+        fetch('/api/active-users', { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var n = (data && typeof data.activeUsers === 'number') ? data.activeUsers : null;
+            var formatted = formatBR(n);
+            if (formatted !== null) el.textContent = formatted;
+          })
+          .catch(function (e) { console.warn('[active-users]', e); });
+      }
+
+      refresh();
+      setInterval(refresh, 30000);
+    })();
+  </script>
+</body>
+</html>

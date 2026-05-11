@@ -1,0 +1,836 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: #040b1a;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Selection */
+::selection {
+  background: rgba(107, 131, 51, 0.40);
+  color: #ffffff;
+}
+
+/* Scrollbar (subtle, dark) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #050805;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2a1a;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2a4a2a;
+}
+
+/* Hero headline custom sizing */
+.hero-headline {
+  font-size: clamp(1.98rem, 3.96vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+/* Partners hero — slightly smaller cap because line 2 ("de uma rede
+   DePIN ativa.") is 24 chars and would overflow the col-span-7 width
+   when paired with whitespace-nowrap on each phrase span. */
+.partners-headline {
+  font-size: clamp(1.9rem, 3.6vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.65;
+}
+
+.section-badge {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+/* Phone mockup 3D tilt */
+.phone-tilt {
+  transform: perspective(1400px) rotateY(-7deg) rotateX(2deg);
+  transform-style: preserve-3d;
+}
+
+/* Titanium-style outer chassis (Seeker-inspired) */
+.phone-frame {
+  position: relative;
+  background:
+    linear-gradient(
+      135deg,
+      #34353a 0%,
+      #1c1d20 18%,
+      #0f1012 45%,
+      #1c1d20 72%,
+      #34353a 100%
+    );
+  border-radius: 46px;
+  padding: 6px;
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.14),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 24px 50px -10px rgba(0, 0, 0, 0.55),
+    0 50px 80px -20px rgba(0, 0, 0, 0.45),
+    0 30px 90px -10px rgba(107, 131, 51, 0.22);
+}
+
+/* Inner display glass */
+.phone-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 38px;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 24px rgba(0, 0, 0, 0.55);
+}
+
+/* Punch-hole front camera */
+.phone-punch {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  z-index: 20;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #1f2530 0%, #060608 65%, #000 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.phone-punch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2.5px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  filter: blur(0.3px);
+}
+
+/* Diagonal glass sheen overlay */
+.phone-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0) 18%,
+    rgba(255, 255, 255, 0) 80%,
+    rgba(201, 178, 122, 0.06) 100%
+  );
+}
+
+/* Side buttons (machined metal feel) */
+.phone-button {
+  position: absolute;
+  z-index: 5;
+  background: linear-gradient(
+    180deg,
+    #2c2d32 0%,
+    #16171a 50%,
+    #2c2d32 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    1px 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.phone-button-power {
+  right: -3px;
+  top: 26%;
+  width: 4px;
+  height: 68px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(
+    180deg,
+    #2c2d32 0%,
+    #16171a 28%,
+    #1f3d2a 50%,
+    #16171a 72%,
+    #2c2d32 100%
+  );
+}
+
+.phone-button-vol-up {
+  left: -3px;
+  top: 20%;
+  width: 4px;
+  height: 46px;
+  border-radius: 2px 0 0 2px;
+}
+
+.phone-button-vol-down {
+  left: -3px;
+  top: 32%;
+  width: 4px;
+  height: 46px;
+  border-radius: 2px 0 0 2px;
+}
+
+/* USB-C port — small dark slot at the bottom edge of the phone-frame.
+   The cable's connector boot sits flush below this slot so the metal
+   plug visually disappears INTO the phone. */
+.phone-usbc-port {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 26px;
+  height: 5px;
+  border-radius: 3px;
+  background:
+    radial-gradient(ellipse at center, #0a0a0a 0%, #050505 60%, #000 100%);
+  box-shadow:
+    inset 0 1.5px 1.5px rgba(0, 0, 0, 0.85),
+    inset 0 -0.5px 0 rgba(255, 255, 255, 0.06),
+    0 0.5px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* The metal plug INSIDE the slot — tiny lighter shape suggesting the
+   plug is inserted. Sits inside the phone-usbc-port. */
+.phone-usbc-port::after {
+  content: '';
+  position: absolute;
+  inset: 1px 2px;
+  border-radius: 1.5px;
+  background: linear-gradient(
+    180deg,
+    #2a2a2a 0%,
+    #1a1a1a 50%,
+    #0d0d0d 100%
+  );
+  box-shadow:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Bright star diffraction spikes */
+.star-bright::before,
+.star-bright::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.star-bright::before {
+  width: 14px;
+  height: 1px;
+  margin-left: -7px;
+  margin-top: -0.5px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.star-bright::after {
+  width: 1px;
+  height: 14px;
+  margin-left: -0.5px;
+  margin-top: -7px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+/* Occasional satellite passes (idle off-screen, fade in/out at edges) */
+.satellite {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0 3px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(200, 220, 255, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  will-change: left, top, opacity;
+}
+
+@keyframes sat-cross-1 {
+  0%,
+  86% {
+    left: -4%;
+    top: 14%;
+    opacity: 0;
+  }
+  88% {
+    opacity: 0.85;
+  }
+  98% {
+    opacity: 0.85;
+  }
+  100% {
+    left: 104%;
+    top: 38%;
+    opacity: 0;
+  }
+}
+
+@keyframes sat-cross-2 {
+  0%,
+  88% {
+    left: 105%;
+    top: 22%;
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  98% {
+    opacity: 0.7;
+  }
+  100% {
+    left: -5%;
+    top: 56%;
+    opacity: 0;
+  }
+}
+
+/* Top nav — shooting-star underline on hover */
+.nav-link-trail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(148, 176, 72, 0) 0%,
+    rgba(201, 178, 122, 0.85) 50%,
+    rgba(148, 176, 72, 0) 100%
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
+}
+
+.nav-link:hover .nav-link-trail,
+.nav-link:focus-visible .nav-link-trail {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Brazilian flag waving animation */
+.brazil-flag {
+  animation: flag-wave 3s ease-in-out infinite;
+  transform-origin: left center;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: skewX(0deg) skewY(0deg) scaleX(1);
+  }
+  25% {
+    transform: skewX(-4deg) skewY(1deg) scaleX(0.97);
+  }
+  50% {
+    transform: skewX(0deg) skewY(0deg) scaleX(1);
+  }
+  75% {
+    transform: skewX(4deg) skewY(-1deg) scaleX(0.97);
+  }
+}
+
+.satellite-1 {
+  animation: sat-cross-1 90s linear infinite;
+  animation-delay: -67s;
+}
+
+.satellite-2 {
+  animation: sat-cross-2 110s linear infinite;
+  animation-delay: -10s;
+}
+
+/* Starlink train — line of satellites in formation, rare passes */
+.starlink-train {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 20px);
+  width: max-content;
+  height: 2px;
+  pointer-events: none;
+  animation: starlink-cross 240s linear infinite;
+  animation-delay: -185s;
+  will-change: left, top;
+}
+
+.starlink-train > span {
+  display: block;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  flex-shrink: 0;
+  box-shadow:
+    0 0 2.5px rgba(255, 255, 255, 0.9),
+    0 0 5px rgba(220, 235, 255, 0.4);
+}
+
+@keyframes starlink-cross {
+  0%,
+  84% {
+    left: -100%;
+    top: 16%;
+  }
+  100% {
+    left: 110%;
+    top: 26%;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .phone-tilt {
+    transform: none;
+  }
+}
+
+/* Grid line decorative bg */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(107, 131, 51, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(107, 131, 51, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ============================================================
+   Premium Metallic System (Olive + Titanium)
+   ============================================================ */
+
+/* Brushed olive metal CTA — primary action button */
+.metal-cta {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #94b048 0%,
+    #6b8333 25%,
+    #4a5e26 50%,
+    #6b8333 75%,
+    #94b048 100%
+  );
+  color: #f5f1e8;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(107, 131, 51, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-cta:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    #a4c055 0%,
+    #7c9b3b 25%,
+    #557030 50%,
+    #7c9b3b 75%,
+    #a4c055 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 32px rgba(148, 176, 72, 0.6);
+  transform: translateY(-1px);
+}
+
+.metal-cta:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Champagne metal CTA — secondary luxury accent */
+.metal-cta-champagne {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #e8dab1 0%,
+    #c9b27a 25%,
+    #9e8849 50%,
+    #c9b27a 75%,
+    #e8dab1 100%
+  );
+  color: #1a1408;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(201, 178, 122, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-cta-champagne:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 32px rgba(232, 218, 177, 0.5);
+}
+
+/* Brushed steel surface — premium card/panel */
+.metal-surface {
+  position: relative;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(184, 186, 189, 0.06) 0%,
+      rgba(122, 124, 126, 0.03) 30%,
+      rgba(90, 92, 94, 0.02) 50%,
+      rgba(122, 124, 126, 0.03) 70%,
+      rgba(184, 186, 189, 0.06) 100%
+    ),
+    linear-gradient(135deg, #131c12 0%, #0e160e 50%, #08100a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Hairline metal border — etched edge feel */
+.metal-border {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(184, 186, 189, 0.15);
+}
+
+/* Metallic text accent — for premium headlines */
+.metal-text {
+  /* CSS variables driven by mouse position (set via JS in Hero.tsx) */
+  --mx: 50%;
+  --my: 50%;
+  background:
+    /* Mouse-following specular highlight — sits on top */
+    radial-gradient(
+      circle 220px at var(--mx) var(--my),
+      rgba(255, 255, 255, 0.70) 0%,
+      rgba(240, 250, 200, 0.32) 22%,
+      transparent 55%
+    ),
+    /* Base metallic banding */
+    linear-gradient(
+      135deg,
+      #eaf5b8 0%,    /* pale highlight */
+      #c5d97c 16%,   /* light olive */
+      #94b048 32%,   /* mid-olive shadow */
+      #d4e58c 48%,   /* sheen ramp */
+      #f0f8c8 56%,   /* peak specular highlight */
+      #b8cd6b 72%,   /* base olive */
+      #8aa83d 88%,   /* deep shadow band */
+      #c5d97c 100%   /* light end */
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.05))
+    drop-shadow(0 2px 10px rgba(168, 219, 58, 0.18));
+}
+
+/* Mobile / touch optimization: drop the mouse-tracking radial highlight
+   layer — it's invisible to touch users and the layered gradient + filter
+   composition is the heaviest paint cost on the LCP element. */
+@media (hover: none), (max-width: 768px) {
+  .metal-text {
+    background:
+      linear-gradient(
+        135deg,
+        #eaf5b8 0%,
+        #c5d97c 16%,
+        #94b048 32%,
+        #d4e58c 48%,
+        #f0f8c8 56%,
+        #b8cd6b 72%,
+        #8aa83d 88%,
+        #c5d97c 100%
+      );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+/* Halve the animated star DOM count on small viewports to reduce paint
+   and main-thread work. Keep desktop's full density. */
+@media (max-width: 768px) {
+  [data-stars-field] > span:nth-child(2n) {
+    display: none;
+  }
+}
+
+/* Engraved divider — etched line with light/dark contrast */
+.metal-divider {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Outline button — metallic hairline (secondary actions) */
+.metal-outline {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  color: #f5f1e8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.22);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-outline:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(201, 178, 122, 0.08) 0%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  color: #e8dab1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(201, 178, 122, 0.4),
+    0 0 16px rgba(201, 178, 122, 0.12);
+}
+
+/* Etched badge — engraved pill (SectionBadge) */
+.metal-badge {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.18);
+}
+
+.metal-badge-primary {
+  background: linear-gradient(
+    180deg,
+    rgba(201, 178, 122, 0.10) 0%,
+    rgba(45, 63, 14, 0.18) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(201, 178, 122, 0.38),
+    0 0 12px rgba(201, 178, 122, 0.10);
+}
+
+/* Stat card — small metallic data card */
+.metal-stat-card {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(184, 186, 189, 0.05) 0%,
+      rgba(122, 124, 126, 0.02) 50%,
+      rgba(184, 186, 189, 0.05) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 16, 10, 0.6) 0%, rgba(8, 16, 10, 0.85) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.12);
+}
+
+/* Icon button — small metallic square (copy, etc) */
+.metal-icon-btn {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  color: rgba(245, 241, 232, 0.75);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.18);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-icon-btn:hover {
+  color: #f5f1e8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(201, 178, 122, 0.35);
+}
+
+/* Card panel — premium content card with metallic border */
+.metal-card {
+  background: linear-gradient(135deg, #131c12 0%, #0e160e 50%, #08100a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.10);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(201, 178, 122, 0.25),
+    0 0 32px rgba(107, 131, 51, 0.08);
+}
+
+/* Step icon tile — engraved metal crown (HowItWorks, Features) */
+.metal-step-icon {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #4a5e26 0%,
+    #2d3f0e 25%,
+    #1a2608 50%,
+    #2d3f0e 75%,
+    #4a5e26 100%
+  );
+  box-shadow:
+    /* Inset top highlight (catches light from above) */
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    /* Inset bottom shadow (depth) */
+    inset 0 -2px 2px rgba(0, 0, 0, 0.55),
+    /* Inset champagne ring (luxury detail — embedded gold ring) */
+    inset 0 0 0 1px rgba(201, 178, 122, 0.22),
+    /* Outer black hairline (machined edge) */
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    /* Drop shadow */
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    /* Olive ambient glow */
+    0 0 24px rgba(107, 131, 51, 0.30);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-step-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  pointer-events: none;
+}
+
+.metal-step-icon:hover,
+.group:hover .metal-step-icon {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(201, 178, 122, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    0 0 32px rgba(148, 176, 72, 0.55);
+}
+
+/* Accordion item — etched, with champagne accent on open */
+.metal-accordion {
+  background: linear-gradient(135deg, #131c12 0%, #0e160e 50%, #08100a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(184, 186, 189, 0.10);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metal-accordion[open] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(201, 178, 122, 0.32),
+    0 0 24px rgba(201, 178, 122, 0.06);
+}
+

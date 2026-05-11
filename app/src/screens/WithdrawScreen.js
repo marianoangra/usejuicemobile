@@ -1,0 +1,601 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Linking,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { solicitarSaque } from '../services/pontos';
+import { logSaqueSolicitado, logResgateCNB, logResgateCNBSucesso } from '../services/analytics';
+import { getWalletAddress } from '../services/walletService';
+import bs58 from 'bs58';
+import { useTheme } from '../context/ThemeContext';
+import { ArrowLeft, CreditCard, Lock, DollarSign, Clock, Zap, Smartphone, Shield, AlertTriangle, Key } from 'lucide-react-native';
+
+const functions = getFunctions();
+const resgatarCNBFn = httpsCallable(functions, 'resgatarCNB');
+const resgatarPrivadoFn = httpsCallable(functions, 'resgatarPrivado');
+
+function solanaValido(addr) {
+  try {
+    const decoded = bs58.decode(addr.trim());
+    return decoded.length === 32;
+  } catch {
+    return false;
+  }
+}
+
+export default function WithdrawScreen({ route, navigation }) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const { perfil } = route.params || {};
+  const [aba, setAba] = useState(route.params?.initialAba ?? 'pix');
+
+  const [nome, setNome] = useState(perfil?.nome ?? '');
+  const [pix, setPix] = useState('');
+  const [quantidade, setQuantidade] = useState('');
+  const [loadingPix, setLoadingPix] = useState(false);
+
+  const [wallet, setWallet] = useState('');
+  const [walletNativa, setWalletNativa] = useState(null);
+  const [quantidadeCNB, setQuantidadeCNB] = useState('');
+  const [loadingCNB, setLoadingCNB] = useState(false);
+
+  const [walletPrivado, setWalletPrivado] = useState('');
+  const [quantidadePrivado, setQuantidadePrivado] = useState('');
+  const [loadingPrivado, setLoadingPrivado] = useState(false);
+
+  const pontosDisponiveis = perfil?.pontos ?? 0;
+  const contaBanida   = perfil?.contaBanida    === true;
+  const contaSuspeita = perfil?.contaSuspeita  === true;
+  const sacoBloqueado = perfil?.saquesBloqueados === true;
+  const estaRestrita  = contaBanida || sacoBloqueado || contaSuspeita;
+
+  // Motivo: prioriza campo novo motivoBloqueio, fallback para alertaSeguranca legado
+  const motivoBloqueio = perfil?.motivoBloqueio
+    ?? perfil?.alertaSeguranca?.mensagem
+    ?? null;
+
+  const SUPORTE_EMAIL = 'contato@criptonobolso.com.br';
+
+  // Mostra alerta ao abrir a tela se conta estiver restrita
+  useEffect(() => {
+    if (estaRestrita) {
+      const titulo = contaBanida ? '⛔ Conta Suspensa' : '⚠️ Conta em Análise';
+      const corpo  = motivoBloqueio
+        ? `${motivoBloqueio}\n\nSe precisar de ajuda, entre em contato:\n${SUPORTE_EMAIL}`
+        : `Saques bloqueados. Entre em contato:\n${SUPORTE_EMAIL}`;
+      Alert.alert(titulo, corpo, [
+        { text: 'Contatar Suporte', onPress: () => Linking.openURL(`mailto:${SUPORTE_EMAIL}?subject=Conta%20restrita`) },
+        { text: 'Entendi', style: 'cancel' },
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!perfil?.uid) return;
+    getWalletAddress(perfil.uid).then(addr => {
+      if (addr) {
+        setWalletNativa(addr);
+        setWallet(addr);
+      }
+    }).catch(() => {});
+  }, [perfil?.uid]);
+
+  function formatarPontos(text) {
+    const digits = text.replace(/\D/g, '');
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  const qtdPix = parseInt(quantidade.replace(/\D/g, ''), 10) || 0;
+
+  function pixValido(chave) {
+    const v = chave.trim();
+    if (!v) return false;
+    if (v.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)) return true;
+    const digits = v.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 14;
+  }
+
+  const podeConfirmarPix = pontosDisponiveis >= 100000 && qtdPix >= 100000 && qtdPix <= pontosDisponiveis && nome.trim() && pixValido(pix);
+
+  async function handleSaquePix() {
+    if (!perfil?.uid) return Alert.alert('Erro', 'Dados do perfil não carregados.');
+    if (!nome.trim()) return Alert.alert('Atenção', 'Informe seu nome completo.');
+    if (!pixValido(pix)) return Alert.alert('Atenção', 'Informe uma chave PIX válida (CPF, e-mail, telefone ou chave aleatória).');
+    if (qtdPix < 100000) return Alert.alert('Atenção', 'Mínimo de 100.000 pontos.');
+    if (qtdPix > pontosDisponiveis) return Alert.alert('Atenção', 'Pontos insuficientes.');
+
+    Alert.alert(
+      'Confirmar Saque PIX',
+      `Nome: ${nome.trim()}\nChave PIX: ${pix.trim()}\nPontos: ${qtdPix.toLocaleString('pt-BR')}\n\nPagamento em até 72h.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Confirmar', onPress: async () => {
+            setLoadingPix(true);
+            try {
+              await solicitarSaque(perfil.uid, nome.trim(), pix.trim(), qtdPix);
+              logSaqueSolicitado(qtdPix);
+              Alert.alert('Saque solicitado!', 'Processaremos em até 72 horas.', [{ text: 'OK', onPress: () => navigation.goBack() }]);
+            } catch (e) {
+              Alert.alert('Erro', e.message ?? 'Tente novamente.');
+            } finally { setLoadingPix(false); }
+          },
+        },
+      ]
+    );
+  }
+
+  const BLOCO_PRIVADO = 100000;
+  const qtdPrivado = parseInt(quantidadePrivado.replace(/\D/g, ''), 10) || 0;
+  const qtdPrivadoArredondado = Math.floor(qtdPrivado / BLOCO_PRIVADO) * BLOCO_PRIVADO;
+  const solLiquido = (qtdPrivadoArredondado / BLOCO_PRIVADO) * 0.005;
+  const podeConfirmarPrivado =
+    pontosDisponiveis >= BLOCO_PRIVADO &&
+    qtdPrivadoArredondado >= BLOCO_PRIVADO &&
+    qtdPrivadoArredondado <= pontosDisponiveis &&
+    solanaValido(walletPrivado);
+
+  async function handleResgatePrivado() {
+    if (!perfil?.uid) return Alert.alert('Erro', 'Dados do perfil não carregados.');
+    if (!solanaValido(walletPrivado)) return Alert.alert('Atenção', 'Informe um endereço Solana válido.');
+    if (qtdPrivadoArredondado < BLOCO_PRIVADO) return Alert.alert('Atenção', 'Mínimo de 100.000 pontos.');
+    if (qtdPrivadoArredondado > pontosDisponiveis) return Alert.alert('Atenção', 'Pontos insuficientes.');
+
+    Alert.alert(
+      'Confirmar Resgate Privado',
+      `Carteira: ${walletPrivado.trim().slice(0, 8)}...${walletPrivado.trim().slice(-6)}\nPontos: ${qtdPrivadoArredondado.toLocaleString('pt-BR')}\nVocê receberá: ~${solLiquido.toFixed(4)} SOL\n\nA transação será privada — sem link on-chain entre o projeto e sua carteira.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Confirmar', onPress: async () => {
+            setLoadingPrivado(true);
+            try {
+              const result = await resgatarPrivadoFn({
+                walletAddress: walletPrivado.trim(),
+                quantidade: qtdPrivadoArredondado,
+              });
+              const sig = result.data?.signature ?? '';
+              Alert.alert(
+                'SOL enviado com privacidade',
+                `~${solLiquido.toFixed(4)} SOL enviados via Cloak.\n\nAssinatura: ${sig.slice(0, 16)}...\n\nNenhum link on-chain entre o projeto e sua carteira.`,
+                [{ text: 'OK', onPress: () => navigation.goBack() }]
+              );
+            } catch (e) {
+              Alert.alert('Erro', e.message ?? 'Tente novamente.');
+            } finally { setLoadingPrivado(false); }
+          },
+        },
+      ]
+    );
+  }
+
+  const qtdCNB = parseInt(quantidadeCNB.replace(/\D/g, ''), 10) || 0;
+  const podeConfirmarCNB = pontosDisponiveis >= 100000 && qtdCNB >= 100000 && qtdCNB <= pontosDisponiveis && solanaValido(wallet);
+
+  async function handleResgateCNB() {
+    if (!perfil?.uid) return Alert.alert('Erro', 'Dados do perfil não carregados.');
+    if (!solanaValido(wallet)) return Alert.alert('Atenção', 'Informe um endereço de carteira Solana válido.');
+    if (qtdCNB < 100000) return Alert.alert('Atenção', 'Mínimo de 100.000 pontos.');
+    if (qtdCNB > pontosDisponiveis) return Alert.alert('Atenção', 'Pontos insuficientes.');
+
+    Alert.alert(
+      'Confirmar Resgate CNB',
+      `Carteira: ${wallet.trim().slice(0, 8)}...${wallet.trim().slice(-6)}\nTokens CNB: ${qtdCNB.toLocaleString('pt-BR')}\n\nOs tokens serão enviados diretamente na Solana.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Confirmar', onPress: async () => {
+            setLoadingCNB(true);
+            try {
+              logResgateCNB(qtdCNB, wallet.trim());
+              const result = await resgatarCNBFn({ walletAddress: wallet.trim(), quantidade: qtdCNB });
+              const sig = result.data?.signature ?? '';
+              logResgateCNBSucesso(qtdCNB, sig);
+              Alert.alert(
+                'CNB enviado com sucesso',
+                `${qtdCNB.toLocaleString('pt-BR')} CNB tokens enviados para sua carteira Solana.\n\nSignature: ${sig.slice(0, 16)}...`,
+                [{ text: 'OK', onPress: () => navigation.goBack() }]
+              );
+            } catch (e) {
+              Alert.alert('Erro', e.message ?? 'Tente novamente.');
+            } finally { setLoadingCNB(false); }
+          },
+        },
+      ]
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.flex} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 20, paddingTop: 8, paddingBottom: 4 }}
+        >
+          <ArrowLeft size={18} color="rgba(255,255,255,0.6)" />
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{t('common.back')}</Text>
+        </TouchableOpacity>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets={true}>
+          <Text style={styles.title}>Resgatar</Text>
+
+          {/* Banner de segurança — visível para contas banidas/suspeitas/bloqueadas */}
+          {estaRestrita && (
+            <View style={{
+              backgroundColor: contaBanida ? '#2A0000' : '#1E1600',
+              borderWidth: 1,
+              borderColor: contaBanida ? '#FF3B30' : '#FF9500',
+              borderRadius: 14,
+              padding: 16,
+              marginBottom: 16,
+            }}>
+              {/* Cabeçalho */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <AlertTriangle size={18} color={contaBanida ? '#FF3B30' : '#FF9500'} />
+                <Text style={{ color: contaBanida ? '#FF6B6B' : '#FFB340', fontWeight: '700', fontSize: 14, flex: 1 }}>
+                  {contaBanida ? '⛔ Conta Suspensa' : '⚠️ Conta em Análise de Segurança'}
+                </Text>
+              </View>
+
+              {/* Motivo */}
+              <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, lineHeight: 19, marginBottom: 12 }}>
+                {motivoBloqueio ?? 'Sua conta está sob análise de segurança e os saques foram temporariamente bloqueados.'}
+              </Text>
+
+              {/* Divisor */}
+              <View style={{ height: 1, backgroundColor: contaBanida ? 'rgba(255,59,48,0.25)' : 'rgba(255,149,0,0.25)', marginBottom: 12 }} />
+
+              {/* Mensagem de suporte */}
+              <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, lineHeight: 17, marginBottom: 8 }}>
+                Se acreditar que isso é um engano ou precisar de ajuda, entre em contato com nosso suporte:
+              </Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL(`mailto:${SUPORTE_EMAIL}?subject=Solicita%C3%A7%C3%A3o%20de%20an%C3%A1lise%20de%20conta`)}
+                activeOpacity={0.7}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  backgroundColor: contaBanida ? 'rgba(255,59,48,0.12)' : 'rgba(255,149,0,0.12)',
+                  borderRadius: 8,
+                  paddingVertical: 10,
+                  paddingHorizontal: 12,
+                }}>
+                <Shield size={14} color={contaBanida ? '#FF6B6B' : '#FFB340'} />
+                <Text style={{ color: contaBanida ? '#FF6B6B' : '#FFB340', fontSize: 13, fontWeight: '600' }}>
+                  {SUPORTE_EMAIL}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={styles.card}>
+            <Text style={styles.label}>Seus pontos disponíveis</Text>
+            <Text style={styles.pontos}>{pontosDisponiveis.toLocaleString('pt-BR')}</Text>
+          </View>
+
+          <View style={styles.tabs}>
+            <TouchableOpacity
+              style={[styles.tab, aba === 'pix' && styles.tabAtiva]}
+              onPress={() => setAba('pix')}
+              activeOpacity={0.8}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <CreditCard size={12} color={aba === 'pix' ? colors.white : colors.secondary} />
+                <Text style={[styles.tabText, aba === 'pix' && styles.tabTextAtiva]}>PIX</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, aba === 'cnb' && styles.tabAtiva]}
+              onPress={() => setAba('cnb')}
+              activeOpacity={0.8}>
+              <Text style={[styles.tabText, aba === 'cnb' && styles.tabTextAtiva]}>◎ CNB</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, aba === 'privado' && styles.tabAtivaPrivado]}
+              onPress={() => setAba('privado')}
+              activeOpacity={0.8}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Lock size={12} color={aba === 'privado' ? '#c084fc' : colors.secondary} />
+                <Text style={[styles.tabText, aba === 'privado' && styles.tabTextPrivado]}>Privado</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {aba === 'pix' && (
+            <>
+              <View style={styles.infoCard}>
+                <View style={styles.infoRow}>
+                  <DollarSign size={13} color={colors.primary} />
+                  <Text style={styles.infoLine}>Mínimo: 100.000 pontos</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Clock size={13} color={colors.primary} />
+                  <Text style={styles.infoLine}>Prazo: até 72 horas</Text>
+                </View>
+              </View>
+
+              <Text style={styles.fieldLabel}>Nome completo</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Seu nome completo"
+                placeholderTextColor={colors.secondary}
+                value={nome}
+                onChangeText={setNome}
+                autoCapitalize="words"
+              />
+
+              <Text style={styles.fieldLabel}>Chave PIX</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="CPF, e-mail, telefone ou chave aleatória"
+                placeholderTextColor={colors.secondary}
+                value={pix}
+                onChangeText={setPix}
+                autoCapitalize="none"
+              />
+
+              <Text style={styles.fieldLabel}>Quantidade de pontos</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Mínimo 100.000"
+                placeholderTextColor={colors.secondary}
+                value={quantidade}
+                onChangeText={v => setQuantidade(formatarPontos(v))}
+                keyboardType="numeric"
+              />
+              {qtdPix > 0 && qtdPix < 100000 && <Text style={styles.erro}>Mínimo de 100.000 pontos.</Text>}
+              {qtdPix > pontosDisponiveis && qtdPix > 0 && <Text style={styles.erro}>Você não tem pontos suficientes.</Text>}
+
+              <TouchableOpacity
+                style={[styles.btn, !podeConfirmarPix && styles.btnDisabled]}
+                onPress={handleSaquePix}
+                disabled={loadingPix || !podeConfirmarPix}>
+                {loadingPix ? <ActivityIndicator color={colors.background} /> : <Text style={styles.btnText}>Confirmar Saque PIX</Text>}
+              </TouchableOpacity>
+            </>
+          )}
+
+          {aba === 'cnb' && (
+            <>
+              <View style={styles.infoCardSolana}>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLineSolana}>◎ 1 ponto = 1 CNB Token</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Key size={13} color="#9945FF" />
+                  <Text style={styles.infoLineSolana}>Mínimo: 100.000 pontos</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Zap size={13} color="#9945FF" />
+                  <Text style={styles.infoLineSolana}>Envio imediato na Solana</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Smartphone size={13} color="#9945FF" />
+                  <Text style={styles.infoLineSolana}>
+                    {walletNativa ? 'Sua carteira CNB já está selecionada' : 'Use Phantom, Solflare ou crie sua carteira no app'}
+                  </Text>
+                </View>
+              </View>
+
+              <Text style={styles.fieldLabel}>Endereço da carteira Solana</Text>
+
+              {walletNativa && (
+                <TouchableOpacity
+                  style={[styles.walletNativaTag, wallet === walletNativa && styles.walletNativaTagAtiva]}
+                  onPress={() => setWallet(walletNativa)}
+                  activeOpacity={0.8}>
+                  <Text style={styles.walletNativaTagIcon}>◎</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.walletNativaTagTitle}>Minha Carteira CNB</Text>
+                    <Text style={styles.walletNativaTagAddr}>{walletNativa.slice(0, 8)}...{walletNativa.slice(-6)}</Text>
+                  </View>
+                  {wallet === walletNativa && <Text style={styles.walletNativaCheck}>✓</Text>}
+                </TouchableOpacity>
+              )}
+
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 8Zrt5KwcFzmH..."
+                placeholderTextColor={colors.secondary}
+                value={wallet}
+                onChangeText={setWallet}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              {wallet.length > 0 && !solanaValido(wallet) && (
+                <Text style={styles.erro}>Endereço Solana inválido.</Text>
+              )}
+
+              <Text style={styles.fieldLabel}>Quantidade de pontos</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Mínimo 100.000"
+                placeholderTextColor={colors.secondary}
+                value={quantidadeCNB}
+                onChangeText={v => setQuantidadeCNB(formatarPontos(v))}
+                keyboardType="numeric"
+              />
+              {qtdCNB > 0 && (
+                <Text style={styles.conversao}>= {qtdCNB.toLocaleString('pt-BR')} CNB Tokens</Text>
+              )}
+              {qtdCNB > 0 && qtdCNB < 100000 && <Text style={styles.erro}>Mínimo de 100.000 pontos.</Text>}
+              {qtdCNB > pontosDisponiveis && qtdCNB > 0 && <Text style={styles.erro}>Você não tem pontos suficientes.</Text>}
+
+              <TouchableOpacity
+                style={[styles.btnSolana, !podeConfirmarCNB && styles.btnDisabled]}
+                onPress={handleResgateCNB}
+                disabled={loadingCNB || !podeConfirmarCNB}>
+                {loadingCNB
+                  ? <ActivityIndicator color="#0A0F1E" />
+                  : <Text style={styles.btnSolanaText}>Resgatar CNB Tokens ◎</Text>}
+              </TouchableOpacity>
+            </>
+          )}
+
+          {aba === 'privado' && (
+            <>
+              {/* Explicação do saque privado */}
+              <View style={{ backgroundColor: 'rgba(192,132,252,0.07)', borderWidth: 1, borderColor: 'rgba(192,132,252,0.2)', borderRadius: 16, padding: 16, marginBottom: 16 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Lock size={14} color="#c084fc" />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#c084fc' }}>O que é o Saque Privado?</Text>
+                </View>
+                <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 20, marginBottom: 12 }}>
+                  O Saque Privado usa <Text style={{ color: '#c084fc', fontWeight: '600' }}>Zero-Knowledge Proofs (ZK)</Text> para converter seus pontos em SOL sem criar um link rastreável entre o CNB Mobile e sua carteira Solana.
+                </Text>
+                <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 20 }}>
+                  Nenhum observador on-chain consegue relacionar seu resgate ao app — sua privacidade financeira é garantida matematicamente.
+                </Text>
+              </View>
+
+              <View style={styles.infoCardPrivado}>
+                <View style={styles.infoRow}>
+                  <Lock size={13} color="#c4b5fd" />
+                  <Text style={styles.infoLinePrivado}>Resgate privado via Cloak Protocol</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLinePrivado}>◎ 100.000 pontos = ~0.005 SOL líquido</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Shield size={13} color="#c4b5fd" />
+                  <Text style={styles.infoLinePrivado}>Sem link on-chain entre projeto e você</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Zap size={13} color="#c4b5fd" />
+                  <Text style={styles.infoLinePrivado}>ZK-proof gerado automaticamente</Text>
+                </View>
+              </View>
+
+              <Text style={styles.fieldLabel}>Endereço da carteira Solana</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 8Zrt5KwcFzmH..."
+                placeholderTextColor={colors.secondary}
+                value={walletPrivado}
+                onChangeText={setWalletPrivado}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              {walletPrivado.length > 0 && !solanaValido(walletPrivado) && (
+                <Text style={styles.erro}>Endereço Solana inválido.</Text>
+              )}
+
+              <Text style={styles.fieldLabel}>Quantidade de pontos (múltiplos de 100.000)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Mínimo 100.000"
+                placeholderTextColor={colors.secondary}
+                value={quantidadePrivado}
+                onChangeText={v => setQuantidadePrivado(formatarPontos(v))}
+                keyboardType="numeric"
+              />
+              {qtdPrivadoArredondado > 0 && (
+                <Text style={styles.conversaoPrivado}>
+                  ≈ {solLiquido.toFixed(4)} SOL líquido (após fee do relay)
+                </Text>
+              )}
+              {qtdPrivado > 0 && qtdPrivadoArredondado < BLOCO_PRIVADO && (
+                <Text style={styles.erro}>Mínimo de 100.000 pontos.</Text>
+              )}
+              {qtdPrivadoArredondado > pontosDisponiveis && qtdPrivadoArredondado > 0 && (
+                <Text style={styles.erro}>Você não tem pontos suficientes.</Text>
+              )}
+
+              <TouchableOpacity
+                style={[styles.btnPrivado, !podeConfirmarPrivado && styles.btnDisabled]}
+                onPress={handleResgatePrivado}
+                disabled={loadingPrivado || !podeConfirmarPrivado}>
+                {loadingPrivado
+                  ? <ActivityIndicator color="#ffffff" />
+                  : <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Lock size={15} color="#fff" />
+                      <Text style={styles.btnPrivadoText}>Resgatar SOL Privado</Text>
+                    </View>}
+              </TouchableOpacity>
+
+              <View style={styles.cloakBadge}>
+                <Text style={styles.cloakBadgeText}>Powered by Cloak Protocol · ZK Privacy on Solana</Text>
+              </View>
+            </>
+          )}
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'center', marginTop: 16 }}>
+            <AlertTriangle size={12} color={colors.secondary} />
+            <Text style={[styles.aviso, { marginTop: 0 }]}>Os pontos serão debitados da sua conta ao confirmar.</Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+function createStyles(colors) {
+  return StyleSheet.create({
+    flex: { flex: 1, backgroundColor: colors.background },
+    container: { flexGrow: 1, padding: 24 },
+    title: { fontSize: 24, fontWeight: 'bold', color: colors.white, marginBottom: 20 },
+
+    card: { backgroundColor: colors.card, borderRadius: 16, padding: 20, marginBottom: 16 },
+    label: { fontSize: 13, color: colors.secondary },
+    pontos: { fontSize: 36, fontWeight: 'bold', color: colors.primary, marginTop: 4 },
+
+    tabs: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: 12, padding: 4, marginBottom: 20 },
+    tab: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 10 },
+    tabAtiva: { backgroundColor: colors.background },
+    tabText: { fontSize: 14, fontWeight: '600', color: colors.secondary },
+    tabTextAtiva: { color: colors.white },
+
+    infoCard: { backgroundColor: '#0d1f0d', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: colors.primary, marginBottom: 20 },
+    infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
+    infoLine: { fontSize: 14, color: colors.secondary, flex: 1 },
+
+    infoCardSolana: { backgroundColor: '#0d0d20', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#9945FF', marginBottom: 20 },
+    infoLineSolana: { fontSize: 14, color: '#b8a0e0', flex: 1 },
+
+    walletNativaTag: {
+      flexDirection: 'row', alignItems: 'center', gap: 10,
+      backgroundColor: '#13102a', borderRadius: 12, padding: 14,
+      marginBottom: 10, borderWidth: 1, borderColor: '#3a2a6a',
+    },
+    walletNativaTagAtiva: { borderColor: '#9945FF', backgroundColor: '#1a1040' },
+    walletNativaTagIcon:  { fontSize: 22, color: '#9945FF' },
+    walletNativaTagTitle: { fontSize: 13, fontWeight: '700', color: colors.white },
+    walletNativaTagAddr:  { fontSize: 11, color: '#888', marginTop: 2, fontFamily: 'monospace' },
+    walletNativaCheck:    { fontSize: 18, color: '#9945FF', fontWeight: '700' },
+
+    fieldLabel: { fontSize: 13, color: colors.secondary, marginBottom: 6, marginLeft: 2 },
+    input: { backgroundColor: colors.card, borderRadius: 12, padding: 16, color: colors.white, fontSize: 16, marginBottom: 16, borderWidth: 1, borderColor: colors.border },
+    erro: { fontSize: 12, color: '#ff4d4d', marginTop: -10, marginBottom: 12, marginLeft: 4 },
+    conversao: { fontSize: 13, color: '#9945FF', marginTop: -10, marginBottom: 12, marginLeft: 4, fontWeight: '600' },
+
+    btn: { backgroundColor: colors.primary, borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 4 },
+    btnSolana: { backgroundColor: '#9945FF', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 4 },
+    btnDisabled: { opacity: 0.4 },
+    btnText: { color: colors.background, fontWeight: 'bold', fontSize: 16 },
+    btnSolanaText: { color: '#ffffff', fontWeight: 'bold', fontSize: 16 },
+
+    aviso: { fontSize: 12, color: colors.secondary, textAlign: 'center', marginTop: 16, lineHeight: 18 },
+
+    tabAtivaPrivado: { backgroundColor: '#1a0a2e' },
+    tabTextPrivado: { color: '#c084fc' },
+    infoCardPrivado: { backgroundColor: '#0f0a1e', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#7c3aed', marginBottom: 20 },
+    infoLinePrivado: { fontSize: 14, color: '#c4b5fd', flex: 1 },
+    conversaoPrivado: { fontSize: 13, color: '#a78bfa', marginTop: -10, marginBottom: 12, marginLeft: 4, fontWeight: '600' },
+    btnPrivado: { backgroundColor: '#7c3aed', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 4 },
+    btnPrivadoText: { color: '#ffffff', fontWeight: 'bold', fontSize: 16 },
+    cloakBadge: { marginTop: 16, alignItems: 'center' },
+    cloakBadgeText: { fontSize: 11, color: '#6d28d9', fontWeight: '500' },
+  });
+}
