@@ -2,7 +2,7 @@
 
 > **Colosseum Solana Hackathon 2025**
 
-**Juice Mobile is a DePIN protocol on Solana that pays users in tokens for verified phone charging sessions — no hardware required, every proof on-chain, built for Latin America.**
+**Juice Mobile is a DePIN protocol on Solana that pays users for verified phone charging sessions — points redeemable via PIX, every proof on-chain, built for Latin America.**
 
 ---
 
@@ -27,10 +27,10 @@ Your phone is the node. Charging is the proof-of-work.
 ```
 1. User opens Juice Mobile and plugs in their phone
 2. Battery API detects charging — foreground service starts
-3. Every verified minute  →  +10 JUICE tokens
-4. Every completed hour   →  +50 JUICE bonus
+3. Every verified minute  →  +10 points
+4. Every completed hour   →  +50 points bonus
 5. Session ends           →  Solana Memo written on-chain (immutable proof)
-6. User claims JUICE to any Solana wallet, or withdraws via PIX
+6. User withdraws via PIX — Brazil's instant payment network
 ```
 
 No hardware purchase. No NFT. No seed phrase at onboarding.
@@ -54,14 +54,13 @@ No hardware purchase. No NFT. No seed phrase at onboarding.
 │  Cloud Functions ──                                     │
 │  ├── registrarProvasSessao  → writes Solana Memo        │
 │  ├── onReferreeBecameActive → anti-fraud + referral     │
-│  └── resgatarCNB            → SPL token transfer        │
+│  └── solicitarSaque         → PIX withdrawal request    │
 └──────────────────────┬──────────────────────────────────┘
                        │ @solana/web3.js
 ┌──────────────────────▼──────────────────────────────────┐
 │                   SOLANA MAINNET                        │
 │  Memo Program  ── session proofs (immutable)            │
-│  SPL Token     ── JUICE token transfers                 │
-│  Token: Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4  │
+│  SPL Token     ── planned: JUICE token (roadmap)        │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -104,16 +103,18 @@ usejuicemobile/
 
 ---
 
-## Tokenomics
+## Token Roadmap (Planned)
+
+Current product: points → PIX. Token launch is the next milestone — every point already has an on-chain proof backing it.
 
 | Parameter | Value |
 |---|---|
-| Token | JUICE (SPL, Solana Mainnet) |
+| Token | JUICE (SPL, Solana Mainnet) — planned |
 | Total Supply | 21,000,000,000 JUICE — fixed |
-| Mint Authority | Renounced |
+| Conversion | 1 point = 1 JUICE (1:1 at launch) |
 | Emission | 650 JUICE / hour of verified charging |
 | Halving | Every 4 years (Bitcoin-inspired) |
-| Burn | 2% of every token redemption |
+| Burn | 2% of every redemption |
 | Min. Claim | 100,000 JUICE |
 
 ---
@@ -145,7 +146,6 @@ This is not a hackathon prototype.
 | Total points generated | **99,761,359** |
 | Daily Solana Memo proofs | **20** |
 | PIX withdrawal requests | **69** |
-| CNB token redemptions | **12** |
 | Active affiliates | **338** |
 | Peak daily charging users | **1,312** (May 9) — **12x growth in 20 days** |
 
@@ -194,8 +194,7 @@ Built by **Rafael Mariano** — Brazil 🇧🇷
 
 ## Links
 
-- **Token on Solscan:** [Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4](https://solscan.io/token/Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4)
-- **Live Dashboard:** [usejuicemobile.com](https://usejuicemobile.com)
+- **Live Proof Dashboard:** [usejuicemobile.com](https://usejuicemobile.com)
 - **Contact:** contato@criptonobolso.com.br
 
 ---

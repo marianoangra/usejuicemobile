@@ -1,18 +1,18 @@
-# CNB Mobile — Colosseum Hackathon Pitch
+# Juice Mobile — Colosseum Hackathon Pitch
 
 ---
 
 ## One-liner
 
-**CNB Mobile is a DePIN protocol on Solana that pays users in tokens for verified charging sessions — no hardware required, every proof on-chain, built for Latin America.**
+**Juice Mobile is a DePIN protocol on Solana that pays users for verified phone charging sessions — points redeemable via PIX, every proof on-chain, built for Latin America.**
 
 ---
 
 ## The Hook
 
-Every day, 220 million Brazilians generate data that makes Meta, Google, and telecom companies billions of dollars. They receive nothing. Not a token. Not a receipt. Not even transparency about what's being extracted from them.
+Every day, 220 million Brazilians generate data that makes Meta, Google, and telecom companies billions of dollars. They receive nothing. Not a receipt. Not even transparency about what's being extracted from them.
 
-CNB Mobile flips the model: **you generate the proof, you own the token, you keep the value.**
+Juice Mobile flips the model: **you generate the proof, you earn the points, you keep the value.**
 
 ---
 
@@ -34,16 +34,16 @@ The attention economy extracts billions from mobile users every year and returns
 
 ## The Solution
 
-CNB Mobile is a DePIN protocol where the phone is the node and attention is the resource.
+Juice Mobile is a DePIN protocol where the phone is the node and attention is the resource.
 
 **The mechanism:**
 
 1. User opens the app and plugs in their phone to charge
 2. Android Battery API detects charging state — a foreground service starts
-3. Every verified minute → **+10 CNB tokens**
-4. Every completed hour → **+50 CNB bonus**
+3. Every verified minute → **+10 points**
+4. Every completed hour → **+50 points bonus**
 5. At session end → a **Solana Memo transaction** is written on-chain: `{event: "session", uidHash, timestamp, duration, points}` — immutable, auditable, permanent
-6. User claims CNB to any Solana wallet in one tap, or withdraws via PIX
+6. User withdraws via PIX — Brazil's instant payment network
 
 No hardware purchase. No NFT. No seed phrase at onboarding. An Android phone you already own is enough.
 
@@ -55,7 +55,7 @@ Three properties separate a DePIN protocol from an app with points:
 
 **The proof is permissionless.** A loyalty program can freeze your balance overnight. Our session Memos are on Solana — no entity, including us, can alter or delete a recorded proof.
 
-**The token is ownable.** CNB is an SPL token. Users hold it, trade it, send it to any wallet. Loyalty points die with the app. CNB lives on-chain.
+**The points are backed by proof.** Every point a user holds corresponds to an immutable on-chain record. When the token launches, conversion will be 1:1 — no retroactive manipulation possible because the ledger is already on Solana.
 
 **The network compounds.** Each user is a verified node. The referral system creates an auditable on-chain social graph. The protocol collects privacy-preserving behavioral data — hashed UIDs, session durations, geographic density — that brands will eventually pay to access. That's the Helium model applied to attention: nodes contribute resource → protocol monetizes aggregate signal → value flows back to nodes.
 
@@ -75,7 +75,6 @@ This is not a hackathon prototype.
 - **20 daily aggregate proofs on Solana mainnet** — each a Memo with SHA-256 of all sessions, immutable and auditable. [Latest →](https://solscan.io/tx/2Bkui44aPDVC5TdF3mg8RsytKQWmEzXcABVKA6kiZSzdreeZUP4K6q7Za53YYYvR73Bj9hj1ihbcVDdbMsPwao8y)
 - **3,491 registered accounts** — 1,369 with 60+ verified minutes of real charging
 - **69 PIX withdrawal requests** — fiat onramp live, not theoretical
-- **12 CNB token redemptions** to Solana wallets — crypto exit functional
 - **338 active affiliates** running the referral network
 
 **Growth curve (verified on-chain, not self-reported):**
@@ -107,15 +106,18 @@ Helium just entered Brazil via Mambo WiFi — hardware-dependent, $400 per node.
 
 ---
 
-## Tokenomics
+## Token Roadmap (Planned)
 
-- **Supply:** 21,000,000,000 CNB — fixed, mint authority renounced
-- **Emission:** 650 CNB/hour of verified charging, halving every 4 years (Bitcoin-inspired schedule)
+The current product pays users in points redeemable via PIX. The token launch is the next milestone:
+
+- **Supply:** 21,000,000,000 JUICE — fixed
+- **Emission:** 650 JUICE/hour of verified charging, halving every 4 years (Bitcoin-inspired schedule)
+- **Conversion:** 1 point = 1 JUICE token — every point already has an on-chain proof backing it
 - **Burn:** 2% of every token redemption permanently removed from circulation
-- **Minimum claim:** 100,000 CNB — prevents micro-transaction spam, ensures earned value is meaningful
+- **Minimum claim:** 100,000 JUICE — prevents micro-transaction spam
 - **Sustainability:** At 10,000 users averaging 30 min/day, the protocol runs for 45+ years with the halving schedule applied
 
-Full tokenomics: `cnbmobile-2053c.web.app/tokenomics`
+Every point earned today will convert 1:1 at token launch — the on-chain record already exists.
 
 ---
 
@@ -127,16 +129,13 @@ Full tokenomics: `cnbmobile-2053c.web.app/tokenomics`
 - Session mutex prevents double-counting from concurrent battery events
 
 **On Solana:**
-- End of each session triggers `registrarProvasSessao` — a Firebase Cloud Function that writes a Solana Memo with: `uidHash` (SHA-256, privacy-preserving), ISO timestamp, duration in minutes, CNB earned
+- End of each session triggers `registrarProvasSessao` — a Firebase Cloud Function that writes a Solana Memo with: `uidHash` (SHA-256, privacy-preserving), ISO timestamp, duration in minutes, points earned
 - Daily aggregate proof written at 03:00 BRT: `{date, activeUsers, totalPoints, totalMinutes, SHA-256 hash of all UIDs}`
 - Referral events recorded on-chain via Memo at moment of registration
-- CNB Token redemption transfers SPL tokens from project treasury to user's wallet
 
-**Stack:** React Native (Expo) · Firebase · `@solana/web3.js` · Solana Memo Program · SPL Token Program
+**Stack:** React Native (Expo) · Firebase · `@solana/web3.js` · Solana Memo Program
 
-**Live on mainnet:** [`Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4`](https://solscan.io/token/Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4)
-
-Every proof is publicly auditable at `cnbmobile-2053c.web.app` — click any row to verify on Solscan.
+Every proof is publicly auditable at `usejuicemobile.com` — click any row to verify on Solscan.
 
 ---
 
@@ -158,7 +157,7 @@ We didn't build CNB Mobile for a hackathon. We built it for Brazil, before this 
 
 The PIX integration isn't a feature — it's how our users actually live. The charging mechanic isn't theoretical — it's what our users actually do. We understand the experience of someone who doesn't know what a wallet is, earns minimum wage, and charges their phone twice a day.
 
-We also understand SPL tokens, Solana Memo Program, foreground service lifecycle on Android 14, and two-phase commit patterns between Firestore and on-chain state. We live in both worlds because we have to.
+We understand the Solana Memo Program, foreground service lifecycle on Android 14, and two-phase commit patterns between Firestore and on-chain state. We live in both worlds because we have to.
 
 ---
 
@@ -166,9 +165,9 @@ We also understand SPL tokens, Solana Memo Program, foreground service lifecycle
 
 **If we win, here's exactly what happens in 90 days:**
 
-**Month 1 — Staking:** Users stake CNB to earn a 2x emission multiplier. First utility beyond holding. First deflationary lock-up that creates scarcity without removing access.
+**Month 1 — Token Launch:** Every point already has an on-chain proof. We deploy the JUICE SPL token and open 1:1 conversion. First ownable, tradeable asset backed by verified human attention.
 
-**Month 2 — Attention Marketplace v0.1:** Two Brazilian brands pay in USDC to reach CNBMobile users by segment. First external revenue. First proof that attention has a market price — not hypothetically, but in a real transaction.
+**Month 2 — Attention Marketplace v0.1:** Two Brazilian brands pay in USDC to reach Juice Mobile users by segment. First external revenue. First proof that attention has a market price — not hypothetically, but in a real transaction.
 
 **Month 3 — Mexico launch:** Same protocol, same app, different fiat rail (SPEI instead of PIX). 130M smartphones, zero DePIN competitors with software-only access.
 
@@ -180,11 +179,11 @@ The prize funds infrastructure and the first brand partnerships. The Colosseum c
 
 Ore proved that a phone can mine computation.  
 STEPN proved that a phone can mine movement.  
-**CNB Mobile proves that a phone can mine attention** — the most abundant and least compensated resource in the digital economy, in the market that needs it most.
+**Juice Mobile proves that a phone can mine attention** — the most abundant and least compensated resource in the digital economy, in the market that needs it most.
 
 The protocol is live. The proofs are on-chain. Brazil is waiting.
 
-`cnbmobile-2053c.web.app` · Solana Mainnet · Brazil 🇧🇷
+`usejuicemobile.com` · Solana Mainnet · Brazil 🇧🇷
 
 ---
 
@@ -192,17 +191,17 @@ The protocol is live. The proofs are on-chain. Brazil is waiting.
 
 ### Project Description (1 paragraph)
 
-> CNB Mobile is a DePIN protocol on Solana that pays users in CNB tokens for verified phone charging sessions — no hardware required. Each session generates an immutable Memo on-chain via the Solana Memo Program, recording a hashed user ID, timestamp, duration, and points earned. Users redeem CNB tokens directly to a Solana wallet, or withdraw via PIX — Brazil's instant payment network. Built for Latin America, where 220M people own Android phones but have no access to DePIN protocols that don't require expensive hardware. The app is live on Google Play, the token is on Solana mainnet, and every proof is publicly auditable at cnbmobile-2053c.web.app.
+> Juice Mobile is a DePIN protocol on Solana that pays users for verified phone charging sessions — no hardware required. Each session generates an immutable Memo on-chain via the Solana Memo Program, recording a hashed user ID, timestamp, duration, and points earned. Users withdraw their points via PIX — Brazil's instant payment network. Built for Latin America, where 220M people own Android phones but have no access to DePIN protocols that don't require expensive hardware. The app is live on Google Play and App Store, and every proof is publicly auditable at usejuicemobile.com.
 
 ### What Makes This Unique (2 sentences)
 
-> No DePIN protocol today monetizes mobile attention at scale without requiring hardware — CNB Mobile turns every Android phone in Latin America into a verified node. Every session generates an on-chain proof via Solana Memo Program, redeemable as SPL tokens to any wallet or withdrawn via PIX, Brazil's 800M tx/month payment infrastructure.
+> No DePIN protocol today monetizes mobile attention at scale without requiring hardware — Juice Mobile turns every Android phone in Latin America into a verified node. Every session generates an on-chain proof via Solana Memo Program, with points redeemable via PIX — Brazil's 800M tx/month payment infrastructure.
 
 ### Video Opening Script (first 20 seconds)
 
 > *(phone plugged into charger, app open on screen)*
 >
-> "This phone started earning tokens 12 seconds ago. I didn't buy any hardware. I didn't configure a wallet. I just plugged in the charger.
+> "This phone started earning points 12 seconds ago. I didn't buy any hardware. I didn't configure a wallet. I just plugged in the charger.
 >
 > *(show Solscan live)*
 >
