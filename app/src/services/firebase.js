@@ -4,13 +4,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
+// Firebase client config — these values are public by design (embedded in the APK).
+// Security is enforced by Firestore Security Rules, not by keeping these values secret.
+// See: https://firebase.google.com/docs/projects/api-keys
 const firebaseConfig = {
-  apiKey: "AIzaSyBTx_mrEx6_k9jbN8MeOYztJbsOc6zryl0",
-  authDomain: "cnbmobile-2053c.firebaseapp.com",
-  projectId: "cnbmobile-2053c",
-  storageBucket: "cnbmobile-2053c.firebasestorage.app",
-  messagingSenderId: "144617374104",
-  appId: "1:144617374104:web:cb38f3303f12616f37abed",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY ?? "REPLACE_WITH_YOUR_API_KEY",
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ?? "your-project.firebaseapp.com",
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID ?? "your-project",
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET ?? "your-project.firebasestorage.app",
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? "000000000000",
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID ?? "1:000000000000:web:000000000000",
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

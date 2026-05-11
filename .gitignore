@@ -2,11 +2,16 @@
 node_modules/
 **/node_modules/
 
-# Environment & secrets
+# Environment & secrets (keep .env.example — it has no real values)
 .env
-.env.*
+.env.local
+.env.production
+.env.development
 **/.env
-**/.env.*
+**/.env.local
+**/.env.production
+**/.env.development
+**/functions/.env.*
 **/sa-key.json
 **/google-services.json
 **/GoogleService-Info.plist
