@@ -23,10 +23,22 @@ config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
 // resolveRequest intercepta pelo nome exato do módulo antes de qualquer
 // resolução de package.json — é a única forma confiável de interceptar
 // subpath imports como "firebase/auth" (extraNodeModules não funciona para isso).
-const firebaseAuthRnPath = path.resolve(
-  __dirname,
-  'node_modules/firebase/node_modules/@firebase/auth/dist/rn/index.js'
-);
+//
+// O caminho pode estar aninhado (firebase/node_modules/@firebase/auth) ou
+// hoisted no root (node_modules/@firebase/auth) dependendo do package manager
+// e cache. Tenta ambos.
+const fs = require('fs');
+const firebaseAuthCandidates = [
+  path.resolve(__dirname, 'node_modules/firebase/node_modules/@firebase/auth/dist/rn/index.js'),
+  path.resolve(__dirname, 'node_modules/@firebase/auth/dist/rn/index.js'),
+];
+const firebaseAuthRnPath = firebaseAuthCandidates.find(p => fs.existsSync(p));
+if (!firebaseAuthRnPath) {
+  throw new Error(
+    'Cannot locate @firebase/auth/dist/rn/index.js. Tried:\n  ' +
+      firebaseAuthCandidates.join('\n  ')
+  );
+}
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (moduleName === 'firebase/auth') {
