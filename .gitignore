@@ -2,6 +2,10 @@
 node_modules/
 **/node_modules/
 
+# Lockfiles — kept untracked because they are OS-specific for native
+# binaries like lightningcss/sharp; EAS regenerates on its build OS.
+app/package-lock.json
+
 # Environment & secrets (keep .env.example — it has no real values)
 .env
 .env.local
