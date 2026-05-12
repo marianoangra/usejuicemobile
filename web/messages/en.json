@@ -133,7 +133,12 @@
     "role": "CEO & Founder",
     "bio1": "Securities Investment Analyst (CNPI), Helicopter Pilot, educator, entrepreneur, and developer of innovative solutions in financial markets and crypto. With experience at XP Inc., Rico and Terra Investimentos, he was honored as one of the most influential teachers in his region by SENAI.",
     "bio2": "Developer and programmer, Rafael combines technology with transformative skills, making a difference in the lives of thousands of people.",
-    "alt": "Rafael Mariano, founder and CEO of CNB Mobile"
+    "alt": "Rafael Mariano, founder and CEO of Juice Mobile",
+    "cofounder": {
+      "name": "Carol Uchoas",
+      "role": "Co-founder · Business & Growth",
+      "alt": "Carol Uchoas, co-founder of Juice Mobile"
+    }
   },
   "faq": {
     "badge": "FAQ",

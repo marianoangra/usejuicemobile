@@ -20,14 +20,15 @@ export function Founder() {
 
       <div className="mx-auto max-w-[1280px] px-5 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          {/* Photo */}
+          {/* Photos */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5"
+            className="lg:col-span-5 flex flex-col gap-5"
           >
+            {/* Rafael */}
             <div className="metal-card relative overflow-hidden rounded-[20px]">
               <Image
                 src="/images/founder.jpg"
@@ -44,6 +45,29 @@ export function Founder() {
                 aria-hidden
                 className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-secondary/15 rounded-[20px]"
               />
+            </div>
+
+            {/* Carol */}
+            <div className="metal-card relative overflow-hidden rounded-[20px]">
+              <Image
+                src="/images/carol.png"
+                alt={t('cofounder.alt')}
+                width={1200}
+                height={600}
+                className="h-full w-full object-cover object-top"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-deep/80 via-transparent to-transparent"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-secondary/15 rounded-[20px]"
+              />
+              <div className="absolute bottom-0 left-0 p-5">
+                <p className="text-base font-bold text-white">{t('cofounder.name')}</p>
+                <p className="text-sm text-primary mt-0.5">{t('cofounder.role')}</p>
+              </div>
             </div>
           </motion.div>
 
