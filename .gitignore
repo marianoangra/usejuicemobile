@@ -13,8 +13,6 @@ node_modules/
 **/.env.development
 **/functions/.env.*
 **/sa-key.json
-**/google-services.json
-**/GoogleService-Info.plist
 **/credentials.yml
 
 # Build outputs
@@ -34,6 +32,12 @@ ios/
 .DS_Store
 *.log
 .vercel
+
+# Android signing — NEVER commit these
+*.jks
+*.keystore
+credentials.json
+gradle.properties.local
 
 # Relatórios gerados localmente (contêm PII: nomes/CPFs/PIX)
 relatorio-*.csv
