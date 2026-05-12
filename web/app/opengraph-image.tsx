@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'CNB Mobile — Carregue seu celular. Ganhe recompensas.';
+export const alt = 'Juice Mobile — Carregue seu celular. Ganhe recompensas.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -81,7 +81,7 @@ export default async function OpenGraphImage() {
             </div>
           </div>
           <div style={{ display: 'flex', fontSize: 38, fontWeight: 700, letterSpacing: '-0.02em' }}>
-            <span>CNB&nbsp;</span>
+            <span>Juice&nbsp;</span>
             <span style={{ color: '#a8db3a' }}>Mobile</span>
           </div>
         </div>

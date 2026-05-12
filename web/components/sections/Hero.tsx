@@ -126,7 +126,7 @@ export function Hero({ stats }: HeroProps = {}) {
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <PhoneMockup
               src="/images/screen-home-real.png"
-              alt="CNB Mobile app — Início"
+              alt="Juice Mobile app — Início"
               priority
               width={202}
               height={436}

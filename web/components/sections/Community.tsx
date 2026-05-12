@@ -10,7 +10,7 @@ const SOCIALS = [
   {
     key: 'whatsapp' as const,
     href: 'https://chat.whatsapp.com/GsIEmnUPKsn2W95HEjPwW8',
-    handle: 'CNB Mobile',
+    handle: 'Juice Mobile',
     Icon: WhatsAppIcon,
   },
   {
@@ -21,14 +21,14 @@ const SOCIALS = [
   },
   {
     key: 'instagram' as const,
-    href: 'https://www.instagram.com/criptonobolso',
-    handle: '@criptonobolso',
+    href: 'https://www.instagram.com/usejuicemobile',
+    handle: '@usejuicemobile',
     Icon: Instagram,
   },
   {
     key: 'x' as const,
-    href: 'https://x.com/cnbmobile',
-    handle: '@cnbmobile',
+    href: 'https://x.com/usejuicemobile',
+    handle: '@usejuicemobile',
     Icon: XIcon,
   },
 ];

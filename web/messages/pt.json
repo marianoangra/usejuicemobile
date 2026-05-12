@@ -1,8 +1,8 @@
 {
   "meta": {
-    "title": "CNB Mobile — Carregue seu celular. Ganhe tokens reais.",
-    "description": "DePin de Atividade Humana na Solana. Cada minuto de carregamento gera tokens CNB verificados on-chain. Construído no Frontier Colosseum.",
-    "keywords": "DePin, atividade humana, Solana, CNB Mobile, blockchain, recompensa, carregamento, prova on-chain, hackathon Frontier"
+    "title": "Juice Mobile — Carregue seu celular. Ganhe tokens reais.",
+    "description": "DePin de Atividade Humana na Solana. Cada minuto de carregamento gera JUICE tokens verificados on-chain. Construído no Frontier Colosseum.",
+    "keywords": "DePin, atividade humana, Solana, Juice Mobile, blockchain, recompensa, carregamento, prova on-chain, hackathon Frontier"
   },
   "nav": {
     "features": "Recursos",
@@ -31,11 +31,11 @@
   "partnersTrust": {
     "badge": "Parceiros oficiais · Listagens",
     "title": "Apoiado por quem já é referência",
-    "subtitle": "Exchanges globais e infraestrutura cripto que apostam no token CNB.",
+    "subtitle": "Exchanges globais e infraestrutura cripto que apostam no JUICE token.",
     "ctaAll": "Conheça todos os parceiros e formatos"
   },
   "features": {
-    "badge": "Por que CNB",
+    "badge": "Por que Juice",
     "title": "Infraestrutura física descentralizada que paga você",
     "subtitle": "É energia real virando recompensa real, prova por prova, on-chain.",
     "items": {
@@ -49,15 +49,15 @@
       },
       "ranking": {
         "title": "Ranking semanal",
-        "description": "Os usuários mais ativos da semana dividem um pool extra de CNB. Competição real."
+        "description": "Os usuários mais ativos da semana dividem um pool extra de JUICE. Competição real."
       },
       "token": {
-        "title": "CNB Token SPL",
+        "title": "JUICE Token SPL",
         "description": "Token SPL nativo na mainnet Solana. Liquidez em DEXs, transferível, real."
       },
       "referral": {
         "title": "Sistema de indicações",
-        "description": "+100 CNB por amigo cadastrado. Cresça com sua rede, ganhe junto."
+        "description": "+100 JUICE por amigo cadastrado. Cresça com sua rede, ganhe junto."
       },
       "depin": {
         "title": "DePIN real",
@@ -68,7 +68,7 @@
   "community": {
     "badge": "Comunidade",
     "title": "Faça parte da nossa comunidade",
-    "subtitle": "Mais que um app, somos uma comunidade. Junte-se a milhares de pessoas que já estão ganhando CNB e trocando experiências sobre cripto.",
+    "subtitle": "Mais que um app, somos uma comunidade. Junte-se a milhares de pessoas que já estão ganhando JUICE e trocando experiências sobre cripto.",
     "whatsapp": "WhatsApp",
     "telegram": "Telegram",
     "instagram": "Instagram",
@@ -86,18 +86,18 @@
     "step2": {
       "label": "Passo 02",
       "title": "Acumule pontos verificados",
-      "description": "A cada minuto, +10 CNB são acumulados e a sessão é assinada para prova on-chain."
+      "description": "A cada minuto, +10 JUICE são acumulados e a sessão é assinada para prova on-chain."
     },
     "step3": {
       "label": "Passo 03",
-      "title": "Resgate seus CNB",
-      "description": "Ao atingir o saldo mínimo, resgate tokens CNB para sua carteira Solana ou negocie em DEXs."
+      "title": "Resgate seus JUICE",
+      "description": "Ao atingir o saldo mínimo, resgate JUICE tokens para sua carteira Solana ou negocie em DEXs. (Em breve)"
     }
   },
   "hackathon": {
     "badge": "Frontier Colosseum · Solana Foundation",
     "title": "Construído no Frontier Colosseum",
-    "description": "CNB Mobile compete no Frontier Colosseum como solução DePIN de energia. Prova de carregamento verificada on-chain, token SPL na mainnet, construído para o mercado brasileiro e latino-americano.",
+    "description": "Juice Mobile compete no Frontier Colosseum como solução DePIN de energia. Prova de carregamento verificada on-chain, token SPL na mainnet, construído para o mercado brasileiro e latino-americano.",
     "stats": {
       "category": "Categoria",
       "categoryValue": "DePIN",
@@ -110,8 +110,8 @@
   },
   "token": {
     "badge": "SPL Token · Mainnet · Solana",
-    "title": "CNB Token",
-    "subtitle": "O token utilitário que move a rede CNB. Distribuído por prova de carregamento, transferível, com liquidez real.",
+    "title": "JUICE Token",
+    "subtitle": "O token utilitário que move a rede Juice. Distribuído por prova de carregamento, transferível, com liquidez real.",
     "mintAddress": "Endereço da mint",
     "mintPlaceholder": "Será divulgado em breve",
     "stats": {
@@ -136,18 +136,22 @@
     "alt": "Rafael Mariano, fundador e CEO da Juice Mobile",
     "cofounder": {
       "name": "Carol Uchoas",
-      "role": "Co-fundadora · Business & Growth",
-      "alt": "Carol Uchoas, co-fundadora da Juice Mobile"
+      "role": "Comercial",
+      "alt": "Carol Uchoas, área comercial da Juice Mobile",
+      "item1": "Growth & Aquisição",
+      "item2": "Vendas B2B & Parcerias",
+      "item3": "Brand & Comunidade",
+      "item4": "Performance & Funil de Receita"
     }
   },
   "faq": {
     "badge": "FAQ",
     "title": "Perguntas frequentes",
-    "subtitle": "Tudo o que você precisa saber sobre o CNB Mobile."
+    "subtitle": "Tudo o que você precisa saber sobre o Juice Mobile."
   },
   "waitlist": {
     "badge": "Lista de espera",
-    "title": "Seja o primeiro a saber quando o token CNB for listado",
+    "title": "Seja o primeiro a saber quando o JUICE token for listado",
     "subtitle": "Acesso antecipado, drops da comunidade e novidades do hackathon direto no seu email.",
     "emailPlaceholder": "seu@email.com",
     "submit": "Entrar na lista",
@@ -196,8 +200,8 @@
     },
     "community": "Comunidade",
     "poweredBy": "Powered by",
-    "copyright": "© 2026 CNB Mobile. Todos os direitos reservados.",
-    "downloadTitle": "Baixe o CNB Mobile",
+    "copyright": "© 2026 Juice Mobile. Todos os direitos reservados.",
+    "downloadTitle": "Baixe o Juice Mobile",
     "downloadSubtitle": "Disponível agora na App Store e Google Play. iOS e Android."
   },
   "common": {
@@ -268,7 +272,7 @@
         },
         "airdrop": {
           "label": "Airdrop Retroativo",
-          "tagline": "Usuários CNB Mobile / JUICE",
+          "tagline": "Usuários Juice Mobile / JUICE",
           "note": "Recompensa para os usuários que carregaram o ecossistema antes do TGE. Distribuído com base em snapshot de pontos acumulados."
         },
         "private": {
@@ -479,7 +483,7 @@
       "sections": [
         {
           "heading": "1. Introdução",
-          "body": ["O CNB Mobile está comprometido em proteger a privacidade dos nossos usuários."]
+          "body": ["O Juice Mobile está comprometido em proteger a privacidade dos nossos usuários."]
         },
         {
           "heading": "2. Informações Coletadas"
@@ -536,14 +540,14 @@
         {
           "heading": "1. Aceitação dos Termos",
           "body": [
-            "Ao acessar e utilizar o aplicativo CNB Mobile (\"App\"), você concorda em cumprir e estar vinculado a estes Termos de Uso."
+            "Ao acessar e utilizar o aplicativo Juice Mobile (\"App\"), você concorda em cumprir e estar vinculado a estes Termos de Uso."
           ]
         },
         {
           "heading": "2. Descrição do Serviço",
           "body": [
-            "O CNB Mobile é um aplicativo gamificado que recompensa os usuários com pontos virtuais por acessar o app diariamente.",
-            "Os pontos do CNB Mobile NÃO possuem valor monetário real e não constituem qualquer forma de investimento."
+            "O Juice Mobile é um aplicativo gamificado que recompensa os usuários com pontos virtuais por acessar o app diariamente.",
+            "Os pontos do Juice Mobile NÃO possuem valor monetário real e não constituem qualquer forma de investimento."
           ]
         },
         {
@@ -569,7 +573,7 @@
         },
         {
           "heading": "7. Propriedade Intelectual",
-          "body": ["Todo o conteúdo do App é de propriedade exclusiva do CNB Mobile."]
+          "body": ["Todo o conteúdo do App é de propriedade exclusiva do Juice Mobile."]
         },
         {
           "heading": "8. Limitação de Responsabilidade",
@@ -614,19 +618,19 @@
     },
     "faq": {
       "title": "Perguntas frequentes",
-      "intro": "Tudo o que você precisa saber sobre CNB Mobile.",
+      "intro": "Tudo o que você precisa saber sobre Juice Mobile.",
       "items": [
         {
-          "q": "O que é o CNB Mobile?",
-          "a": "Um app DePIN que recompensa você com tokens CNB por cada minuto de carregamento verificado on-chain na Solana."
+          "q": "O que é o Juice Mobile?",
+          "a": "Um app DePIN que recompensa você com JUICE tokens por cada minuto de carregamento verificado on-chain na Solana."
         },
         {
           "q": "Como ganho tokens?",
-          "a": "Conecte o carregador e abra o app. A cada minuto de carregamento, +10 CNB são acumulados, com bônus de +50 a cada hora completa."
+          "a": "Conecte o carregador e abra o app. A cada minuto de carregamento, +10 JUICE são acumulados, com bônus de +50 a cada hora completa."
         },
         {
           "q": "Preciso de carteira Solana?",
-          "a": "Para o app diário, não. Para resgatar os CNB tokens em sua carteira própria, sim — qualquer carteira Solana funciona."
+          "a": "Para o app diário, não. Para resgatar os JUICE tokens em sua carteira própria, sim — qualquer carteira Solana funciona."
         },
         {
           "q": "É seguro?",
@@ -639,7 +643,7 @@
       ]
     },
     "token": {
-      "title": "CNB Token",
+      "title": "JUICE Token",
       "intro": "Detalhes técnicos do token SPL na mainnet Solana."
     },
     "tokenomics": {
@@ -650,15 +654,15 @@
     },
     "manifesto": {
       "metaTitle": "Manifesto Juice — De Cripto no Bolso para o mundo",
-      "metaDescription": "A história, a transição CNB Mobile → Juice, por que Solana e o que continua igual. Manifesto da equipe Juice."
+      "metaDescription": "A história, a transição Juice Mobile → Juice, por que Solana e o que continua igual. Manifesto da equipe Juice."
     },
     "hackathon": {
       "title": "Frontier Colosseum",
-      "intro": "Como o CNB Mobile compete no hackathon da Solana Foundation."
+      "intro": "Como o Juice Mobile compete no hackathon da Solana Foundation."
     },
     "wallet": {
       "title": "Carteira",
-      "intro": "Conecte sua carteira Solana para resgatar e gerenciar seus CNB tokens.",
+      "intro": "Conecte sua carteira Solana para resgatar e gerenciar seus JUICE tokens.",
       "comingSoon": "Em breve"
     },
     "airdrop": {
@@ -692,7 +696,7 @@
       "sections": [
         {
           "heading": "1. Titularidade",
-          "body": ["O aplicativo CNB Mobile é de propriedade exclusiva de Cripto no Bolso, São Paulo, Brasil. Protegido pela Lei nº 9.610/98 e Lei nº 9.279/96."]
+          "body": ["O aplicativo Juice Mobile é de propriedade exclusiva de Cripto no Bolso, São Paulo, Brasil. Protegido pela Lei nº 9.610/98 e Lei nº 9.279/96."]
         },
         {
           "heading": "2. Conformidade Legal",
@@ -715,7 +719,7 @@
           "body": ["Cripto no Bolso — contato@criptonobolso.com.br"]
         }
       ],
-      "closing": "© 2026 CNB Mobile — Cripto no Bolso. Todos os direitos reservados."
+      "closing": "© 2026 Juice Mobile — Cripto no Bolso. Todos os direitos reservados."
     },
     "deleteAccount": {
       "title": "Excluir minha conta",
@@ -724,7 +728,7 @@
         {
           "heading": "1. Visão geral",
           "body": [
-            "Você pode solicitar a exclusão da sua conta CNB Mobile a qualquer momento. Esta página descreve as formas de exclusão, o que é apagado e o que pode ser retido por exigência legal."
+            "Você pode solicitar a exclusão da sua conta Juice Mobile a qualquer momento. Esta página descreve as formas de exclusão, o que é apagado e o que pode ser retido por exigência legal."
           ]
         },
         {
@@ -733,7 +737,7 @@
             "A forma mais rápida é excluir direto pelo app:"
           ],
           "items": [
-            "Abra o aplicativo CNB Mobile no seu celular.",
+            "Abra o aplicativo Juice Mobile no seu celular.",
             "Acesse Perfil → Configurações → Conta.",
             "Toque em \"Excluir conta\" e confirme.",
             "A conta é desativada na hora e os dados pessoais são removidos em até 30 dias."
@@ -742,7 +746,7 @@
         {
           "heading": "3. Excluir por email",
           "body": [
-            "Se você não tem mais acesso ao app, envie um pedido de exclusão a partir do email cadastrado para contato@criptonobolso.com.br com o assunto \"Pedido de exclusão de conta — CNB Mobile\". Confirmamos o recebimento em até 7 dias úteis e concluímos a exclusão em até 30 dias."
+            "Se você não tem mais acesso ao app, envie um pedido de exclusão a partir do email cadastrado para contato@criptonobolso.com.br com o assunto \"Pedido de exclusão de conta — Juice Mobile\". Confirmamos o recebimento em até 7 dias úteis e concluímos a exclusão em até 30 dias."
           ]
         },
         {
@@ -761,7 +765,7 @@
             "Por exigência legal e de segurança, alguns registros podem ser mantidos mesmo após a exclusão:"
           ],
           "items": [
-            "Transações on-chain de CNB já realizadas — públicas e imutáveis na rede Solana, fora do nosso controle",
+            "Transações on-chain de JUICE já realizadas — públicas e imutáveis na rede Solana, fora do nosso controle",
             "Registros financeiros e fiscais exigidos pela legislação brasileira",
             "Logs de segurança anônimos por até 12 meses para prevenção de fraude"
           ]
@@ -769,7 +773,7 @@
         {
           "heading": "6. Avisos importantes",
           "body": [
-            "A exclusão é definitiva e não pode ser revertida. Pontos não resgatados são perdidos. Tokens CNB já enviados para a sua carteira Solana permanecem com você — fora do nosso controle. Recomendamos resgatar saldos pendentes antes de solicitar a exclusão."
+            "A exclusão é definitiva e não pode ser revertida. Pontos não resgatados são perdidos. JUICE tokens já enviados para a sua carteira Solana permanecem com você — fora do nosso controle. Recomendamos resgatar saldos pendentes antes de solicitar a exclusão."
           ]
         },
         {
@@ -779,7 +783,7 @@
           ]
         }
       ],
-      "closing": "© 2026 CNB Mobile — Cripto no Bolso. Todos os direitos reservados."
+      "closing": "© 2026 Juice Mobile — Cripto no Bolso. Todos os direitos reservados."
     },
     "parceiros": {
       "title": "Parceiros",
@@ -788,11 +792,11 @@
         "badge": "Parcerias B2B · Solana DePIN",
         "headlineLine1": "Sua marca, na rotina",
         "headlineLine2": "de uma rede DePIN ativa.",
-        "subtitle": "CNB Mobile é o primeiro DePIN de Atividade Humana do Brasil. Cada minuto de uso é prova on-chain. Coloque sua marca dentro de missões patrocinadas, banners nativos e integrações de token — e meça resultado por completion, não por impressão.",
+        "subtitle": "Juice Mobile é o primeiro DePIN de Atividade Humana do Brasil. Cada minuto de uso é prova on-chain. Coloque sua marca dentro de missões patrocinadas, banners nativos e integrações de token — e meça resultado por completion, não por impressão.",
         "ctaPrimary": "Quero ser parceiro",
         "ctaSecondary": "Ver formatos",
         "partnerStamp": "Parceira oficial",
-        "partnerStampHint": "Exchange parceira na trajetória do token CNB",
+        "partnerStampHint": "Exchange parceira na trajetória do JUICE token",
         "billboard": {
           "liveLabel": "AO VIVO",
           "availableLabel": "Espaço aberto",
@@ -805,7 +809,7 @@
         }
       },
       "kpi": {
-        "badge": "Por que CNB",
+        "badge": "Por que Juice",
         "title": "Audiência ativa, on-chain e em crescimento",
         "subtitle": "Os números que importam pra quem patrocina. Atualizamos a cada release.",
         "items": {
@@ -843,7 +847,7 @@
         "disclaimer": "Números atualizados a cada release. Métricas detalhadas (cohorts, breakdown geográfico, fontes de tráfego) disponíveis sob NDA."
       },
       "audience": {
-        "badge": "Quem usa CNB",
+        "badge": "Quem usa Juice",
         "title": "Não é audiência genérica. É hábito diário com carteira na mão.",
         "subtitle": "Cada usuário se cadastrou, abriu o app e ativou prova on-chain. Filtro de qualidade que ad-network nenhum entrega.",
         "personas": {
@@ -853,7 +857,7 @@
           },
           "sustainable": {
             "title": "Consciente de energia",
-            "description": "Quem usa CNB pensa no consumo elétrico. Marcas verdes, EV, mobilidade urbana e energia falam direto."
+            "description": "Quem usa Juice pensa no consumo elétrico. Marcas verdes, EV, mobilidade urbana e energia falam direto."
           },
           "web3": {
             "title": "On-chain savvy",
@@ -876,9 +880,9 @@
         "items": {
           "missions": {
             "title": "Missões Patrocinadas",
-            "description": "Sua marca briefa uma missão (ex: visite uma loja, teste o app, compartilhe um conteúdo). O usuário completa, recebe CNB + sua recompensa, e você mede por completion real.",
+            "description": "Sua marca briefa uma missão (ex: visite uma loja, teste o app, compartilhe um conteúdo). O usuário completa, recebe JUICE + sua recompensa, e você mede por completion real.",
             "metric": "CPCM · Custo Por Completion de Missão",
-            "example": "Ex: \"Visite uma estação de carga X\" → +500 CNB + cupom da marca",
+            "example": "Ex: \"Visite uma estação de carga X\" → +500 JUICE + cupom da marca",
             "featured": "Formato destaque"
           },
           "banners": {
@@ -888,10 +892,10 @@
             "example": "Ex: card patrocinado entre missões, com até 2 CTAs"
           },
           "cashback": {
-            "title": "Cashback / Pagamento em CNB",
-            "description": "Sua marca aceita CNB como pagamento (com auto-conversão pra BRL via gateway parceiro) ou emite cashback em CNB pra ações fora do app.",
+            "title": "Cashback / Pagamento em JUICE",
+            "description": "Sua marca aceita JUICE como pagamento (com auto-conversão pra BRL via gateway parceiro) ou emite cashback em JUICE pra ações fora do app.",
             "metric": "GMV · Volume Tokenizado",
-            "example": "Ex: cliente paga café, recebe 5% em CNB"
+            "example": "Ex: cliente paga café, recebe 5% em JUICE"
           },
           "geo": {
             "title": "Campanhas Geo-fenced",
@@ -901,13 +905,13 @@
           },
           "loyalty": {
             "title": "Loyalty Bridge",
-            "description": "Conecte seu programa de pontos com CNB. Usuário queima pontos da sua marca, ganha CNB. Reverso: gasta CNB, vira pontos de você. Fidelização cruzada.",
+            "description": "Conecte seu programa de pontos com JUICE. Usuário queima pontos da sua marca, ganha JUICE. Reverso: gasta JUICE, vira pontos de você. Fidelização cruzada.",
             "metric": "Active Loyalty · Conversion Rate",
-            "example": "Ex: \"500 pontos parceiro = 50 CNB\""
+            "example": "Ex: \"500 pontos parceiro = 50 JUICE\""
           },
           "irl": {
             "title": "Brand Activations IRL",
-            "description": "Co-branding em meetups, hackathons, festivais e ações de rua. CNB Mobile + Superteam Brasil + sua marca, com cobertura digital integrada.",
+            "description": "Co-branding em meetups, hackathons, festivais e ações de rua. Juice Mobile + Superteam Brasil + sua marca, com cobertura digital integrada.",
             "metric": "Reach · Mentions · UGC",
             "example": "Ex: estande co-branded em hackathon Solana"
           }
@@ -925,18 +929,18 @@
           },
           "curate": {
             "label": "Etapa 02",
-            "title": "Curadoria CNB",
+            "title": "Curadoria Juice",
             "description": "Nosso time desenha a mecânica, valida com compliance e prepara a missão dentro do app. Aprovação compartilhada antes do go-live."
           },
           "deliver": {
             "label": "Etapa 03",
             "title": "Missão no ar",
-            "description": "Usuários veem, completam, recebem CNB on-chain + a recompensa da sua marca. Tempo real."
+            "description": "Usuários veem, completam, recebem JUICE on-chain + a recompensa da sua marca. Tempo real."
           },
           "measure": {
             "label": "Etapa 04",
             "title": "Report + pagamento",
-            "description": "Dashboard com completion rate, perfil de quem completou, custo unitário e prova on-chain. Pagamento na fatura ou em CNB."
+            "description": "Dashboard com completion rate, perfil de quem completou, custo unitário e prova on-chain. Pagamento na fatura ou em JUICE."
           }
         }
       },
@@ -944,36 +948,36 @@
         "badge": "Quem está com a gente",
         "title": "Parceiros que já Utilizaram o APP",
         "subtitle": "Comunidade real, parceria real, prova real.",
-        "affiliateDisclosure": "Os links de parceria acima incluem programa de afiliados — a CNB Mobile pode receber comissão sobre cadastros e operações realizadas via esses links, sem custo adicional pra você.",
+        "affiliateDisclosure": "Os links de parceria acima incluem programa de afiliados — a Juice Mobile pode receber comissão sobre cadastros e operações realizadas via esses links, sem custo adicional pra você.",
         "items": {
           "bingx": {
             "name": "BingX",
             "role": "Exchange parceira",
-            "description": "Exchange global parceira da CNB Mobile e Official Crypto Exchange Partner do Chelsea FC. Liquidez, infraestrutura e alcance internacional para o token CNB.",
+            "description": "Exchange global parceira da Juice Mobile e Official Crypto Exchange Partner do Chelsea FC. Liquidez, infraestrutura e alcance internacional para o JUICE token.",
             "cta": "Conhecer a BingX"
           },
           "okx": {
             "name": "OKX",
             "role": "Exchange & Pagamentos",
-            "description": "OKX é parceira da CNB Mobile no ecossistema cripto — uma das exchanges líderes globais, criadora do X Pay para pagamentos cripto end-to-end.",
+            "description": "OKX é parceira da Juice Mobile no ecossistema cripto — uma das exchanges líderes globais, criadora do X Pay para pagamentos cripto end-to-end.",
             "cta": "Conhecer a OKX"
           },
           "kast": {
             "name": "KAST",
             "role": "Cartão cripto parceiro",
-            "description": "KAST é parceira da CNB Mobile com cartão Visa Platinum cripto — leva o saldo on-chain pra rotina real de pagamento, na mesma direção do CNB.",
+            "description": "KAST é parceira da Juice Mobile com cartão Visa Platinum cripto — leva o saldo on-chain pra rotina real de pagamento, na mesma direção do Juice.",
             "cta": "Conhecer a KAST"
           },
           "kaxis": {
             "name": "Kaxis Club",
             "role": "Neobank brasileiro na Solana",
-            "description": "Kaxis é o neobank brasileiro construído sobre a Solana — conta, cartão e cripto no mesmo app, alinhado com a missão do CNB de levar Web3 pra rotina real.",
+            "description": "Kaxis é o neobank brasileiro construído sobre a Solana — conta, cartão e cripto no mesmo app, alinhado com a missão do Juice de levar Web3 pra rotina real.",
             "cta": "Conhecer a Kaxis"
           },
           "solflare": {
             "name": "Solflare",
             "role": "Carteira oficial da Solana",
-            "description": "Solflare é a carteira mais poderosa da Solana — staking, swap e NFTs nativos. Integração natural pra quem ganha pontos CNB e quer custodiar com segurança.",
+            "description": "Solflare é a carteira mais poderosa da Solana — staking, swap e NFTs nativos. Integração natural pra quem ganha pontos JUICE e quer custodiar com segurança.",
             "cta": "Conhecer a Solflare"
           },
           "mind": {
@@ -1010,8 +1014,8 @@
             "features": [
               "Até 3 missões + banners no feed",
               "Geo-fencing incluído",
-              "Co-marketing nas redes sociais CNB",
-              "Pagamento em BRL ou CNB"
+              "Co-marketing nas redes sociais Juice",
+              "Pagamento em BRL ou JUICE"
             ]
           },
           "enterprise": {
@@ -1036,7 +1040,7 @@
         "items": [
           {
             "q": "Como funciona o pagamento?",
-            "a": "Por padrão, pagamento em BRL via fatura mensal. Em pacotes Growth e Enterprise, podemos receber em CNB com auto-conversão. Recompensas pros usuários sempre saem em CNB on-chain."
+            "a": "Por padrão, pagamento em BRL via fatura mensal. Em pacotes Growth e Enterprise, podemos receber em JUICE com auto-conversão. Recompensas pros usuários sempre saem em JUICE on-chain."
           },
           {
             "q": "Em quanto tempo a missão vai ao ar?",
@@ -1064,7 +1068,7 @@
           },
           {
             "q": "Quem opera a parceria do meu lado da mesa?",
-            "a": "Pacotes Pilot e Growth são geridos pelo time CNB diretamente. Enterprise inclui um Account Manager dedicado, com SLA de resposta em 4h úteis."
+            "a": "Pacotes Pilot e Growth são geridos pelo time Juice diretamente. Enterprise inclui um Account Manager dedicado, com SLA de resposta em 4h úteis."
           }
         ]
       },
@@ -1076,7 +1080,7 @@
         "ctaX": "DM no X",
         "founderLabel": "Direto com o founder",
         "founderName": "Rafael Mariano",
-        "founderRole": "CEO & Founder, CNB Mobile",
+        "founderRole": "CEO & Founder, Juice Mobile",
         "note": "Resposta em até 24h úteis."
       }
     }

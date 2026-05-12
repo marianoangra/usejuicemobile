@@ -44,10 +44,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       locale: ogLocale,
       url: localePath,
-      siteName: 'CNB Mobile',
+      siteName: 'Juice Mobile',
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@usejuicemobile',
       title: t('title'),
       description: t('description'),
     },

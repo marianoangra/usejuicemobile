@@ -14,7 +14,7 @@ export function PartnersContact() {
   const t = useTranslations('pages.parceiros.contact');
   const titleRef = useMetalSpotlight<HTMLHeadingElement>();
 
-  const mailtoSubject = encodeURIComponent('Parceria CNB Mobile');
+  const mailtoSubject = encodeURIComponent('Parceria Juice Mobile');
   const mailtoBody = encodeURIComponent(
     [
       'Oi Rafael,',

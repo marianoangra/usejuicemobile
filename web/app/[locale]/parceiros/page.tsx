@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const localePath = locale === 'pt' ? '/parceiros' : `/${locale}/parceiros`;
 
   return {
-    title: `${t('title')} · CNB Mobile`,
+    title: `${t('title')} · Juice Mobile`,
     description: t('intro'),
     alternates: {
       canonical: localePath,
@@ -31,15 +31,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `${t('title')} · CNB Mobile`,
+      title: `${t('title')} · Juice Mobile`,
       description: t('intro'),
       type: 'website',
       url: localePath,
-      siteName: 'CNB Mobile',
+      siteName: 'Juice Mobile',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${t('title')} · CNB Mobile`,
+      title: `${t('title')} · Juice Mobile`,
       description: t('intro'),
     },
   };
@@ -58,7 +58,7 @@ export default async function ParceirosPage({ params }: Props) {
     provider: {
       '@type': 'Organization',
       '@id': 'https://www.usejuicemobile.com/#organization',
-      name: 'CNB Mobile',
+      name: 'Juice Mobile',
     },
     description: t('intro'),
     areaServed: {

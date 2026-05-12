@@ -95,7 +95,7 @@ export function MockedHomeScreen() {
             >
               <Image
                 src="/images/logo.png"
-                alt="CNB"
+                alt="Juice"
                 width={40}
                 height={40}
                 className="h-full w-full object-cover"
@@ -204,7 +204,7 @@ export function MockedHomeScreen() {
             </div>
             <div className="rounded-xl border border-white/[0.10] bg-white/[0.03] flex items-center justify-center gap-1.5 py-2 text-[11px] font-medium text-white/85">
               <Lock className="h-3 w-3" strokeWidth={2} />
-              <span>CNB Privado</span>
+              <span>Juice Privado</span>
             </div>
           </div>
         </div>

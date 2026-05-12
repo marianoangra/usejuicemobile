@@ -7,7 +7,7 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'pages.privacy' });
-  return { title: `${t('title')} · CNB Mobile` };
+  return { title: `${t('title')} · Juice Mobile` };
 }
 
 export default async function PrivacyPage({ params }: Props) {

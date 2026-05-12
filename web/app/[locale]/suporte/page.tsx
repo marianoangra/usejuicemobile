@@ -8,7 +8,7 @@ type FaqItem = { q: string; a: string };
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'pages.support' });
-  return { title: `${t('title')} · CNB Mobile` };
+  return { title: `${t('title')} · Juice Mobile` };
 }
 
 export default async function SupportPage({ params }: Props) {

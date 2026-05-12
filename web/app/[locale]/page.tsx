@@ -5,7 +5,6 @@ import { Features } from '@/components/sections/Features';
 import { Community } from '@/components/sections/Community';
 import { HowItWorks } from '@/components/sections/HowItWorks';
 import { Hackathon } from '@/components/sections/Hackathon';
-import { Token } from '@/components/sections/Token';
 import { Founder } from '@/components/sections/Founder';
 import { Waitlist } from '@/components/sections/Waitlist';
 import { Faq } from '@/components/sections/Faq';
@@ -37,7 +36,7 @@ export default async function HomePage({ params }: Props) {
       {
         '@type': 'Organization',
         '@id': 'https://www.usejuicemobile.com/#organization',
-        name: 'CNB Mobile',
+        name: 'Juice Mobile',
         alternateName: 'Cripto no Bolso',
         url: 'https://www.usejuicemobile.com',
         logo: {
@@ -47,8 +46,8 @@ export default async function HomePage({ params }: Props) {
           height: 1024,
         },
         sameAs: [
-          'https://x.com/cnbmobile',
-          'https://www.instagram.com/criptonobolso',
+          'https://x.com/usejuicemobile',
+          'https://www.instagram.com/usejuicemobile',
           'https://t.me/grupcriptocnb',
           'https://chat.whatsapp.com/GsIEmnUPKsn2W95HEjPwW8',
           'https://github.com/marianoangra/cnbapp',
@@ -63,7 +62,7 @@ export default async function HomePage({ params }: Props) {
       {
         '@type': 'MobileApplication',
         '@id': 'https://www.usejuicemobile.com/#app',
-        name: 'CNB Mobile',
+        name: 'Juice Mobile',
         description: t('description'),
         operatingSystem: 'iOS, Android',
         applicationCategory: 'FinanceApplication',
@@ -79,7 +78,7 @@ export default async function HomePage({ params }: Props) {
         '@type': 'WebSite',
         '@id': 'https://www.usejuicemobile.com/#website',
         url: 'https://www.usejuicemobile.com',
-        name: 'CNB Mobile',
+        name: 'Juice Mobile',
         description: t('description'),
         publisher: { '@id': 'https://www.usejuicemobile.com/#organization' },
         inLanguage,
@@ -98,7 +97,6 @@ export default async function HomePage({ params }: Props) {
       <Community />
       <HowItWorks />
       <Hackathon />
-      <Token />
       <Founder />
       <Waitlist />
       <Faq />

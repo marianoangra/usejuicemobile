@@ -48,25 +48,31 @@ export function Founder() {
             </div>
 
             {/* Carol */}
-            <div className="metal-card relative overflow-hidden rounded-[20px]">
-              <Image
-                src="/images/carol.png"
-                alt={t('cofounder.alt')}
-                width={1200}
-                height={600}
-                className="h-full w-full object-cover object-top"
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-deep/80 via-transparent to-transparent"
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-secondary/15 rounded-[20px]"
-              />
-              <div className="absolute bottom-0 left-0 p-5">
-                <p className="text-base font-bold text-white">{t('cofounder.name')}</p>
-                <p className="text-sm text-primary mt-0.5">{t('cofounder.role')}</p>
+            <div className="metal-card relative overflow-hidden rounded-[20px] flex gap-4 p-4">
+              <div className="relative shrink-0 w-24 h-24 rounded-[14px] overflow-hidden">
+                <Image
+                  src="/images/carol.png"
+                  alt={t('cofounder.alt')}
+                  width={200}
+                  height={200}
+                  className="h-full w-full object-cover object-top"
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-secondary/15 rounded-[14px]"
+                />
+              </div>
+              <div className="flex flex-col justify-center">
+                <p className="text-sm font-bold text-white">{t('cofounder.name')}</p>
+                <p className="text-xs text-primary mt-0.5 mb-2">{t('cofounder.role')}</p>
+                <ul className="space-y-0.5">
+                  {(['item1','item2','item3','item4'] as const).map((k) => (
+                    <li key={k} className="flex items-start gap-1.5 text-[11px] text-white/55 leading-snug">
+                      <span className="text-primary mt-px">▸</span>
+                      {t(`cofounder.${k}`)}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </motion.div>

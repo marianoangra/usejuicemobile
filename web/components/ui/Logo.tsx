@@ -27,7 +27,7 @@ export function Logo({ className, showWordmark = true, size = 32 }: LogoProps) {
       </span>
       {showWordmark && (
         <span className="font-bold tracking-tight text-white text-[15px]">
-          CNB<span className="text-primary"> Mobile</span>
+          Juice<span className="text-primary"> Mobile</span>
         </span>
       )}
     </span>
