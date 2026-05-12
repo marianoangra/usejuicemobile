@@ -226,6 +226,10 @@ export async function adicionarMinutoComBonus(uid, incluirHorarios = true) {
     const update = {
       pontos: increment(10 + bonus),
       minutos: increment(1),
+      // Throttle anti-spam: regra Firestore exige que este timestamp avance
+      // pelo menos 50s entre writes. Sem isso, um cliente forjado podia
+      // mintar pontos em loop. Ver firestore.rules Atualização 3.
+      ultimoMinutoMs: serverTimestamp(),
     };
     if (incluirHorarios) {
       const d = new Date();

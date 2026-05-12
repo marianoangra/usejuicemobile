@@ -40,6 +40,7 @@ export default function WithdrawScreen({ route, navigation }) {
 
   const [wallet, setWallet] = useState('');
   const [walletNativa, setWalletNativa] = useState(null);
+  const [walletLoadError, setWalletLoadError] = useState(false);
   const [quantidadeCNB, setQuantidadeCNB] = useState('');
   const [loadingCNB, setLoadingCNB] = useState(false);
 
@@ -76,13 +77,42 @@ export default function WithdrawScreen({ route, navigation }) {
 
   useEffect(() => {
     if (!perfil?.uid) return;
-    getWalletAddress(perfil.uid).then(addr => {
-      if (addr) {
-        setWalletNativa(addr);
-        setWallet(addr);
-      }
-    }).catch(() => {});
+    let cancelled = false;
+    setWalletLoadError(false);
+    getWalletAddress(perfil.uid)
+      .then(addr => {
+        if (cancelled) return;
+        if (addr) {
+          setWalletNativa(addr);
+          setWallet(addr);
+        }
+      })
+      .catch(err => {
+        // CRITICAL: silenciar essa falha permitia o usuário digitar outra
+        // carteira e receber JUICE no endereço errado. Agora mostra aviso
+        // e bloqueia submit até resolver.
+        if (cancelled) return;
+        console.warn('[WithdrawScreen] erro ao carregar carteira salva:', err?.message || err);
+        setWalletLoadError(true);
+      });
+    return () => { cancelled = true; };
   }, [perfil?.uid]);
+
+  function recarregarCarteira() {
+    if (!perfil?.uid) return;
+    setWalletLoadError(false);
+    getWalletAddress(perfil.uid)
+      .then(addr => {
+        if (addr) {
+          setWalletNativa(addr);
+          setWallet(addr);
+        }
+      })
+      .catch(err => {
+        console.warn('[WithdrawScreen] retry getWalletAddress falhou:', err?.message || err);
+        setWalletLoadError(true);
+      });
+  }
 
   function formatarPontos(text) {
     const digits = text.replace(/\D/g, '');
@@ -175,7 +205,9 @@ export default function WithdrawScreen({ route, navigation }) {
   }
 
   const qtdCNB = parseInt(quantidadeCNB.replace(/\D/g, ''), 10) || 0;
-  const podeConfirmarCNB = pontosDisponiveis >= 100000 && qtdCNB >= 100000 && qtdCNB <= pontosDisponiveis && solanaValido(wallet);
+  // Bloqueia submit se a carteira salva falhou de carregar — evita que o
+  // usuário digite outro endereço sem saber que ele tinha uma carteira nativa.
+  const podeConfirmarCNB = pontosDisponiveis >= 100000 && qtdCNB >= 100000 && qtdCNB <= pontosDisponiveis && solanaValido(wallet) && !walletLoadError;
 
   async function handleResgateCNB() {
     if (!perfil?.uid) return Alert.alert('Erro', 'Dados do perfil não carregados.');
@@ -390,6 +422,36 @@ export default function WithdrawScreen({ route, navigation }) {
               </View>
 
               <Text style={styles.fieldLabel}>Endereço da carteira Solana</Text>
+
+              {walletLoadError && (
+                <View style={{
+                  flexDirection: 'row', alignItems: 'flex-start',
+                  backgroundColor: 'rgba(255,180,0,0.08)',
+                  borderWidth: 1, borderColor: 'rgba(255,180,0,0.4)',
+                  borderRadius: 10, padding: 12, marginBottom: 12, gap: 10,
+                }}>
+                  <AlertTriangle size={18} color="#ffb400" />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: '#ffb400', fontSize: 13, fontWeight: '600', marginBottom: 4 }}>
+                      Não conseguimos carregar sua carteira salva.
+                    </Text>
+                    <Text style={{ color: colors.textDim, fontSize: 12, marginBottom: 8 }}>
+                      Verifique sua conexão e tente de novo antes de continuar — assim você não envia JUICE para um endereço diferente do que já cadastrou.
+                    </Text>
+                    <TouchableOpacity
+                      onPress={recarregarCarteira}
+                      accessibilityRole="button"
+                      accessibilityLabel="Tentar carregar carteira salva novamente"
+                      style={{
+                        alignSelf: 'flex-start',
+                        paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                        borderWidth: 1, borderColor: 'rgba(255,180,0,0.5)',
+                      }}>
+                      <Text style={{ color: '#ffb400', fontSize: 12, fontWeight: '600' }}>Tentar de novo</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
 
               {walletNativa && (
                 <TouchableOpacity

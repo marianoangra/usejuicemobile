@@ -137,6 +137,7 @@ export default function ProfileScreen({ route, navigation }) {
 
   const [saques, setSaques]               = useState([]);
   const [loadingSaques, setLoadingSaques] = useState(true);
+  const [erroSaques, setErroSaques]       = useState(false);
   const [afiliados, setAfiliados]         = useState({ codigo: '', total: 0, ativas: 0, bonus5k: false, bonus10k: false });
   const [perfilLocal, setPerfilLocal]     = useState(perfil);
   const [minhaPos, setMinhaPos]           = useState(null);
@@ -162,12 +163,33 @@ export default function ProfileScreen({ route, navigation }) {
 
   useEffect(() => {
     if (!perfil?.uid) return;
+    setErroSaques(false);
     const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000));
     Promise.race([getSaques(perfil.uid), timeout])
       .then(setSaques)
-      .catch(() => setSaques([]))
+      .catch((err) => {
+        // Não silencia: o usuário precisa saber que histórico falhou de carregar
+        // (caso contrário, um saque concluído fica "invisível" e gera ticket de suporte).
+        console.warn('[ProfileScreen] erro ao carregar saques:', err?.message || err);
+        setSaques([]);
+        setErroSaques(true);
+      })
       .finally(() => setLoadingSaques(false));
   }, [perfil?.uid]);
+
+  function recarregarSaques() {
+    if (!perfil?.uid) return;
+    setLoadingSaques(true);
+    setErroSaques(false);
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000));
+    Promise.race([getSaques(perfil.uid), timeout])
+      .then(setSaques)
+      .catch((err) => {
+        console.warn('[ProfileScreen] erro ao recarregar saques:', err?.message || err);
+        setErroSaques(true);
+      })
+      .finally(() => setLoadingSaques(false));
+  }
 
   useEffect(() => {
     if (!perfil?.uid) return;
@@ -693,6 +715,27 @@ export default function ProfileScreen({ route, navigation }) {
 
             {loadingSaques ? (
               <ActivityIndicator color={PRIMARY} style={{ marginTop: 16 }} />
+            ) : erroSaques ? (
+              <View style={{
+                backgroundColor: colors.surfaceAlt,
+                borderWidth: 1, borderColor: colors.border,
+                borderRadius: 14, padding: 20, alignItems: 'center',
+              }}>
+                <Text style={{ color: colors.textDim, fontSize: 15, textAlign: 'center', marginBottom: 12 }}>
+                  Não conseguimos carregar seu histórico de saques agora. Verifique sua conexão.
+                </Text>
+                <TouchableOpacity
+                  onPress={recarregarSaques}
+                  accessibilityRole="button"
+                  accessibilityLabel="Tentar carregar histórico de saques novamente"
+                  style={{
+                    paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10,
+                    borderWidth: 1, borderColor: colors.border,
+                  }}
+                >
+                  <Text style={{ color: colors.text, fontSize: 14, fontWeight: '600' }}>Tentar de novo</Text>
+                </TouchableOpacity>
+              </View>
             ) : saques.length === 0 ? (
               <View style={{
                 backgroundColor: colors.surfaceAlt,

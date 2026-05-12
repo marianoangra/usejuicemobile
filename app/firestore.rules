@@ -40,15 +40,33 @@ service cloud.firestore {
       // Inclui ultimoLogin para cobrir registrarLoginDiario().
       // atividadeDias é mapa diário (chave YYYYMMDD) usado pelo ranking semanal.
       // minutos só pode aumentar 1 por operação quando presente.
+      //
+      // SECURITY 2026-05-12: pontos increment exige pareamento com minutos OU
+      // ultimoLogin no mesmo write. Sem isso, um cliente forjado podia
+      // spammar `pontos = prev + 60` em loop sem deixar rastro em minutos
+      // (todos os fluxos legítimos sempre incluem um dos dois).
+      //
+      // SECURITY 2026-05-12: ultimoMinutoMs adicionado ao hasOnly para suportar
+      // próxima fase de throttle (cliente >= v1.2.41 escreve esse campo a cada
+      // adicionarMinutoComBonus). Após adoção, ativar regra time-based abaixo.
       allow update: if request.auth != null
         && request.auth.uid == uid
         && request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['pontos', 'minutos', 'ultimoLogin', 'atividadeDias'])
+            .hasOnly(['pontos', 'minutos', 'ultimoLogin', 'atividadeDias', 'ultimoMinutoMs'])
         && request.resource.data.diff(resource.data).affectedKeys().hasAny(['pontos'])
         && request.resource.data.pontos > resource.data.pontos
         && request.resource.data.pontos <= resource.data.pontos + 60
+        // Pontos só podem subir se houver write paralelo de minutos+1 OU ultimoLogin
+        && request.resource.data.diff(resource.data).affectedKeys().hasAny(['minutos', 'ultimoLogin'])
         && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['minutos'])
-            || request.resource.data.minutos == resource.data.minutos + 1);
+            || request.resource.data.minutos == resource.data.minutos + 1)
+        // Throttle opcional: quando ultimoMinutoMs está sendo escrito, deve ser
+        // request.time e respeitar gap de 50s (defesa em profundidade).
+        // Clientes antigos sem ultimoMinutoMs continuam funcionando.
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['ultimoMinutoMs'])
+            || (request.resource.data.ultimoMinutoMs == request.time
+                && (resource.data.get('ultimoMinutoMs', null) == null
+                    || request.time >= resource.data.ultimoMinutoMs + duration.value(50, 's'))));
 
       // Atualização 4 — saque: pontos diminui, saques aumenta 1
       allow update: if request.auth != null

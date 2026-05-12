@@ -741,6 +741,12 @@ export default function HomeScreen({ route, navigation }) {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={abrirModalNotif}
+              accessibilityRole="button"
+              accessibilityLabel={notifAtiva ? 'Notificações ativadas' : 'Ativar notificações'}
+              accessibilityHint="Abre as configurações de notificação do app"
+              // hitSlop expande a área de toque pro mínimo de 44pt do iOS HIG
+              // sem mudar o tamanho visual de 36x36.
+              hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}
               style={{
                 width: 36, height: 36, borderRadius: 18,
                 backgroundColor: colors.surfaceAlt,
