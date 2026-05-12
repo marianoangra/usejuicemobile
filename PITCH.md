@@ -135,13 +135,13 @@ Layer 1 — **Solana Memo Program** (immutable session log):
 - Daily aggregate proof at 03:00 BRT: `{date, activeUsers, totalMinutes, sha256(allUIDs)}`
 - Referral events written on-chain at moment of registration
 
-Layer 2 — **Anchor Program in Rust** (`BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo`):
+Layer 2 — **Anchor Program in Rust** (`BoVj5VrUx4zzE9JWFrneGWyePNt4DYGP2AHb9ZUxXZmo`, deployed on devnet — mainnet migration scheduled at TGE):
 - `UserAccount` PDA per user: `{ uid_hash, pontos, minutos, referrer, nivel, bump }`
 - `initialize_user` — creates PDA on first session, records referral graph on-chain
 - `acumular_pontos` — authority-gated, validates 1–20.000 pts and 1–1.440 min per call
 - `resgatar_tokens` — atomically debits points on-chain before SPL transfer, enforces 100.000 minimum
 
-No entity — including us — can alter a Memo or a UserAccount PDA without the server keypair. Every session is double-anchored: once in the immutable log, once in the state machine.
+No entity — including us — can alter a Memo without the server keypair. Every session is anchored in the immutable Memo log; the Anchor state machine moves to mainnet at TGE alongside the token launch.
 
 Layer 3 — **CLINT Agent** (autonomous on-chain verifier):
 - Reads UserAccount PDAs directly from the Solana RPC — no trust in app server required
