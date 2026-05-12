@@ -184,8 +184,8 @@ export default function WithdrawScreen({ route, navigation }) {
     if (qtdCNB > pontosDisponiveis) return Alert.alert('Atenção', 'Pontos insuficientes.');
 
     Alert.alert(
-      'Confirmar Resgate CNB',
-      `Carteira: ${wallet.trim().slice(0, 8)}...${wallet.trim().slice(-6)}\nTokens CNB: ${qtdCNB.toLocaleString('pt-BR')}\n\nOs tokens serão enviados diretamente na Solana.`,
+      'Confirmar Resgate JUICE',
+      `Carteira: ${wallet.trim().slice(0, 8)}...${wallet.trim().slice(-6)}\nTokens JUICE: ${qtdCNB.toLocaleString('pt-BR')}\n\nOs tokens serão enviados diretamente na Solana.`,
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -197,8 +197,8 @@ export default function WithdrawScreen({ route, navigation }) {
               const sig = result.data?.signature ?? '';
               logResgateCNBSucesso(qtdCNB, sig);
               Alert.alert(
-                'CNB enviado com sucesso',
-                `${qtdCNB.toLocaleString('pt-BR')} CNB tokens enviados para sua carteira Solana.\n\nSignature: ${sig.slice(0, 16)}...`,
+                'JUICE enviado com sucesso',
+                `${qtdCNB.toLocaleString('pt-BR')} JUICE tokens enviados para sua carteira Solana.\n\nSignature: ${sig.slice(0, 16)}...`,
                 [{ text: 'OK', onPress: () => navigation.goBack() }]
               );
             } catch (e) {
@@ -300,7 +300,7 @@ export default function WithdrawScreen({ route, navigation }) {
               style={[styles.tab, aba === 'cnb' && styles.tabAtiva]}
               onPress={() => setAba('cnb')}
               activeOpacity={0.8}>
-              <Text style={[styles.tabText, aba === 'cnb' && styles.tabTextAtiva]}>◎ CNB</Text>
+              <Text style={[styles.tabText, aba === 'cnb' && styles.tabTextAtiva]}>◎ JUICE</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, aba === 'privado' && styles.tabAtivaPrivado]}
@@ -371,7 +371,7 @@ export default function WithdrawScreen({ route, navigation }) {
             <>
               <View style={styles.infoCardSolana}>
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLineSolana}>◎ 1 ponto = 1 CNB Token</Text>
+                  <Text style={styles.infoLineSolana}>◎ 1 ponto = 1 JUICE Token</Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Key size={13} color="#9945FF" />
@@ -384,7 +384,7 @@ export default function WithdrawScreen({ route, navigation }) {
                 <View style={styles.infoRow}>
                   <Smartphone size={13} color="#9945FF" />
                   <Text style={styles.infoLineSolana}>
-                    {walletNativa ? 'Sua carteira CNB já está selecionada' : 'Use Phantom, Solflare ou crie sua carteira no app'}
+                    {walletNativa ? 'Sua carteira JUICE já está selecionada' : 'Use Phantom, Solflare ou crie sua carteira no app'}
                   </Text>
                 </View>
               </View>
@@ -398,7 +398,7 @@ export default function WithdrawScreen({ route, navigation }) {
                   activeOpacity={0.8}>
                   <Text style={styles.walletNativaTagIcon}>◎</Text>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.walletNativaTagTitle}>Minha Carteira CNB</Text>
+                    <Text style={styles.walletNativaTagTitle}>Minha Carteira JUICE</Text>
                     <Text style={styles.walletNativaTagAddr}>{walletNativa.slice(0, 8)}...{walletNativa.slice(-6)}</Text>
                   </View>
                   {wallet === walletNativa && <Text style={styles.walletNativaCheck}>✓</Text>}
@@ -428,7 +428,7 @@ export default function WithdrawScreen({ route, navigation }) {
                 keyboardType="numeric"
               />
               {qtdCNB > 0 && (
-                <Text style={styles.conversao}>= {qtdCNB.toLocaleString('pt-BR')} CNB Tokens</Text>
+                <Text style={styles.conversao}>= {qtdCNB.toLocaleString('pt-BR')} JUICE Tokens</Text>
               )}
               {qtdCNB > 0 && qtdCNB < 100000 && <Text style={styles.erro}>Mínimo de 100.000 pontos.</Text>}
               {qtdCNB > pontosDisponiveis && qtdCNB > 0 && <Text style={styles.erro}>Você não tem pontos suficientes.</Text>}
@@ -439,7 +439,7 @@ export default function WithdrawScreen({ route, navigation }) {
                 disabled={loadingCNB || !podeConfirmarCNB}>
                 {loadingCNB
                   ? <ActivityIndicator color="#0A0F1E" />
-                  : <Text style={styles.btnSolanaText}>Resgatar CNB Tokens ◎</Text>}
+                  : <Text style={styles.btnSolanaText}>Resgatar JUICE Tokens ◎</Text>}
               </TouchableOpacity>
             </>
           )}
@@ -453,7 +453,7 @@ export default function WithdrawScreen({ route, navigation }) {
                   <Text style={{ fontSize: 14, fontWeight: '700', color: '#c084fc' }}>O que é o Saque Privado?</Text>
                 </View>
                 <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 20, marginBottom: 12 }}>
-                  O Saque Privado usa <Text style={{ color: '#c084fc', fontWeight: '600' }}>Zero-Knowledge Proofs (ZK)</Text> para converter seus pontos em SOL sem criar um link rastreável entre o CNB Mobile e sua carteira Solana.
+                  O Saque Privado usa <Text style={{ color: '#c084fc', fontWeight: '600' }}>Zero-Knowledge Proofs (ZK)</Text> para converter seus pontos em SOL sem criar um link rastreável entre o Juice Mobile e sua carteira Solana.
                 </Text>
                 <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 20 }}>
                   Nenhum observador on-chain consegue relacionar seu resgate ao app — sua privacidade financeira é garantida matematicamente.

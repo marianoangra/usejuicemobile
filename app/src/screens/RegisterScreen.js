@@ -71,7 +71,7 @@ export default function RegisterScreen({ navigation }) {
             <View style={styles.logoArea}>
               <View style={styles.logoBox}>
                 <Zap size={22} color={colors.primary} strokeWidth={2.5} />
-                <Text style={styles.logoText}>CNB</Text>
+                <Text style={styles.logoText}>JUICE</Text>
               </View>
             </View>
 

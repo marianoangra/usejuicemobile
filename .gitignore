@@ -34,3 +34,7 @@ ios/
 .DS_Store
 *.log
 .vercel
+
+# Relatórios gerados localmente (contêm PII: nomes/CPFs/PIX)
+relatorio-*.csv
+**/relatorio-*.csv

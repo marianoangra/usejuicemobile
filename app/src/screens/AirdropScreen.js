@@ -30,11 +30,22 @@ export default function AirdropScreen({ route, navigation }) {
   const [wallet, setWallet]     = useState('');
   const [enviando, setEnviando] = useState(false);
   const [sucesso, setSucesso]   = useState(false);
+  const [jaEstava, setJaEstava] = useState(false);
   const [erro, setErro]         = useState('');
 
   const pontosAtuais  = perfil?.pontos ?? 0;
   const juiceEstimado = Math.floor(pontosAtuais / PONTOS_POR_JUICE);
   const elegivel      = juiceEstimado >= MINIMO_JUICE;
+
+  const MSG_POR_REASON = {
+    invalid_email:    'E-mail inválido. Verifique e tente de novo.',
+    invalid_locale:   'Erro interno (locale). Atualize o app.',
+    invalid_source:   'Erro interno (source). Atualize o app.',
+    invalid_wallet:   'Endereço de carteira inválido. Deixe em branco ou cole um endereço Solana válido.',
+    invalid_uid:      'Erro interno (uid). Faça login de novo.',
+    rate_limit:       'Muitas tentativas em pouco tempo. Aguarde 10 minutos e tente de novo.',
+    method_not_allowed: 'Erro interno (método). Atualize o app.',
+  };
 
   async function entrarNaLista() {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -57,14 +68,34 @@ export default function AirdropScreen({ route, navigation }) {
           locale:        'pt',
         }),
       });
-      const json = await res.json();
-      if (json.ok || json.existing) {
+
+      let json;
+      try { json = await res.json(); }
+      catch (parseErr) {
+        console.error('[Airdrop] parse falhou. status=', res.status, 'body inicial=', (await res.text().catch(() => '')).slice(0, 200));
+        setErro(`Resposta inválida do servidor (HTTP ${res.status}). Tente de novo em alguns minutos.`);
+        return;
+      }
+
+      if (json.ok) {
+        if (json.existing) setJaEstava(true);
         setSucesso(true);
+        return;
+      }
+
+      const motivo = json.reason && MSG_POR_REASON[json.reason];
+      if (motivo) {
+        setErro(motivo);
       } else {
-        setErro('Não foi possível registrar agora. Tente novamente.');
+        console.error('[Airdrop] resposta inesperada:', res.status, json);
+        setErro(`Não foi possível registrar (HTTP ${res.status}${json.reason ? ' · ' + json.reason : ''}). Tente novamente.`);
       }
     } catch (e) {
-      setErro('Não foi possível registrar agora. Tente novamente.');
+      console.error('[Airdrop] fetch falhou:', e?.message ?? e);
+      const sinalRede = /Network|timeout|Failed to fetch|TypeError/i.test(String(e?.message ?? ''));
+      setErro(sinalRede
+        ? 'Sem conexão. Verifique sua internet e tente de novo.'
+        : `Falha ao registrar: ${e?.message ?? 'erro desconhecido'}.`);
     } finally {
       setEnviando(false);
     }
@@ -274,12 +305,16 @@ export default function AirdropScreen({ route, navigation }) {
               }}>
                 <CheckCircle size={36} color={PRIMARY} strokeWidth={2} style={{ marginBottom: 12 }} />
                 <Text style={{ fontSize: 17, fontWeight: '700', color: '#fff', marginBottom: 6 }}>
-                  Você está na lista!
+                  {jaEstava ? 'Você já estava na lista' : 'Você está na lista!'}
                 </Text>
                 <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', textAlign: 'center', lineHeight: 19 }}>
-                  {wallet.trim()
-                    ? 'Sua carteira está confirmada para o drop. Avisaremos quando o snapshot fechar.'
-                    : 'E-mail confirmado. Conecte uma carteira antes do snapshot para garantir o drop direto na conta.'}
+                  {jaEstava
+                    ? (wallet.trim()
+                        ? 'Atualizamos sua carteira. Avisaremos quando o snapshot fechar.'
+                        : 'Seu e-mail já estava cadastrado. Conecte uma carteira antes do snapshot para receber o drop direto.')
+                    : (wallet.trim()
+                        ? 'Sua carteira está confirmada para o drop. Avisaremos quando o snapshot fechar.'
+                        : 'E-mail confirmado. Conecte uma carteira antes do snapshot para garantir o drop direto na conta.')}
                 </Text>
               </View>
             )}

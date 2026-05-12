@@ -32,6 +32,7 @@ import { useTheme } from '../context/ThemeContext';
 const PURPLE = '#c084fc';
 import { onPontosUpdate } from '../services/chargeEvents';
 import { useScreenTrace } from '../hooks/useScreenTrace';
+import { usePresence } from '../services/presence';
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
 const PRIMARY  = '#c6ff4a';
@@ -127,7 +128,7 @@ async function buscarAtividades(uid, atividadeDias) {
     const saques = await getSaques(uid);
     saques.slice(0, 3).forEach(s => {
       const ts = s.criadoEm?.toDate ? s.criadoEm.toDate() : new Date(0);
-      const tipo = s.chavePix ? 'Saque PIX' : s.walletAddress ? 'Resgate CNB' : 'Saque';
+      const tipo = s.chavePix ? 'Saque PIX' : s.walletAddress ? 'Resgate JUICE' : 'Saque';
       items.push({
         Icon: ArrowUpRight,
         title: tipo,
@@ -388,6 +389,7 @@ export default function HomeScreen({ route, navigation }) {
   const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const { user, perfil, onAtualizar } = route?.params || {};
+  usePresence(perfil?.uid);
   const onAtualizarRef = useRef(onAtualizar);
   useEffect(() => { onAtualizarRef.current = onAtualizar; }, [onAtualizar]);
 
@@ -781,7 +783,7 @@ export default function HomeScreen({ route, navigation }) {
             <Text style={{ fontSize: 10, letterSpacing: 2, color: colors.textFaint, textTransform: 'uppercase', marginBottom: 8 }}>
               Parceiros
             </Text>
-            <BannerCarousel uid={perfil?.uid} />
+            <BannerCarousel uid={perfil?.uid} perfil={perfil} />
           </Animated.View>
 
           {/* ── Atividades ── */}

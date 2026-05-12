@@ -56,7 +56,7 @@ export default function RankingDetailScreen({ route }) {
         <Text style={[styles.rankPos, { color: medalhasCor[item?.posicao] ?? colors.primary }]}>
           {item?.posicao <= 3 ? item?.posicao : `#${item?.posicao}`}
         </Text>
-        <Text style={styles.rankSub}>Ranking CNB Mobile</Text>
+        <Text style={styles.rankSub}>Ranking Juice Mobile</Text>
       </View>
     </ScrollView>
   );

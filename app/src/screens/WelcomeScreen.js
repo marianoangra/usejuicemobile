@@ -55,7 +55,7 @@ export default function WelcomeScreen({ nome }) {
           gap: 2,
         }}>
           <Zap size={30} color={PRIMARY} strokeWidth={2.5} />
-          <Text style={{ fontSize: 22, fontWeight: '800', color: PRIMARY, letterSpacing: 4 }}>CNB</Text>
+          <Text style={{ fontSize: 22, fontWeight: '800', color: PRIMARY, letterSpacing: 4 }}>JUICE</Text>
         </View>
       </Animated.View>
 
@@ -72,7 +72,7 @@ export default function WelcomeScreen({ nome }) {
           </Text>
         ) : (
           <Text style={{ fontSize: 22, fontWeight: '600', color: '#fff', letterSpacing: -0.3 }}>
-            CNB Mobile
+            Juice Mobile
           </Text>
         )}
         <Text style={{

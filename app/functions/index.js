@@ -61,7 +61,7 @@ exports.notificarSaque = onDocumentCreated(
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #00FF88; background: #0A0F1E; padding: 20px; border-radius: 8px;">
-          ⚡ Nova Solicitação de Saque — CNB Mobile
+          ⚡ Nova Solicitação de Saque — Juice Mobile
         </h2>
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
           <tr style="background: #f5f5f5;">
@@ -99,7 +99,7 @@ exports.notificarSaque = onDocumentCreated(
     `;
 
     await transporter.sendMail({
-      from: `"CNB Mobile" <${smtpUser.value()}>`,
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
       to: DESTINATARIO,
       subject: `💰 Novo saque: ${nome ?? uid} — ${Number(pontos ?? 0).toLocaleString('pt-BR')} pontos`,
       html,
@@ -139,7 +139,7 @@ exports.notificarSolicitacaoCompra = onDocumentCreated(
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #c6ff4a; background: #0A0F1E; padding: 20px; border-radius: 8px;">
-          🛒 Nova SOLICITAÇÃO de compra CNB
+          🛒 Nova SOLICITAÇÃO de compra de pontos
         </h2>
         <p style="background: #fff8e1; border-left: 4px solid #f5a623; padding: 12px; margin: 16px 0; color: #5d4e00;">
           <strong>Status:</strong> Aguardando pagamento via PIX. Aguarde o comprovante por e-mail antes de creditar os pontos.
@@ -150,7 +150,7 @@ exports.notificarSolicitacaoCompra = onDocumentCreated(
           <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;">UID</td><td style="padding:10px;font-family:monospace;font-size:11px;">${escHtml(uid)}</td></tr>
           <tr><td style="padding:10px;font-weight:bold;">E-mail</td><td style="padding:10px;">${escHtml(email)}</td></tr>
           <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;">Valor (R$)</td><td style="padding:10px;font-size:16px;font-weight:bold;">R$ ${escHtml(valorBRLFmt)}</td></tr>
-          <tr><td style="padding:10px;font-weight:bold;">Pontos solicitados</td><td style="padding:10px;font-size:18px;font-weight:bold;color:#00AA55;">${escHtml(cnbFmt)} pontos CNB</td></tr>
+          <tr><td style="padding:10px;font-weight:bold;">Pontos solicitados</td><td style="padding:10px;font-size:18px;font-weight:bold;color:#00AA55;">${escHtml(cnbFmt)} pontos Juice</td></tr>
           <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;">Data/Hora</td><td style="padding:10px;">${escHtml(data)}</td></tr>
         </table>
         <p style="margin-top: 24px; color: #666; font-size: 12px;">
@@ -161,7 +161,7 @@ exports.notificarSolicitacaoCompra = onDocumentCreated(
     `;
 
     await transporter.sendMail({
-      from: `"CNB Mobile" <${smtpUser.value()}>`,
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
       to: DESTINATARIO,
       subject: `🛒 Solicitação de compra: ${nome ?? uid} — R$ ${valorBRLFmt}`,
       html,
@@ -207,7 +207,7 @@ exports.notificarNovoLead = onDocumentCreated(
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #c6ff4a; background: #0A0F1E; padding: 20px; border-radius: 8px;">
-          ✉️ Novo lead na lista de espera CNB
+          ✉️ Novo lead na lista de espera Juice
         </h2>
         <table style="width: 100%; border-collapse: collapse;">
           <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;width:30%;">E-mail</td><td style="padding:10px;font-size:16px;"><a href="mailto:${escHtml(email)}">${escHtml(email)}</a></td></tr>
@@ -224,7 +224,7 @@ exports.notificarNovoLead = onDocumentCreated(
     `;
 
     await transporter.sendMail({
-      from: `"CNB Mobile" <${smtpUser.value()}>`,
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
       to: DESTINATARIO,
       subject: `✉️ Novo lead: ${email}${total > 0 ? ` (#${total})` : ''}`,
       html,
@@ -348,11 +348,33 @@ exports.registrarWaitlist = onRequest(
     const emailNorm = email.toLowerCase().trim();
     const ref = db.collection('juice_waitlist').doc(emailNorm);
     const snap = await ref.get();
-    if (snap.exists) { res.status(200).json({ ok: true, existing: true }); return; }
+
+    // Recusa uids obviamente fake (test, dummy, fake, sample) — só vieram via curl manual
+    const uidLimpo = (uidParam && /^(test|dummy|fake|sample)/i.test(uidParam.trim())) ? null : uidParam;
+
+    if (snap.exists) {
+      // Merge: atualiza só os campos que vieram mais ricos do que estavam.
+      const prev = snap.data() ?? {};
+      const update = {};
+      if (wallet && wallet !== prev.walletAddress) update.walletAddress = wallet;
+      if (uidLimpo && uidLimpo !== prev.uid) update.uid = uidLimpo;
+      if (typeof pontosApp === 'number' && pontosApp > (prev.pontosApp ?? 0)) update.pontosApp = pontosApp;
+      if (typeof juiceEstimado === 'number' && juiceEstimado > (prev.juiceEstimado ?? 0)) update.juiceEstimado = juiceEstimado;
+      if (locale && locale !== prev.locale) update.locale = locale;
+
+      if (Object.keys(update).length > 0) {
+        update.updatedAt = new Date();
+        await ref.update(update);
+        res.status(200).json({ ok: true, existing: true, updated: true, fields: Object.keys(update) });
+        return;
+      }
+      res.status(200).json({ ok: true, existing: true, updated: false });
+      return;
+    }
 
     const data = { email: emailNorm, locale, source, createdAt: new Date() };
     if (wallet) data.walletAddress = wallet;
-    if (uidParam) data.uid = uidParam;
+    if (uidLimpo) data.uid = uidLimpo;
     if (typeof pontosApp === 'number') data.pontosApp = pontosApp;
     if (typeof juiceEstimado === 'number') data.juiceEstimado = juiceEstimado;
 
@@ -707,7 +729,7 @@ exports.relatorioSemanal = onSchedule(
     const html = `
       <div style="font-family:Arial,sans-serif;max-width:650px;margin:0 auto;background:#0A0F1E;color:#fff;border-radius:12px;overflow:hidden;">
         <div style="background:#0d1f0d;padding:28px 32px;border-bottom:2px solid #00FF88;">
-          <h1 style="margin:0;color:#00FF88;font-size:22px;">⚡ CNB Mobile — Relatório Semanal</h1>
+          <h1 style="margin:0;color:#00FF88;font-size:22px;">⚡ Juice Mobile — Relatório Semanal</h1>
           <p style="margin:6px 0 0;color:#8a9a8a;font-size:14px;">${semanaStr}</p>
         </div>
         <div style="padding:28px 32px;">
@@ -718,7 +740,7 @@ exports.relatorioSemanal = onSchedule(
               <div style="font-size:28px;font-weight:bold;color:#00FF88;">${totalUsuarios.toLocaleString('pt-BR')}</div>
             </div>
             <div style="flex:1;min-width:140px;background:#0d0d20;border-radius:10px;padding:16px;border:1px solid #9945FF;">
-              <div style="font-size:11px;color:#8a9a8a;margin-bottom:4px;">CNB ENVIADOS</div>
+              <div style="font-size:11px;color:#8a9a8a;margin-bottom:4px;">JUICE ENVIADOS</div>
               <div style="font-size:28px;font-weight:bold;color:#9945FF;">◎ ${totalCNBEnviado.toLocaleString('pt-BR')}</div>
             </div>
             <div style="flex:1;min-width:140px;background:#1a1200;border-radius:10px;padding:16px;border:1px solid #FFB800;">
@@ -743,7 +765,7 @@ exports.relatorioSemanal = onSchedule(
           </table>` : '<p style="color:#8a9a8a;">Nenhuma atividade registrada esta semana.</p>'}
 
           <p style="margin-top:24px;font-size:12px;color:#555;">
-            Relatório automático do CNB Mobile ·
+            Relatório automático do Juice Mobile ·
             <a href="https://console.firebase.google.com/project/cnbmobile-2053c" style="color:#00FF88;">Firebase Console</a>
           </p>
         </div>
@@ -755,9 +777,9 @@ exports.relatorioSemanal = onSchedule(
     });
 
     await transporter.sendMail({
-      from: `"CNB Mobile" <${smtpUser.value()}>`,
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
       to: DESTINATARIO,
-      subject: `📊 CNB Mobile — Relatório Semanal (${semanaStr})`,
+      subject: `📊 Juice Mobile — Relatório Semanal (${semanaStr})`,
       html,
     });
 
@@ -829,7 +851,7 @@ exports.registrarAtividadeDiaria = onSchedule(
 
     const usuariosAtivos = uids.length;
     const payload = {
-      app: 'CNB Mobile',
+      app: 'Juice Mobile',
       date: dateStr,
       activeUsers: usuariosAtivos,
       totalPoints: totalPontos,
@@ -939,7 +961,7 @@ exports.registrarProvasSessao = onCall(
     } catch { /* não crítico */ }
 
     const memo = JSON.stringify({
-      app: 'CNB Mobile',
+      app: 'Juice Mobile',
       event: 'session',
       uidHash,
       ts,
@@ -1013,9 +1035,9 @@ exports.registrarProvasSessao = onCall(
   }
 );
 
-// ─── Resgatar pontos como CNB Tokens na Solana ───────────────────────────────
+// ─── Resgatar pontos como JUICE Tokens na Solana ───────────────────────────────
 // Phase 2: Firestore é source of truth; Anchor devnet recebe mirror do débito.
-// 1 ponto = 1 CNB token (6 decimais). Mínimo: 100.000 pontos.
+// 1 ponto = 1 JUICE token (6 decimais). Mínimo: 100.000 pontos.
 const CNB_MINT = 'Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4';
 const MINIMO_RESGATE = 100000;
 
@@ -1120,7 +1142,7 @@ exports.resgatarCNB = onCall(
         status: 'confirmado',
       });
 
-      console.log(`Resgate CNB: ${uid} → ${walletAddress} | ${quantidade} CNB | sig: ${signature}`);
+      console.log(`Resgate JUICE: ${uid} → ${walletAddress} | ${quantidade} JUICE | sig: ${signature}`);
       return { signature };
 
     } catch (e) {
@@ -1252,7 +1274,7 @@ exports.solicitarRelatorio = onCall(
         : '—';
       linhasResgates += `<tr>
         <td style="padding:6px 10px;border-bottom:1px solid #1a2a1a;">${data}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #1a2a1a;">${(r.quantidade ?? 0).toLocaleString('pt-BR')} CNB</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #1a2a1a;">${(r.quantidade ?? 0).toLocaleString('pt-BR')} JUICE</td>
         <td style="padding:6px 10px;border-bottom:1px solid #1a2a1a;font-size:11px;">${r.walletAddress ?? '—'}</td>
       </tr>`;
     });
@@ -1275,7 +1297,7 @@ exports.solicitarRelatorio = onCall(
     const html = `
       <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#0A0F1E;color:#fff;border-radius:12px;overflow:hidden;">
         <div style="background:#0d1f0d;padding:24px 28px;border-bottom:2px solid #00FF88;">
-          <h1 style="margin:0;color:#00FF88;font-size:20px;">Relatório de Dados — CNB Mobile</h1>
+          <h1 style="margin:0;color:#00FF88;font-size:20px;">Relatório de Dados — Juice Mobile</h1>
           <p style="margin:6px 0 0;color:#8a9a8a;font-size:13px;">Gerado em ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}</p>
         </div>
         <div style="padding:24px 28px;font-size:13px;line-height:1.6;">
@@ -1299,7 +1321,7 @@ exports.solicitarRelatorio = onCall(
             <tbody>${linhasConsent}</tbody>
           </table>` : '<p style="color:#8a9a8a;margin-bottom:24px;">Nenhuma preferência registrada.</p>'}
 
-          <h2 style="color:#c6ff4a;font-size:15px;margin-bottom:10px;">Histórico de Resgates CNB</h2>
+          <h2 style="color:#c6ff4a;font-size:15px;margin-bottom:10px;">Histórico de Resgates JUICE</h2>
           ${linhasResgates ? `<table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
             <thead><tr style="background:rgba(255,255,255,0.05);color:#8a9a8a;">
               <th style="padding:6px 10px;text-align:left;">Data</th>
@@ -1322,9 +1344,9 @@ exports.solicitarRelatorio = onCall(
     });
 
     await transporter.sendMail({
-      from: `"CNB Mobile" <${smtpUser.value()}>`,
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
       to: email,
-      subject: 'Seus dados no CNB Mobile — Relatório completo',
+      subject: 'Seus dados no Juice Mobile — Relatório completo',
       html,
     });
 
@@ -1591,6 +1613,233 @@ exports.backfillReferralPoints = onCall(
   }
 );
 
+// ─── Confirmar solicitação de compra de pontos (admin via dashboard) ────────
+// Atomiza: status='confirmado' + crédito de pontos no user. Idempotente.
+exports.confirmarCompra = onCall({ region: 'us-central1' }, async (req) => {
+  const adminUid = req.auth?.uid;
+  const admins = adminUids.value().split(',').map(s => s.trim()).filter(Boolean);
+  if (!adminUid || !admins.includes(adminUid)) {
+    throw new HttpsError('permission-denied', 'Acesso restrito a admins.');
+  }
+
+  const { id, motivoOpcional } = req.data ?? {};
+  if (!id || typeof id !== 'string') {
+    throw new HttpsError('invalid-argument', 'id obrigatório.');
+  }
+
+  const db = getFirestore();
+  return await db.runTransaction(async (tx) => {
+    const ref = db.doc(`solicitacoes_compra/${id}`);
+    const snap = await tx.get(ref);
+    if (!snap.exists) throw new HttpsError('not-found', 'Solicitação não encontrada.');
+
+    const data = snap.data();
+    if (data.status === 'confirmado') {
+      return { ok: true, jaConfirmado: true, creditados: 0 };
+    }
+    if (data.status === 'rejeitado') {
+      throw new HttpsError('failed-precondition', 'Solicitação já foi rejeitada. Não dá pra confirmar.');
+    }
+
+    const { uid, cnbCalculado } = data;
+    if (!uid || typeof uid !== 'string') {
+      throw new HttpsError('invalid-argument', 'Solicitação sem uid válido.');
+    }
+    const credito = Number(cnbCalculado);
+    if (!Number.isFinite(credito) || credito < 1) {
+      throw new HttpsError('invalid-argument', 'cnbCalculado inválido.');
+    }
+
+    const userRef = db.doc(`usuarios/${uid}`);
+    const userSnap = await tx.get(userRef);
+    if (!userSnap.exists) {
+      throw new HttpsError('not-found', `Usuário ${uid} não existe.`);
+    }
+
+    tx.update(userRef, { pontos: FieldValue.increment(credito) });
+    tx.update(ref, {
+      status: 'confirmado',
+      confirmadoEm: new Date(),
+      confirmadoPor: adminUid,
+      motivoConfirmacao: motivoOpcional ?? null,
+    });
+
+    return { ok: true, creditados: credito };
+  });
+});
+
+// ─── Conta usuários do Firebase Auth (dashboard) ─────────────────────────────
+// Itera via Admin SDK em pages de 1000. ~3985 users = 4 chamadas, ~2-3s total.
+// Retorna também a contagem do Firestore pra dashboard comparar lado a lado.
+exports.contarAuthUsers = onCall({ region: 'us-central1', timeoutSeconds: 60 }, async (req) => {
+  const adminUid = req.auth?.uid;
+  const admins = adminUids.value().split(',').map(s => s.trim()).filter(Boolean);
+  if (!adminUid || !admins.includes(adminUid)) {
+    throw new HttpsError('permission-denied', 'Acesso restrito a admins.');
+  }
+
+  const { getAuth } = require('firebase-admin/auth');
+  const auth = getAuth();
+  const db = getFirestore();
+
+  let total = 0;
+  let pageToken;
+  const provs = {};
+  let semProvider = 0;
+  do {
+    const result = await auth.listUsers(1000, pageToken);
+    total += result.users.length;
+    for (const u of result.users) {
+      const pis = u.providerData ?? [];
+      if (pis.length === 0) semProvider++;
+      for (const p of pis) provs[p.providerId] = (provs[p.providerId] ?? 0) + 1;
+    }
+    pageToken = result.pageToken;
+  } while (pageToken);
+
+  // Conta Firestore usuarios em paralelo
+  const fsCount = await db.collection('usuarios').count().get();
+  const totalFs = fsCount.data().count;
+
+  return {
+    totalAuth: total,
+    totalFirestore: totalFs,
+    semPerfil: Math.max(0, total - totalFs),
+    porProvider: provs,
+    semProvider,
+  };
+});
+
+// ─── Envio de push via Expo Push API (dashboard) ────────────────────────────
+// Audiência: { tipo: 'todos' | 'pts_gte' | 'waitlist' | 'uid', valor? }
+// Cria audit log em push_jobs/{id} e retorna { ok, total, sucesso, falha }.
+exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, memory: '512MiB' }, async (req) => {
+  const adminUid = req.auth?.uid;
+  const admins = adminUids.value().split(',').map(s => s.trim()).filter(Boolean);
+  if (!adminUid || !admins.includes(adminUid)) {
+    throw new HttpsError('permission-denied', 'Acesso restrito a admins.');
+  }
+
+  const { titulo, corpo, audiencia, data, campaignId, sponsorId } = req.data ?? {};
+  if (!titulo || typeof titulo !== 'string' || titulo.length > 120) {
+    throw new HttpsError('invalid-argument', 'titulo obrigatório (≤120 chars).');
+  }
+  if (!corpo || typeof corpo !== 'string' || corpo.length > 500) {
+    throw new HttpsError('invalid-argument', 'corpo obrigatório (≤500 chars).');
+  }
+  if (!audiencia?.tipo) {
+    throw new HttpsError('invalid-argument', 'audiencia.tipo obrigatório.');
+  }
+
+  const db = getFirestore();
+
+  // 1. Determinar lista de UIDs alvo
+  let uidsAlvo = [];
+  const TIPO = audiencia.tipo;
+
+  if (TIPO === 'uid') {
+    if (typeof audiencia.valor !== 'string') throw new HttpsError('invalid-argument', 'uid inválido.');
+    uidsAlvo = [audiencia.valor];
+  } else if (TIPO === 'todos') {
+    // Pega todos os push_tokens diretamente
+    const snap = await db.collection('push_tokens').limit(10000).get();
+    uidsAlvo = snap.docs.map(d => d.id);
+  } else if (TIPO === 'pts_gte') {
+    const min = Number(audiencia.valor);
+    if (!Number.isFinite(min) || min < 0) throw new HttpsError('invalid-argument', 'pts_gte exige valor numérico.');
+    const snap = await db.collection('usuarios').where('pontos', '>=', min).limit(10000).get();
+    uidsAlvo = snap.docs.map(d => d.id);
+  } else if (TIPO === 'waitlist') {
+    const snap = await db.collection('juice_waitlist').limit(10000).get();
+    uidsAlvo = snap.docs.map(d => d.data().uid).filter(Boolean);
+  } else {
+    throw new HttpsError('invalid-argument', `audiencia.tipo desconhecido: ${TIPO}`);
+  }
+
+  if (!uidsAlvo.length) {
+    return { ok: true, total: 0, sucesso: 0, falha: 0, mensagem: 'Nenhum UID na audiência.' };
+  }
+
+  // 2. Buscar tokens pra cada uid (em paralelo, chunks de 30)
+  const tokens = [];
+  const CHUNK = 30;
+  for (let i = 0; i < uidsAlvo.length; i += CHUNK) {
+    const slice = uidsAlvo.slice(i, i + CHUNK);
+    const fetches = slice.map(uid =>
+      db.doc(`push_tokens/${uid}`).get()
+        .then(s => s.exists ? { uid, token: s.data().token } : null)
+        .catch(() => null)
+    );
+    const got = await Promise.all(fetches);
+    for (const x of got) if (x?.token) tokens.push(x);
+  }
+
+  if (!tokens.length) {
+    return { ok: true, total: uidsAlvo.length, sucesso: 0, falha: 0, mensagem: 'Nenhum push_token encontrado pra audiência.' };
+  }
+
+  // 3. Audit log (cria primeiro pra ter o id e poder atualizar depois)
+  const jobRef = db.collection('push_jobs').doc();
+  await jobRef.set({
+    titulo, corpo, audiencia,
+    data: data ?? null,
+    campaignId: campaignId ?? null,
+    sponsorId: sponsorId ?? null,
+    criadoEm: new Date(),
+    criadoPor: adminUid,
+    totalUids: uidsAlvo.length,
+    totalTokens: tokens.length,
+    status: 'enviando',
+  });
+
+  // 4. Send batches via Expo Push API (≤100 por request)
+  let sucesso = 0, falha = 0;
+  const erros = [];
+  const BATCH = 100;
+  for (let i = 0; i < tokens.length; i += BATCH) {
+    const slice = tokens.slice(i, i + BATCH);
+    const messages = slice.map(t => ({
+      to: t.token,
+      title: titulo,
+      body: corpo,
+      data: { ...(data ?? {}), jobId: jobRef.id, campaignId: campaignId ?? null },
+      sound: 'default',
+    }));
+    try {
+      const resp = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(messages),
+      });
+      if (!resp.ok) {
+        falha += slice.length;
+        erros.push(`HTTP ${resp.status} no batch ${i / BATCH}`);
+        continue;
+      }
+      const j = await resp.json();
+      const tickets = j.data ?? [];
+      for (const t of tickets) {
+        if (t.status === 'ok') sucesso++;
+        else { falha++; if (erros.length < 10) erros.push(t.message ?? 'erro desconhecido'); }
+      }
+    } catch (e) {
+      falha += slice.length;
+      erros.push(e.message ?? String(e));
+    }
+  }
+
+  // 5. Atualiza audit log
+  await jobRef.update({
+    status: 'enviado',
+    finalizadoEm: new Date(),
+    sucesso, falha,
+    erros: erros.slice(0, 10),
+  });
+
+  return { ok: true, jobId: jobRef.id, total: uidsAlvo.length, totalTokens: tokens.length, sucesso, falha, erros: erros.slice(0, 5) };
+});
+
 // ─── Investigação de fraude (temporário) ────────────────────────────────────
-const { investigarFraude } = require('./investigarFraude');
-exports.investigarFraude = investigarFraude;
+// TEMP DESABILITADO no Windows: investigarFraude.js só existe no Mac, não commitado.
+// const { investigarFraude } = require('./investigarFraude');
+// exports.investigarFraude = investigarFraude;

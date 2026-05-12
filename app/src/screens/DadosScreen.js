@@ -405,7 +405,7 @@ export default function DadosScreen({ navigation }) {
             }}>
               <Info size={16} color={PRIMARY} style={{ marginTop: 1 }} />
               <Text style={{ flex: 1, fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 18 }}>
-                O CNB Mobile usa <Text style={{ color: PRIMARY, fontWeight: '600' }}>Zero-Knowledge Proofs</Text> para validar sua atividade sem expor seus dados pessoais. Você controla o que compartilha.
+                O Juice Mobile usa <Text style={{ color: PRIMARY, fontWeight: '600' }}>Zero-Knowledge Proofs</Text> para validar sua atividade sem expor seus dados pessoais. Você controla o que compartilha.
               </Text>
             </View>
           </Animated.View>

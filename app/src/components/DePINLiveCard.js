@@ -162,7 +162,7 @@ export default function DePINLiveCard() {
       {/* Header */}
       <View style={styles.header}>
         <LiveDot />
-        <Text style={styles.title}>Rede CNB Mobile</Text>
+        <Text style={styles.title}>Rede Juice Mobile</Text>
         <Text style={styles.liveLabel}>ao vivo</Text>
       </View>
 

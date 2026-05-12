@@ -15,8 +15,8 @@ const PRIMARY = '#c6ff4a';
 
 const FAQ = [
   {
-    q: 'O CNB Mobile vai virar JUICE Mobile?',
-    a: 'Sim — o rebrand para JUICE Mobile é parte estratégica da implantação completa do sistema na Solana. O novo nome reflete melhor a essência do produto (energia do carregamento → valor on-chain) e posiciona o projeto como a melhor opção dentro do ecossistema DePIN global da Solana, onde competimos com players internacionais. Sua conta, seus pontos e seus CNB tokens permanecem intactos durante a transição — só muda a marca.',
+    q: 'Por que JUICE?',
+    a: 'O nome JUICE reflete a essência do produto: energia do carregamento → valor on-chain. Posiciona o projeto como a melhor opção dentro do ecossistema DePIN global da Solana, onde competimos com players internacionais. Sua conta, seus pontos e seus tokens são preservados — o app continua o mesmo, só com a identidade atualizada.',
   },
   {
     q: 'O que é DePIN?',
@@ -24,11 +24,11 @@ const FAQ = [
   },
   {
     q: 'Como meus pontos são gerados?',
-    a: 'A cada minuto que seu celular permanece carregando, o app credita 10 pontos no seu perfil (com bônus de 50 pontos a cada hora completa). Esses pontos viram CNB tokens na hora do resgate.',
+    a: 'A cada minuto que seu celular permanece carregando, o app credita 10 pontos no seu perfil (com bônus de 50 pontos a cada hora completa). Esses pontos viram JUICE tokens na hora do resgate.',
   },
   {
     q: 'Para que serve a carteira Solana?',
-    a: 'A carteira Solana é onde você recebe os tokens CNB quando solicita resgate. Você pode usar uma carteira existente (Phantom, Solflare) ou criar uma nova diretamente no app.',
+    a: 'A carteira Solana é onde você recebe os tokens JUICE quando solicita resgate. Você pode usar uma carteira existente (Phantom, Solflare) ou criar uma nova diretamente no app.',
   },
   {
     q: 'O que é a privacidade ZK?',
@@ -40,7 +40,7 @@ const FAQ = [
   },
   {
     q: 'Em quanto tempo recebo meus tokens?',
-    a: 'Saques PIX são processados manualmente pela equipe em até 24h úteis. Resgates de CNB tokens via carteira Solana são quase instantâneos (poucos segundos após confirmação na rede).',
+    a: 'Saques PIX são processados manualmente pela equipe em até 24h úteis. Resgates de JUICE tokens via carteira Solana são quase instantâneos (poucos segundos após confirmação na rede).',
   },
   {
     q: 'Posso usar em mais de um aparelho?',

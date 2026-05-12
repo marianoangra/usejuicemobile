@@ -2,10 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Configuração do app (leitura pública autenticada, escrita bloqueada) ───
+    // ── Configuração do app (leitura autenticada, escrita admin via dashboard) ─
     match /config/{doc} {
       allow read: if request.auth != null;
-      allow write: if false;
+      allow write: if isAdmin();
     }
 
     // ── Sessões (token de dispositivo único, isolado por usuário) ────────────
@@ -64,6 +64,18 @@ service cloud.firestore {
       // Campos server-only (bloqueados pelos hasOnly acima): indicacoesAtivas,
       // bonus5kGranted, bonus10kGranted, contadoComoAtivo — escritos apenas por
       // onReferreeBecameActive / backfillMilestones.js via Admin SDK.
+
+      // Atualização 5 — heartbeat de presença (lastSeen)
+      // Chamado a cada 5min enquanto o app está em foreground.
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['lastSeen'])
+        && request.resource.data.lastSeen is timestamp;
+
+      // Atualização ADMIN — moderação e ajustes manuais (campo livre).
+      // V1: trocar por callable + audit log antes de adicionar segundo admin.
+      allow update: if isAdmin();
     }
 
     // ── Lookup de códigos de afiliado ────────────────────────────────────────
@@ -82,7 +94,8 @@ service cloud.firestore {
     // bloqueadas. Ver match /juice_waitlist abaixo.
     match /solicitacoes_compra/{id} {
       allow create: if false;
-      allow read, update, delete: if false; // somente admin via Admin SDK
+      allow read, update: if isAdmin();   // dashboard reconcilia compras antigas
+      allow delete: if false;
     }
 
     // ── Solicitações de saque ────────────────────────────────────────────────
@@ -141,7 +154,29 @@ service cloud.firestore {
     // ── JUICE Airdrop waitlist — somente via Cloud Function registrarWaitlist ─
     // Escrita direta bloqueada; rate limiting e validação feitos server-side.
     match /juice_waitlist/{leadId} {
-      allow read, write: if false;
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ── Push tokens — owner escreve, admin lê pra disparar push ──────────────
+    match /push_tokens/{uid} {
+      allow read: if isAdmin();
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Push jobs (fila de envios criada pelo dashboard) ─────────────────────
+    match /push_jobs/{jobId} {
+      allow read, create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // ── Banner clicks (telemetria; user logado pode criar, admin lê) ────────
+    match /banner_clicks/{clickId} {
+      allow create: if request.auth != null
+                    && (request.resource.data.uid == null
+                        || request.resource.data.uid == request.auth.uid);
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
 
   }

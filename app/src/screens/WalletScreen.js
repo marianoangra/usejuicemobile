@@ -273,7 +273,7 @@ export default function WalletScreen({ route, navigation }) {
         contentContainerStyle={styles.scroll}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor={colors.primary} />}
       >
-        <Text style={styles.title}>Minha Carteira CNB</Text>
+        <Text style={styles.title}>Minha Carteira JUICE</Text>
         <Text style={styles.subtitle}>Carteira Solana gerada no seu dispositivo</Text>
 
         <View style={styles.card}>
@@ -297,7 +297,7 @@ export default function WalletScreen({ route, navigation }) {
               <Text style={styles.balanceValue}>
                 {cnbBalance === null ? '—' : cnbBalance.toLocaleString('pt-BR')}
               </Text>
-              <Text style={styles.balanceCoin}>CNB</Text>
+              <Text style={styles.balanceCoin}>JUICE</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.balanceItem}>
@@ -310,7 +310,7 @@ export default function WalletScreen({ route, navigation }) {
 
           {cnbBalance === 0 && (
             <Text style={styles.hint}>
-              Seus CNB tokens aparecerão aqui após o primeiro resgate.
+              Seus JUICE tokens aparecerão aqui após o primeiro resgate.
             </Text>
           )}
         </View>
@@ -354,7 +354,7 @@ export default function WalletScreen({ route, navigation }) {
             Nenhum servidor tem acesso a ela.
           </Text>
           <Text style={styles.infoText}>
-            Ao resgatar CNB, os tokens são enviados diretamente para este endereço na rede Solana.
+            Ao resgatar JUICE, os tokens são enviados diretamente para este endereço na rede Solana.
           </Text>
 
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>

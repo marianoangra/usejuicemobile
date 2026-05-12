@@ -110,13 +110,13 @@ export default function RelatorioContaScreen({ navigation }) {
                     Relatório completo da conta
                   </Text>
                   <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>
-                    Configurações, atividade e dados da CNB
+                    Configurações, atividade e dados da Juice
                   </Text>
                 </View>
               </View>
 
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 20 }}>
-                Crie um relatório com as configurações e os dados da sua conta da CNB. Essa ação gerará um arquivo com os dados e será enviado para o email cadastrado do usuário em até{' '}
+                Crie um relatório com as configurações e os dados da sua conta da Juice. Essa ação gerará um arquivo com os dados e será enviado para o email cadastrado do usuário em até{' '}
                 <Text style={{ color: '#fff', fontWeight: '600' }}>72 horas</Text>.
               </Text>
 

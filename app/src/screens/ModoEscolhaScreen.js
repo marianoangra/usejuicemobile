@@ -17,7 +17,7 @@ function ModeCard({ tipo, selecionado, onPress }) {
   const titulo = isLite ? 'Lite' : 'Tech';
   const desc   = isLite
     ? 'O essencial: carregar, missões, ranking e saque PIX. Privacidade ZK fica acessível pelo perfil.'
-    : 'Experiência completa: wallet, DePIN, dados on-chain, compra de tokens e CNB Privado em destaque.';
+    : 'Experiência completa: wallet, DePIN, dados on-chain, compra de tokens e JUICE Privado em destaque.';
 
   return (
     <TouchableOpacity
