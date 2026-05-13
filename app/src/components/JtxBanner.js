@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { Animated, TouchableOpacity, Image, View, useWindowDimensions, Linking, Alert } from 'react-native';
 
-const TRIAD_URL = 'https://triadmarkets.app/?ref=7EeJ6aU31fsgRk4pVYREfrhJWbyXB7bL5gm8kSC9vRQu';
+const JTX_URL = 'https://jtx.trade/?ref=usejuice';
 const BANNER_H = 180;
 
-export default function TriadBanner() {
+export default function JtxBanner() {
   const scale = useRef(new Animated.Value(1)).current;
   const { width } = useWindowDimensions();
   const imgWidth = width - 40;
@@ -17,11 +17,11 @@ export default function TriadBanner() {
   }
   function handlePress() {
     Alert.alert(
-      'Triad Markets',
-      'Você será redirecionado para criar sua conta na Triad pelo nosso link de parceria.',
+      'JTX (Jito)',
+      'Você será redirecionado para a JTX pelo nosso link de parceria.',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Abrir', onPress: () => Linking.openURL(TRIAD_URL) },
+        { text: 'Abrir', onPress: () => Linking.openURL(JTX_URL) },
       ],
     );
   }
@@ -34,14 +34,14 @@ export default function TriadBanner() {
         onPressOut={onPressOut}
         activeOpacity={1}
         accessibilityRole="button"
-        accessibilityLabel="Abrir página de cadastro Triad Markets"
+        accessibilityLabel="Abrir página da JTX"
       >
         <View style={{
           width: imgWidth, height: BANNER_H, borderRadius: 16,
           overflow: 'hidden',
         }}>
           <Image
-            source={require('../../assets/triad-banner.png')}
+            source={require('../../assets/jtx-banner.png')}
             style={{ width: imgWidth, height: BANNER_H }}
             resizeMode="cover"
           />

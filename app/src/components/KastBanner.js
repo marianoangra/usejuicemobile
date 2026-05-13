@@ -1,10 +1,8 @@
 import React, { useRef } from 'react';
-import { Animated, TouchableOpacity, View, Text, useWindowDimensions, Linking, Alert } from 'react-native';
+import { Animated, TouchableOpacity, Image, View, useWindowDimensions, Linking, Alert } from 'react-native';
 
 const KAST_URL = 'https://app.kast.xyz/referral/HCNRPO3U';
 const BANNER_H = 180;
-const KAST_GREEN = '#00E0B8';
-const KAST_BG = '#0A0A0A';
 
 export default function KastBanner() {
   const scale = useRef(new Animated.Value(1)).current;
@@ -41,68 +39,12 @@ export default function KastBanner() {
         <View style={{
           width: imgWidth, height: BANNER_H, borderRadius: 16,
           overflow: 'hidden',
-          backgroundColor: KAST_BG,
-          borderWidth: 1, borderColor: 'rgba(0,224,184,0.2)',
         }}>
-          {/* Texto à esquerda */}
-          <View style={{
-            position: 'absolute',
-            top: 0, left: 0, bottom: 0,
-            width: imgWidth * 0.65,
-            justifyContent: 'center',
-            paddingLeft: 18,
-          }}>
-            <Text style={{
-              color: KAST_GREEN,
-              fontSize: 11,
-              fontWeight: '700',
-              letterSpacing: 1.6,
-              marginBottom: 6,
-            }}>
-              PARCEIRO OFICIAL
-            </Text>
-            <Text style={{
-              color: '#ffffff',
-              fontSize: 22,
-              fontWeight: '800',
-              lineHeight: 26,
-            }}>
-              Cartão Kast{'\n'}cripto global
-            </Text>
-            <Text style={{
-              color: 'rgba(255,255,255,0.7)',
-              fontSize: 12,
-              marginTop: 8,
-            }}>
-              Use seu USDC no dia a dia
-            </Text>
-          </View>
-
-          {/* "K" wordmark à direita */}
-          <View style={{
-            position: 'absolute',
-            right: 20,
-            top: (BANNER_H - 92) / 2,
-            width: 92, height: 92,
-            borderRadius: 22,
-            borderWidth: 2, borderColor: KAST_GREEN,
-            alignItems: 'center', justifyContent: 'center',
-            shadowColor: KAST_GREEN,
-            shadowOpacity: 0.4,
-            shadowRadius: 18,
-            shadowOffset: { width: 0, height: 6 },
-            elevation: 10,
-          }}>
-            <Text style={{
-              color: '#ffffff',
-              fontSize: 44,
-              fontWeight: '900',
-              letterSpacing: -2,
-              includeFontPadding: false,
-            }}>
-              K
-            </Text>
-          </View>
+          <Image
+            source={require('../../assets/kast-banner.png')}
+            style={{ width: imgWidth, height: BANNER_H }}
+            resizeMode="cover"
+          />
         </View>
       </TouchableOpacity>
     </Animated.View>
