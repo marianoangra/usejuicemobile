@@ -31,6 +31,13 @@ ios/
 # Firebase
 **/.firebase/
 **/functions/.env.*
+# Firebase mobile config — already in history (e2c0c5b), but block future adds.
+# Web API keys are "public by design" per Firebase docs; real security relies
+# on Firestore Rules + App Check + GCP API key restrictions.
+google-services.json
+**/google-services.json
+GoogleService-Info.plist
+**/GoogleService-Info.plist
 
 # Misc
 .DS_Store
