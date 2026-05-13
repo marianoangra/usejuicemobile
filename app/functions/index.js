@@ -1041,10 +1041,29 @@ exports.registrarProvasSessao = onCall(
 const CNB_MINT = 'Ew92cAS3PmGqeNvUjsDCwHoVsiGeLSynFnzpdLTx2pu4';
 const MINIMO_RESGATE = 100000;
 
+// JUICE token redemption gate — TGE pending. Flipping this to true requires:
+//   1. Update CNB_MINT above to the new $JUICE mint address.
+//   2. Re-enable JUICE_REDEMPTION_ENABLED in WithdrawScreen.js.
+//   3. Verify the project keypair has supply at the new mint.
+// Until then, this function MUST refuse — the legacy CNB mint
+// (Ew92cAS3...) was sending real on-chain transfers without the
+// users understanding they were receiving pre-rebrand CNB tokens, not
+// the announced $JUICE. Disabled 2026-05-12 after an internal test
+// found this caused a 100k-point debit with no clear destination
+// in the user's mental model.
+const JUICE_REDEMPTION_ENABLED = false;
+
 exports.resgatarCNB = onCall(
   { secrets: [solanaPrivateKey], region: 'us-central1' },
   async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Login necessário.');
+
+    if (!JUICE_REDEMPTION_ENABLED) {
+      throw new HttpsError(
+        'failed-precondition',
+        'O resgate em $JUICE token ainda não está disponível. Aguarde o TGE.',
+      );
+    }
 
     const uid = request.auth.uid;
     const { walletAddress, quantidade } = request.data;

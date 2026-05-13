@@ -17,6 +17,15 @@ const functions = getFunctions();
 const resgatarCNBFn = httpsCallable(functions, 'resgatarCNB');
 const resgatarPrivadoFn = httpsCallable(functions, 'resgatarPrivado');
 
+// JUICE token resgate gate.
+// Set to true ONLY when the $JUICE token launches (TGE) and CNB_MINT
+// in functions/index.js is updated to the new mint. Until then the
+// underlying Cloud Function `resgatarCNB` would send tokens of the
+// legacy CNB mint (Ew92cAS3...) on Solana mainnet — which the user
+// experiences as "JUICE" but is actually the pre-rebrand token and
+// has no announced utility yet. Disabling here AND server-side.
+const JUICE_REDEMPTION_ENABLED = false;
+
 function solanaValido(addr) {
   try {
     const decoded = bs58.decode(addr.trim());
@@ -31,7 +40,9 @@ export default function WithdrawScreen({ route, navigation }) {
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { perfil } = route.params || {};
-  const [aba, setAba] = useState(route.params?.initialAba ?? 'pix');
+  // Se vier com aba 'cnb' inicial e o resgate estiver desativado, força PIX.
+  const initialAba = route.params?.initialAba ?? 'pix';
+  const [aba, setAba] = useState(initialAba === 'cnb' && !JUICE_REDEMPTION_ENABLED ? 'pix' : initialAba);
 
   const [nome, setNome] = useState(perfil?.nome ?? '');
   const [pix, setPix] = useState('');
@@ -332,7 +343,16 @@ export default function WithdrawScreen({ route, navigation }) {
               style={[styles.tab, aba === 'cnb' && styles.tabAtiva]}
               onPress={() => setAba('cnb')}
               activeOpacity={0.8}>
-              <Text style={[styles.tabText, aba === 'cnb' && styles.tabTextAtiva]}>◎ JUICE</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={[styles.tabText, aba === 'cnb' && styles.tabTextAtiva]}>◎ JUICE</Text>
+                {!JUICE_REDEMPTION_ENABLED && (
+                  <Text style={{
+                    fontSize: 8, fontWeight: '800', letterSpacing: 0.8,
+                    color: '#9945FF', backgroundColor: 'rgba(153,69,255,0.15)',
+                    paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4,
+                  }}>EM BREVE</Text>
+                )}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, aba === 'privado' && styles.tabAtivaPrivado]}
@@ -399,7 +419,36 @@ export default function WithdrawScreen({ route, navigation }) {
             </>
           )}
 
-          {aba === 'cnb' && (
+          {aba === 'cnb' && !JUICE_REDEMPTION_ENABLED && (
+            <View style={{
+              backgroundColor: 'rgba(153,69,255,0.08)',
+              borderWidth: 1, borderColor: 'rgba(153,69,255,0.35)',
+              borderRadius: 14, padding: 20, marginTop: 8,
+              alignItems: 'center',
+            }}>
+              <Text style={{ fontSize: 32, marginBottom: 8 }}>🪙</Text>
+              <Text style={{
+                color: '#c084fc', fontSize: 15, fontWeight: '800',
+                letterSpacing: 1.2, marginBottom: 8,
+              }}>EM BREVE</Text>
+              <Text style={{
+                color: colors.white, fontSize: 17, fontWeight: '700',
+                textAlign: 'center', marginBottom: 6,
+              }}>
+                Resgate em $JUICE token
+              </Text>
+              <Text style={{
+                color: colors.secondary, fontSize: 14,
+                textAlign: 'center', lineHeight: 20,
+              }}>
+                O token $JUICE ainda não foi lançado. Quando o TGE acontecer,
+                você poderá converter seus pontos em $JUICE diretamente pra
+                sua carteira Solana. Por enquanto, use o saque em PIX.
+              </Text>
+            </View>
+          )}
+
+          {aba === 'cnb' && JUICE_REDEMPTION_ENABLED && (
             <>
               <View style={styles.infoCardSolana}>
                 <View style={styles.infoRow}>
