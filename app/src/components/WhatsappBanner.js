@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Animated, TouchableOpacity, Image, View, Text, useWindowDimensions, Linking, Alert } from 'react-native';
 
-const WHATSAPP_URL = 'https://chat.whatsapp.com/GsIEmnUPKsn2W95HEjPwW8';
+const WHATSAPP_URL = 'https://whatsapp.com/channel/0029Vb8E2os9sBI5kOpaD439';
 const BANNER_H = 180;
 const ICON_SIZE = 92;
 
@@ -18,7 +18,7 @@ export default function WhatsappBanner() {
   }
   function handlePress() {
     Alert.alert(
-      'Entrar no grupo oficial JUICE',
+      'Entrar no canal oficial JUICE',
       'Você será redirecionado para o WhatsApp.',
       [
         { text: 'Cancelar', style: 'cancel' },
@@ -85,7 +85,7 @@ export default function WhatsappBanner() {
               letterSpacing: 1.4,
               marginBottom: 6,
             }}>
-              GRUPO OFICIAL
+              CANAL OFICIAL
             </Text>
             <Text style={{
               color: '#ffffff',
