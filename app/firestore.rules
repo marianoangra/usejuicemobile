@@ -183,6 +183,13 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ── Audit log de ações manuais (bônus, bloqueio de saque, etc) ─────────
+    // Admin lê e cria; nada de update/delete pra preservar o histórico.
+    match /ajustes_manuais/{id} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
     // ── Push tokens — owner escreve, admin lê pra disparar push ──────────────
     match /push_tokens/{uid} {
       allow read: if isAdmin();
