@@ -1,137 +1,112 @@
-// Estorna pontos de um resgate JUICE manualmente. Uso:
-//   node scripts/estornarResgateJuice.js <email> <quantidade>
+// Estorna um resgate específico em resgates_cnb. Idempotente:
+// marca o doc do resgate com `status: 'estornado'` + `estornadoEm` pra
+// impedir refund duplicado. Roda em transação atômica (resgate + pontos).
 //
-// Exemplo: node scripts/estornarResgateJuice.js contato@criptonobolso.com.br 100000
+// Uso:
+//   cd app && node scripts/estornarResgateJuice.js <resgateId>
 //
-// IMPORTANTE: este script NÃO é idempotente. Rodar 2× credita o dobro.
-// Antes de rodar, verifique em /admin (dashboard) ou em
-//   `resgates_cnb` no Firestore admin se o resgate em questão:
-//     (a) tem `signature` registrada → tokens FORAM enviados on-chain →
-//         não estorne, vá em Solscan e verifique. Se Rafael quer
-//         desfazer mesmo assim, isso é uma decisão de negócio.
-//     (b) NÃO tem `signature` ou tem `status: 'falhou'` → a Cloud Function
-//         já estornou automaticamente (ver functions/index.js linhas
-//         1148-1156). Confira o `pontos` do usuário antes de rodar
-//         este script — se já voltaram, não rode de novo.
+// O <resgateId> vem da auditoria:
+//   node scripts/auditarResgatesJuice.js
 //
-// Este script foi criado em 2026-05-12 após um teste interno detectar
-// que o tab "JUICE" no app fazia transferência on-chain do mint CNB
-// legacy (Ew92cAS3...), confundindo usuários sobre o estado do token.
-// A partir de então, o resgate JUICE foi bloqueado em UI + função.
+// O que faz:
+//   1. Lê doc resgates_cnb/<resgateId>
+//   2. Se já tem status='estornado' → para (idempotente)
+//   3. Transação: credita `quantidade` pontos no usuario.pontos
+//      + decrementa usuario.saques em 1 (mínimo 0)
+//      + marca resgate como status='estornado' + estornadoEm
+//
+// NÃO desfaz a transferência on-chain Solana. Se o resgate tem signature
+// e o token foi enviado, esses tokens permanecem na wallet do usuário —
+// é decisão de negócio se você quer pedir devolução ou aceitar como ônus.
 
-const https = require('https');
-const fs = require('fs');
-const os = require('os');
+const { db, admin } = require('./lib/admin');
 
-const [, , emailArg, qtdArg] = process.argv;
+const [, , resgateIdArg] = process.argv;
 
-if (!emailArg || !qtdArg) {
-  console.error('Uso: node scripts/estornarResgateJuice.js <email> <quantidade>');
+if (!resgateIdArg) {
+  console.error('Uso: node scripts/estornarResgateJuice.js <resgateId>');
+  console.error('');
+  console.error('Liste os resgates primeiro:');
+  console.error('  node scripts/auditarResgatesJuice.js');
   process.exit(1);
-}
-
-const quantidade = parseInt(qtdArg, 10);
-if (isNaN(quantidade) || quantidade <= 0) {
-  console.error(`Quantidade inválida: ${qtdArg}`);
-  process.exit(1);
-}
-
-const PROJECT = 'cnbmobile-2053c';
-const BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
-
-const config = JSON.parse(
-  fs.readFileSync(os.homedir() + '/.config/configstore/firebase-tools.json', 'utf8')
-);
-const TOKEN = config.tokens.access_token;
-
-function req(method, path, body) {
-  return new Promise((resolve, reject) => {
-    const url = new URL(BASE + path);
-    const data = body ? JSON.stringify(body) : null;
-    const opts = {
-      hostname: url.hostname,
-      path: url.pathname + url.search,
-      method,
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`,
-        'Content-Type': 'application/json',
-        ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {}),
-      },
-    };
-    const r = https.request(opts, res => {
-      let raw = '';
-      res.on('data', c => raw += c);
-      res.on('end', () => {
-        try { resolve({ status: res.statusCode, body: JSON.parse(raw) }); }
-        catch { resolve({ status: res.statusCode, body: raw }); }
-      });
-    });
-    r.on('error', reject);
-    if (data) r.write(data);
-    r.end();
-  });
-}
-
-async function buscarUidPorEmail(email) {
-  const target = email.toLowerCase().trim();
-  let pageToken = '';
-  do {
-    const url = `/usuarios?pageSize=300&mask.fieldPaths=email&mask.fieldPaths=pontos&mask.fieldPaths=saques${pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : ''}`;
-    const r = await req('GET', url);
-    if (r.status !== 200) {
-      throw new Error('Falha listagem: ' + JSON.stringify(r.body));
-    }
-    for (const d of (r.body.documents || [])) {
-      const emailDoc = d.fields?.email?.stringValue ?? null;
-      if (emailDoc && emailDoc.toLowerCase().trim() === target) {
-        return {
-          uid: d.name.split('/').pop(),
-          email: emailDoc,
-          pontos: parseInt(d.fields?.pontos?.integerValue ?? '0', 10),
-          saques: parseInt(d.fields?.saques?.integerValue ?? '0', 10),
-        };
-      }
-    }
-    pageToken = r.body.nextPageToken || '';
-  } while (pageToken);
-  return null;
-}
-
-async function estornar(uid, pontosAtuais, saquesAtuais) {
-  const novosPontos = pontosAtuais + quantidade;
-  const novosSaques = Math.max(0, saquesAtuais - 1);
-  const fields = {
-    pontos: { integerValue: String(novosPontos) },
-    saques: { integerValue: String(novosSaques) },
-  };
-  const mask = 'updateMask.fieldPaths=pontos&updateMask.fieldPaths=saques';
-  const r = await req('PATCH', `/usuarios/${uid}?${mask}`, { fields });
-  return { ok: r.status === 200, novosPontos, novosSaques };
 }
 
 (async () => {
-  console.log(`Buscando usuário ${emailArg}...`);
-  const u = await buscarUidPorEmail(emailArg);
-  if (!u) {
-    console.error(`✗ Usuário com email "${emailArg}" não encontrado.`);
+  const resgateRef = db.collection('resgates_cnb').doc(resgateIdArg);
+
+  console.log(`Lendo resgate ${resgateIdArg}...`);
+  const resgateSnap = await resgateRef.get();
+  if (!resgateSnap.exists) {
+    console.error(`✗ Resgate "${resgateIdArg}" não existe.`);
     process.exit(1);
   }
-  console.log(`Encontrado: uid=${u.uid}`);
-  console.log(`  pontos atuais: ${u.pontos.toLocaleString('pt-BR')}`);
-  console.log(`  saques atuais: ${u.saques}`);
+  const resgate = resgateSnap.data();
+
+  if (resgate.status === 'estornado') {
+    console.error(`✗ Resgate já foi estornado em ${resgate.estornadoEm?.toDate?.()?.toISOString?.() || '?'}.`);
+    console.error('Nada a fazer.');
+    process.exit(0);
+  }
+
+  const uid = resgate.uid;
+  const quantidade = resgate.quantidade;
+  if (!uid || !quantidade || quantidade <= 0) {
+    console.error('✗ Resgate sem uid ou quantidade válida:', resgate);
+    process.exit(1);
+  }
+
+  const usuarioRef = db.collection('usuarios').doc(uid);
+  const usuarioSnap = await usuarioRef.get();
+  if (!usuarioSnap.exists) {
+    console.error(`✗ Usuário ${uid} não existe mais.`);
+    process.exit(1);
+  }
+  const usuario = usuarioSnap.data();
+
   console.log('');
-  console.log(`Vou estornar ${quantidade.toLocaleString('pt-BR')} pts e decrementar saques em 1.`);
-  console.log(`  novos pontos: ${(u.pontos + quantidade).toLocaleString('pt-BR')}`);
-  console.log(`  novos saques: ${Math.max(0, u.saques - 1)}`);
+  console.log(`Resgate:`);
+  console.log(`  id: ${resgateIdArg}`);
+  console.log(`  uid: ${uid}`);
+  console.log(`  email: ${usuario.email || '(sem email)'}`);
+  console.log(`  quantidade: ${quantidade.toLocaleString('pt-BR')} pts`);
+  console.log(`  signature: ${resgate.signature || '(NENHUMA)'}`);
+  console.log(`  walletAddress: ${resgate.walletAddress || '?'}`);
+  console.log(`  criadoEm: ${resgate.criadoEm?.toDate?.()?.toLocaleString?.('pt-BR') || '?'}`);
   console.log('');
-  console.log('Aguardando 5s antes de aplicar (Ctrl+C para cancelar)...');
+  console.log(`Usuário antes:`);
+  console.log(`  pontos: ${(usuario.pontos || 0).toLocaleString('pt-BR')}`);
+  console.log(`  saques: ${usuario.saques || 0}`);
+  console.log('');
+  console.log(`Após estorno:`);
+  console.log(`  pontos: ${((usuario.pontos || 0) + quantidade).toLocaleString('pt-BR')} (+${quantidade.toLocaleString('pt-BR')})`);
+  console.log(`  saques: ${Math.max(0, (usuario.saques || 0) - 1)}`);
+  console.log('');
+
+  if (resgate.signature) {
+    console.log('⚠ AVISO: este resgate tem signature on-chain. Os tokens CNB');
+    console.log('  foram enviados pra Solana. Estornar pontos NÃO recolhe');
+    console.log('  os tokens — o usuário ficaria com pontos + tokens.');
+    console.log('');
+  }
+
+  console.log('Aplicando em 5s (Ctrl+C cancela)...');
   await new Promise(r => setTimeout(r, 5000));
 
-  const res = await estornar(u.uid, u.pontos, u.saques);
-  if (res.ok) {
-    console.log(`✓ Estorno aplicado. Saldo: ${res.novosPontos.toLocaleString('pt-BR')} pts.`);
-  } else {
-    console.error('✗ Falha no PATCH:', res);
-    process.exit(1);
-  }
-})();
+  await db.runTransaction(async (t) => {
+    // Re-lê dentro da transação pra evitar race
+    const fresh = await t.get(resgateRef);
+    if (fresh.data().status === 'estornado') {
+      throw new Error('Resgate foi estornado por outra operação enquanto este script rodava.');
+    }
+    t.update(usuarioRef, {
+      pontos: admin.firestore.FieldValue.increment(quantidade),
+      saques: admin.firestore.FieldValue.increment(-1),
+    });
+    t.update(resgateRef, {
+      status: 'estornado',
+      estornadoEm: admin.firestore.FieldValue.serverTimestamp(),
+    });
+  });
+
+  console.log('✓ Estorno aplicado e resgate marcado como estornado.');
+})().then(() => process.exit(0)).catch(e => { console.error('✗ Erro:', e.message); process.exit(1); });
