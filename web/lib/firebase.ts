@@ -123,6 +123,56 @@ export async function insertWaitlist(
   }
 }
 
+export type PartnershipType =
+  | 'sponsored_missions'
+  | 'banners'
+  | 'token_integration'
+  | 'data_insights'
+  | 'other';
+
+export type PartnerInquiryInsert = {
+  companyName: string;
+  contactName: string;
+  email: string;
+  partnershipType: PartnershipType;
+  message: string;
+  locale: string;
+  source?: string;
+};
+
+/**
+ * Submits a partnership inquiry via Cloud Function.
+ * Rate limited server-side (3 req/IP per 10 min).
+ */
+export async function insertPartnerInquiry(
+  inquiry: PartnerInquiryInsert,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/registrarParceria`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        companyName: inquiry.companyName,
+        contactName: inquiry.contactName,
+        email: inquiry.email,
+        partnershipType: inquiry.partnershipType,
+        message: inquiry.message,
+        locale: inquiry.locale,
+        source: inquiry.source ?? 'website-parceiros',
+      }),
+    });
+    const json = await res.json();
+    if (json.ok) return { ok: true };
+    if (res.status === 429) return { ok: false, error: 'rate_limit' };
+    return { ok: false, error: json.reason ?? 'unknown' };
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('[insertPartnerInquiry] request failed:', e);
+    const msg = e instanceof Error ? `${e.name}: ${e.message}` : 'unknown';
+    return { ok: false, error: msg };
+  }
+}
+
 /**
  * Inserts a lead via Cloud Function.
  * Rate limited server-side (3 req/IP per 10 min). Idempotent on email.

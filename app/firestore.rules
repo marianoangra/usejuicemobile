@@ -176,6 +176,13 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ── Propostas de parceria — somente via Cloud Function registrarParceria ─
+    // Escrita direta bloqueada; rate limiting e validação feitos server-side.
+    match /parcerias/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
     // ── Push tokens — owner escreve, admin lê pra disparar push ──────────────
     match /push_tokens/{uid} {
       allow read: if isAdmin();

@@ -234,6 +234,71 @@ exports.notificarNovoLead = onDocumentCreated(
   }
 );
 
+// ─── Notificação por email quando chega nova parceria pelo site ──────────────
+exports.notificarNovaParceria = onDocumentCreated(
+  {
+    document: 'parcerias/{id}',
+    secrets: [smtpUser, smtpPass],
+    region: 'us-central1',
+  },
+  async (event) => {
+    const inq = event.data?.data();
+    if (!inq) return;
+
+    const { companyName, contactName, email, partnershipType, message, locale, source } = inq;
+    const id = event.params.id;
+    const data = inq.createdAt?.toDate
+      ? inq.createdAt.toDate().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+      : new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+
+    const db = getFirestore();
+    let total = 0;
+    try {
+      const countSnap = await db.collection('parcerias').count().get();
+      total = countSnap.data().count;
+    } catch {}
+
+    const localeFlag = { pt: '🇧🇷', en: '🇺🇸', es: '🇪🇸' }[locale] || '🌐';
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com', port: 465, secure: true,
+      auth: { user: smtpUser.value(), pass: smtpPass.value() },
+    });
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #c6ff4a; background: #0A0F1E; padding: 20px; border-radius: 8px;">
+          🤝 Nova proposta de parceria — Juice
+        </h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;width:30%;">Empresa</td><td style="padding:10px;font-size:16px;">${escHtml(companyName)}</td></tr>
+          <tr><td style="padding:10px;font-weight:bold;">Contato</td><td style="padding:10px;">${escHtml(contactName)}</td></tr>
+          <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;">E-mail</td><td style="padding:10px;"><a href="mailto:${escHtml(email)}">${escHtml(email)}</a></td></tr>
+          <tr><td style="padding:10px;font-weight:bold;">Tipo</td><td style="padding:10px;">${escHtml(partnershipType)}</td></tr>
+          <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;vertical-align:top;">Mensagem</td><td style="padding:10px;white-space:pre-wrap;">${escHtml(message)}</td></tr>
+          <tr><td style="padding:10px;font-weight:bold;">Origem</td><td style="padding:10px;">${escHtml(source)} · ${localeFlag} ${escHtml(locale)}</td></tr>
+          <tr style="background: #f5f5f5;"><td style="padding:10px;font-weight:bold;">Data/Hora</td><td style="padding:10px;">${escHtml(data)}</td></tr>
+          <tr><td style="padding:10px;font-weight:bold;">Total acumulado</td><td style="padding:10px;font-size:16px;font-weight:bold;color:#00AA55;">${total} ${total === 1 ? 'proposta' : 'propostas'}</td></tr>
+        </table>
+        <p style="margin-top: 24px; color: #666; font-size: 12px;">
+          Ver lista completa:
+          <a href="https://console.firebase.google.com/project/cnbmobile-2053c/firestore/data/~2Fparcerias">Firestore → /parcerias</a>
+        </p>
+      </div>
+    `;
+
+    await transporter.sendMail({
+      from: `"Juice Mobile" <${smtpUser.value()}>`,
+      to: DESTINATARIO,
+      replyTo: email,
+      subject: `🤝 Parceria: ${companyName} (${partnershipType})`,
+      html,
+    });
+
+    console.log(`[Parceria] notificação enviada para ${DESTINATARIO} — ${id}`);
+  }
+);
+
 // ─── Registro de lead com rate limiting por IP ───────────────────────────────
 // Substitui escrita direta do client em /leads (bloqueada nas Firestore rules).
 // Rate limit: máx 3 submissões por IP a cada 10 minutos.
@@ -379,6 +444,86 @@ exports.registrarWaitlist = onRequest(
     if (typeof juiceEstimado === 'number') data.juiceEstimado = juiceEstimado;
 
     await ref.set(data);
+    res.status(200).json({ ok: true });
+  }
+);
+
+// ─── Registro de proposta de parceria com rate limiting por IP ───────────────
+// Substitui o mailto antigo da página /parceiros.
+// Rate limit: máx 3 submissões por IP a cada 10 minutos.
+const PARTNERSHIP_TYPES = [
+  'sponsored_missions',
+  'banners',
+  'token_integration',
+  'data_insights',
+  'other',
+];
+
+exports.registrarParceria = onRequest(
+  { region: 'us-central1', cors: true },
+  async (req, res) => {
+    if (req.method !== 'POST') { res.status(405).json({ ok: false, reason: 'method_not_allowed' }); return; }
+
+    const { companyName, contactName, email, partnershipType, message, locale, source } = req.body ?? {};
+
+    if (typeof companyName !== 'string' || companyName.trim().length < 2 || companyName.length > 120) {
+      res.status(400).json({ ok: false, reason: 'invalid_company' }); return;
+    }
+    if (typeof contactName !== 'string' || contactName.trim().length < 2 || contactName.length > 120) {
+      res.status(400).json({ ok: false, reason: 'invalid_name' }); return;
+    }
+    if (
+      typeof email !== 'string' ||
+      !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ||
+      email.length < 6 || email.length > 200
+    ) { res.status(400).json({ ok: false, reason: 'invalid_email' }); return; }
+
+    if (typeof partnershipType !== 'string' || !PARTNERSHIP_TYPES.includes(partnershipType)) {
+      res.status(400).json({ ok: false, reason: 'invalid_type' }); return;
+    }
+    if (typeof message !== 'string' || message.trim().length < 10 || message.length > 2000) {
+      res.status(400).json({ ok: false, reason: 'invalid_message' }); return;
+    }
+    if (!['pt', 'en', 'es'].includes(locale)) { res.status(400).json({ ok: false, reason: 'invalid_locale' }); return; }
+    if (typeof source !== 'string' || source.length > 50) { res.status(400).json({ ok: false, reason: 'invalid_source' }); return; }
+
+    const db = getFirestore();
+    const ipRaw = req.headers['x-forwarded-for'] ?? req.ip ?? '';
+    const ip = ipRaw.split(',')[0].trim();
+    const ipHash = crypto.createHash('sha256').update(ip).digest('hex').slice(0, 16);
+
+    const rlRef = db.doc(`rate_limit/parceria_${ipHash}`);
+    const JANELA_MS = 10 * 60 * 1000;
+    const LIMITE = 3;
+
+    try {
+      await db.runTransaction(async (tx) => {
+        const rlSnap = await tx.get(rlRef);
+        const agora = Date.now();
+        const rl = rlSnap.exists ? rlSnap.data() : { count: 0, windowStart: agora };
+        const emJanela = (agora - rl.windowStart) < JANELA_MS;
+        const count = emJanela ? rl.count : 0;
+        const windowStart = emJanela ? rl.windowStart : agora;
+        if (count >= LIMITE) throw Object.assign(new Error('rate_limit'), { code: 429 });
+        tx.set(rlRef, { count: count + 1, windowStart });
+      });
+    } catch (e) {
+      if (e.code === 429) { res.status(429).json({ ok: false, reason: 'rate_limit' }); return; }
+      throw e;
+    }
+
+    await db.collection('parcerias').add({
+      companyName: companyName.trim(),
+      contactName: contactName.trim(),
+      email: email.toLowerCase().trim(),
+      partnershipType,
+      message: message.trim(),
+      locale,
+      source,
+      ipHash,
+      createdAt: new Date(),
+    });
+
     res.status(200).json({ ok: true });
   }
 );
