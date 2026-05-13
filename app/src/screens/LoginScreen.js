@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   Platform, ScrollView, Alert, ActivityIndicator, Animated, Image,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
@@ -189,6 +190,11 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.flex}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+      >
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
@@ -302,6 +308,7 @@ export default function LoginScreen({ navigation }) {
           </Animated.View>
 
         </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
