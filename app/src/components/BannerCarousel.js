@@ -7,6 +7,7 @@ import { db } from '../services/firebase';
 import FrontierBanner from './FrontierBanner';
 import WhatsappBanner from './WhatsappBanner';
 import KastBanner from './KastBanner';
+import TriadBanner from './TriadBanner';
 
 const PRIMARY = '#c6ff4a';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -59,7 +60,7 @@ export default function BannerCarousel({ uid, perfil }) {
 
   // Auto-avanço a cada 6s
   useEffect(() => {
-    const total = (banners && banners.length > 0) ? banners.length : 3; // 3 = fallback (WhatsApp + Kast + Frontier)
+    const total = (banners && banners.length > 0) ? banners.length : 4; // 4 = fallback (WhatsApp + Kast + Triad + Frontier)
     if (total < 2) return;
     const interval = setInterval(() => {
       const next = (activeIdxRef.current + 1) % total;
@@ -120,6 +121,7 @@ export default function BannerCarousel({ uid, perfil }) {
           <>
             <View style={{ width: BANNER_WIDTH }}><WhatsappBanner /></View>
             <View style={{ width: BANNER_WIDTH, marginLeft: 40 }}><KastBanner /></View>
+            <View style={{ width: BANNER_WIDTH, marginLeft: 40 }}><TriadBanner /></View>
             <View style={{ width: BANNER_WIDTH, marginLeft: 40 }}><FrontierBanner /></View>
           </>
         ) : (
@@ -143,7 +145,7 @@ export default function BannerCarousel({ uid, perfil }) {
       </ScrollView>
 
       <View style={styles.dotsContainer}>
-        {(usarFallback ? [0, 1, 2] : banners).map((_, i) => (
+        {(usarFallback ? [0, 1, 2, 3] : banners).map((_, i) => (
           <View
             key={i}
             style={[
