@@ -1183,10 +1183,23 @@ exports.resgatarCNB = onCall(
 // Fee relay: ~0.005 SOL. Usuário recebe ~0.005 SOL líquido por 100.000 pontos.
 const MINIMO_RESGATE_PRIVADO = PONTOS_POR_BLOCO; // 100.000
 
+// Privado redemption gate — mirrors JUICE_REDEMPTION_ENABLED above.
+// Cloak shielded SOL withdrawal is real money out of the project
+// keypair. Keeping closed until TGE so we don't burn SOL while the
+// rest of the launch (token, comms, dashboards) is in flux.
+const PRIVADO_REDEMPTION_ENABLED = false;
+
 exports.resgatarPrivado = onCall(
   { secrets: [solanaPrivateKey], region: 'us-central1', invoker: 'public' },
   async (request) => {
     if (!request.auth) throw new HttpsError('unauthenticated', 'Login necessário.');
+
+    if (!PRIVADO_REDEMPTION_ENABLED) {
+      throw new HttpsError(
+        'failed-precondition',
+        'O saque privado ainda não está disponível. Aguarde o TGE.',
+      );
+    }
 
     const uid = request.auth.uid;
     const { walletAddress, quantidade } = request.data;

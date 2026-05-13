@@ -26,6 +26,13 @@ const resgatarPrivadoFn = httpsCallable(functions, 'resgatarPrivado');
 // has no announced utility yet. Disabling here AND server-side.
 const JUICE_REDEMPTION_ENABLED = false;
 
+// Resgate Privado (Cloak shielded SOL) gate.
+// Same policy until TGE — keep all on-chain redemption paths closed
+// while the $JUICE token isn't live. Cloak deposits real SOL from
+// the project keypair on every call, so leaving this open while we
+// stabilize the rest of the launch is unnecessary risk.
+const PRIVADO_REDEMPTION_ENABLED = false;
+
 function solanaValido(addr) {
   try {
     const decoded = bs58.decode(addr.trim());
@@ -40,9 +47,13 @@ export default function WithdrawScreen({ route, navigation }) {
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const { perfil } = route.params || {};
-  // Se vier com aba 'cnb' inicial e o resgate estiver desativado, força PIX.
+  // Se vier com aba inicial bloqueada (JUICE ou Privado desativados), força PIX.
   const initialAba = route.params?.initialAba ?? 'pix';
-  const [aba, setAba] = useState(initialAba === 'cnb' && !JUICE_REDEMPTION_ENABLED ? 'pix' : initialAba);
+  const [aba, setAba] = useState(() => {
+    if (initialAba === 'cnb' && !JUICE_REDEMPTION_ENABLED) return 'pix';
+    if (initialAba === 'privado' && !PRIVADO_REDEMPTION_ENABLED) return 'pix';
+    return initialAba;
+  });
 
   const [nome, setNome] = useState(perfil?.nome ?? '');
   const [pix, setPix] = useState('');
@@ -361,6 +372,13 @@ export default function WithdrawScreen({ route, navigation }) {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Lock size={12} color={aba === 'privado' ? '#c084fc' : colors.secondary} />
                 <Text style={[styles.tabText, aba === 'privado' && styles.tabTextPrivado]}>Privado</Text>
+                {!PRIVADO_REDEMPTION_ENABLED && (
+                  <Text style={{
+                    fontSize: 8, fontWeight: '800', letterSpacing: 0.8,
+                    color: '#c084fc', backgroundColor: 'rgba(192,132,252,0.15)',
+                    paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4,
+                  }}>EM BREVE</Text>
+                )}
               </View>
             </TouchableOpacity>
           </View>
@@ -555,7 +573,35 @@ export default function WithdrawScreen({ route, navigation }) {
             </>
           )}
 
-          {aba === 'privado' && (
+          {aba === 'privado' && !PRIVADO_REDEMPTION_ENABLED && (
+            <View style={{
+              backgroundColor: 'rgba(192,132,252,0.08)',
+              borderWidth: 1, borderColor: 'rgba(192,132,252,0.35)',
+              borderRadius: 14, padding: 20, marginTop: 8,
+              alignItems: 'center',
+            }}>
+              <Text style={{ fontSize: 32, marginBottom: 8 }}>🔒</Text>
+              <Text style={{
+                color: '#c084fc', fontSize: 15, fontWeight: '800',
+                letterSpacing: 1.2, marginBottom: 8,
+              }}>EM BREVE</Text>
+              <Text style={{
+                color: colors.white, fontSize: 17, fontWeight: '700',
+                textAlign: 'center', marginBottom: 6,
+              }}>
+                Saque Privado em SOL
+              </Text>
+              <Text style={{
+                color: colors.secondary, fontSize: 14,
+                textAlign: 'center', lineHeight: 20,
+              }}>
+                O saque privado via Cloak vai abrir junto com o lançamento
+                do token $JUICE. Por enquanto, use o saque em PIX.
+              </Text>
+            </View>
+          )}
+
+          {aba === 'privado' && PRIVADO_REDEMPTION_ENABLED && (
             <>
               {/* Explicação do saque privado */}
               <View style={{ backgroundColor: 'rgba(192,132,252,0.07)', borderWidth: 1, borderColor: 'rgba(192,132,252,0.2)', borderRadius: 16, padding: 16, marginBottom: 16 }}>
