@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juice Mobile · Proposta Comercial — Parceiros</title>
+<style>
+  :root {
+    --bg: #0A0F1E;
+    --bg-soft: #0d1421;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.62);
+    --dim: rgba(255,255,255,0.42);
+    --primary: #00FF7F;
+    --lime: #C6FF4A;
+    --gold: #E8C77E;
+    --accent: #00CC66;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 16mm 14mm;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 56px;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  h1 { font-size: 38pt; margin: 0 0 8px 0; }
+  h2 { font-size: 22pt; margin: 0 0 8px 0; color: var(--text); }
+  h3 { font-size: 14pt; margin: 0 0 6px 0; }
+  h4 { font-size: 11pt; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+  p  { color: var(--muted); margin: 0 0 12px 0; }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 9pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--primary);
+    padding: 4px 10px;
+    border: 1px solid rgba(0, 255, 127, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 255, 127, 0.06);
+    margin-bottom: 14px;
+  }
+
+  .lead { color: var(--text); opacity: 0.85; font-size: 12.5pt; }
+  .dim  { color: var(--dim); font-size: 9pt; }
+
+  hr.sep { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ────────── COVER ────────── */
+  .cover {
+    min-height: 230mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 80px 64px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-size: 18pt;
+    color: var(--primary);
+  }
+  .brand .dot {
+    width: 12px; height: 12px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 24px var(--primary);
+  }
+  .brand-logo { display: block; }
+  .brand-logo svg { width: 240px; height: auto; display: block; }
+  @media print {
+    .brand-logo svg text { fill: #009955; }
+    .brand-logo svg path { fill: #009955; }
+  }
+  .cover-title { font-size: 52pt; line-height: 1.02; letter-spacing: -0.025em; }
+  .cover-sub   { font-size: 16pt; color: var(--muted); margin-top: 12px; max-width: 80%; }
+  .cover-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    font-size: 10pt;
+  }
+  .cover-meta .label { color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 8pt; margin-bottom: 4px; }
+  .cover-meta .value { color: var(--text); font-size: 11pt; font-weight: 600; }
+
+  /* ────────── KPI GRID ────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .kpi {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+  .kpi .v { font-size: 26pt; font-weight: 800; letter-spacing: -0.02em; color: var(--lime); }
+  .kpi .l { font-size: 10pt; color: var(--muted); margin-top: 2px; }
+  .kpi .n { font-size: 8.5pt; color: var(--dim); margin-top: 6px; }
+
+  /* ────────── PERSONA / OFFER CARDS ────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    background: rgba(255,255,255,0.02);
+  }
+  .card h3 { color: var(--text); }
+  .card p  { font-size: 10pt; margin-bottom: 0; }
+
+  /* ────────── OFFERS LIST ────────── */
+  .offer {
+    border-top: 1px solid var(--border);
+    padding: 14px 0;
+    display: grid;
+    grid-template-columns: 180px 1fr 140px;
+    gap: 18px;
+    align-items: start;
+  }
+  .offer:first-child { border-top: 0; }
+  .offer .name { font-weight: 700; }
+  .offer .desc { color: var(--muted); font-size: 10pt; }
+  .offer .metric { font-size: 9pt; color: var(--lime); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ────────── PRICING TIERS ────────── */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tier {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 20px;
+    background: var(--bg-soft);
+    display: flex;
+    flex-direction: column;
+  }
+  .tier.featured {
+    border-color: rgba(0,255,127,0.35);
+    background: linear-gradient(180deg, rgba(0,255,127,0.06), rgba(0,255,127,0.01));
+  }
+  .tier .ribbon {
+    align-self: flex-start;
+    font-size: 8pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .tier h3 { font-size: 18pt; margin-bottom: 2px; }
+  .tier .dur { font-size: 9pt; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
+  .tier .price { font-size: 26pt; font-weight: 800; letter-spacing: -0.02em; color: var(--lime); margin-top: 14px; }
+  .tier.featured .price { color: var(--primary); }
+  .tier .price-sub { font-size: 9pt; color: var(--dim); margin-top: 2px; }
+  .tier ul { padding: 0; margin: 16px 0 0 0; list-style: none; }
+  .tier li {
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    font-size: 10pt;
+    color: var(--muted);
+    position: relative;
+    padding-left: 18px;
+  }
+  .tier li:first-child { border-top: 0; }
+  .tier li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 13px;
+    width: 8px; height: 8px;
+    border: 1.5px solid var(--primary);
+    border-top: 0; border-right: 0;
+    transform: rotate(-45deg);
+  }
+
+  /* ────────── ADDON TABLE ────────── */
+  table.addons {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 10pt;
+  }
+  table.addons th, table.addons td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.addons th {
+    background: rgba(255,255,255,0.03);
+    color: var(--dim);
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  table.addons td.price {
+    color: var(--lime);
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+  }
+  table.addons tr:last-child td { border-bottom: 0; }
+
+  /* ────────── FLOW ────────── */
+  .flow {
+    counter-reset: step;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .flow .step {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: left;
+    background: rgba(255,255,255,0.02);
+    counter-increment: step;
+  }
+  .flow .step::before {
+    content: "0" counter(step);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 9pt;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .flow .step .t { font-size: 10pt; font-weight: 700; line-height: 1.25; }
+  .flow .step .d { font-size: 9pt; color: var(--dim); margin-top: 4px; line-height: 1.4; }
+
+  /* ────────── CTA / CONTACT ────────── */
+  .contact {
+    border: 1px solid rgba(0,255,127,0.25);
+    border-radius: 18px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, rgba(0,255,127,0.06), rgba(0,255,127,0.01));
+    margin-top: 22px;
+  }
+  .contact .who { font-size: 14pt; font-weight: 700; }
+  .contact .role { font-size: 10pt; color: var(--muted); margin-bottom: 14px; }
+  .contact .row { display: flex; gap: 24px; flex-wrap: wrap; font-size: 10pt; }
+  .contact .row strong { color: var(--text); }
+  .contact .row a { color: var(--primary); text-decoration: none; }
+
+  .footnote { font-size: 8.5pt; color: var(--dim); margin-top: 18px; }
+  .footnote.tight { margin-top: 8px; }
+
+  /* ────────── ENGAGEMENT FUNNEL ────────── */
+  .funnel { margin: 22px 0 0 0; }
+  .funnel-row { display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .funnel-bar-track {
+    position: relative;
+    height: 40px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .funnel-bar-fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(0,255,127,0.38), rgba(0,255,127,0.10));
+    border-right: 2px solid var(--primary);
+  }
+  .funnel-bar-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 10pt; font-weight: 600;
+  }
+  .funnel-bar-label .lbl { color: var(--text); }
+  .funnel-bar-label .val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--lime); font-weight: 800;
+  }
+  .funnel-pct {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--dim); font-size: 10pt; text-align: right;
+  }
+
+  /* ────────── PROOF ROW ────────── */
+  .proof-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+  .proof-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    background: rgba(255,255,255,0.02);
+  }
+  .proof-kicker {
+    font-size: 8.5pt; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--dim); display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 12px rgba(0,255,127,0.6);
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @media screen { .live-dot { animation: pulse 1.5s ease-in-out infinite; } }
+  .proof-num { font-size: 36pt; font-weight: 800; letter-spacing: -0.025em; line-height: 1; color: var(--text); }
+  .proof-num.green { color: var(--primary); }
+  .proof-label { font-size: 11pt; font-weight: 600; color: var(--text); margin-top: 8px; }
+  .proof-sub { font-size: 9pt; color: var(--muted); margin-top: 4px; }
+
+  /* ────────── PRINT TWEAKS ────────── */
+  @media print {
+    html, body { background: #ffffff; color: #0A0F1E; }
+    body { font-size: 9.5pt; }
+
+    /* Manter blocos inteiros em uma página — evita corte em meia */
+    .tier, .offer, .kpi, .card, .proof-card,
+    .flow .step, .funnel-row, .contact,
+    table.addons tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .kpi-grid, .proof-row, .flow, .funnel {
+      break-inside: avoid-page;
+    }
+    p, .lead { orphans: 2; widows: 2; }
+    /* Footnotes ficam coladas no bloco de cima — evita ir sozinhas pra próxima página */
+    .footnote { break-before: avoid; page-break-before: avoid; }
+    /* Cor da label de métrica do catálogo: forçar verde escuro mesmo com inline style */
+    .offer .metric { color: #009955 !important; }
+
+    /* Tier cards mais compactos pra caber 3 lado a lado */
+    .tier { padding: 16px 14px; }
+    .tier h3 { font-size: 15pt; }
+    .tier .price { font-size: 20pt; margin-top: 10px; }
+    .tier .ribbon { font-size: 7pt; margin-bottom: 4px; }
+    .tier .dur { font-size: 8pt; }
+    .tier ul { margin-top: 10px; }
+    .tier li { padding: 5px 0 5px 14px; font-size: 8.5pt; line-height: 1.35; }
+    .tier li::before { top: 11px; width: 6px; height: 6px; }
+
+    /* Offers mais compactos */
+    .offer { padding: 10px 0; }
+
+    /* Funnel mais compacto */
+    .funnel-row { margin-bottom: 5px; }
+    .funnel-bar-track { height: 32px; }
+
+    h1, h2, h3, h4 { color: #0A0F1E; }
+    p, .lead, .muted { color: #2c3a4f; }
+    .dim, .footnote { color: #6b7a90; }
+    .eyebrow { color: #009955; border-color: #b6e8c8; background: #f0fdf4; }
+    .kpi { background: #f6f8fb; border-color: #d8e0ea; }
+    .kpi .v { color: #009955; }
+    .kpi .l { color: #2c3a4f; }
+    .card { background: #f6f8fb; border-color: #d8e0ea; }
+    .card p { color: #2c3a4f; }
+    .tier { background: #f6f8fb; border-color: #d8e0ea; }
+    .tier.featured { background: #f0fdf4; border-color: #009955; }
+    .tier .price { color: #009955; }
+    .tier li { color: #2c3a4f; border-color: #d8e0ea; }
+    .tier li::before { border-color: #009955; }
+    .tier .ribbon { color: #009955; }
+    table.addons th { background: #f6f8fb; color: #6b7a90; }
+    table.addons td.price { color: #009955; }
+    table.addons th, table.addons td { border-color: #d8e0ea; }
+    .flow .step { background: #f6f8fb; border-color: #d8e0ea; }
+    .flow .step::before { color: #009955; }
+    .flow .step .d { color: #6b7a90; }
+    .contact { background: #f0fdf4; border-color: #009955; }
+    .contact .row a { color: #009955; }
+    .funnel-bar-track { background: #ebf0f7; border-color: #d8e0ea; }
+    .funnel-bar-fill { background: linear-gradient(90deg, #b6e8c8, #e7f7ee); border-right-color: #009955; }
+    .funnel-bar-label .lbl { color: #0A0F1E; }
+    .funnel-bar-label .val { color: #009955; }
+    .funnel-pct { color: #6b7a90; }
+    .proof-card { background: #f6f8fb; border-color: #d8e0ea; }
+    .proof-kicker { color: #6b7a90; }
+    .proof-num { color: #0A0F1E; }
+    .proof-num.green { color: #009955; }
+    .proof-label { color: #0A0F1E; }
+    .proof-sub { color: #2c3a4f; }
+    .live-dot { background: #009955; box-shadow: none; }
+    hr.sep { border-color: #d8e0ea; }
+    .brand { color: #009955; }
+    .brand .dot { background: #009955; box-shadow: none; }
+    .cover-meta .label { color: #6b7a90; }
+    .cover-meta .value { color: #0A0F1E; }
+    .offer { border-color: #d8e0ea; }
+    .offer .desc { color: #2c3a4f; }
+    .offer .metric { color: #009955; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ COVER ═══════════════════════════════════════════ -->
+<section class="page cover">
+  <div>
+    <div class="brand-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 130" role="img" aria-label="JUICE">
+        <defs>
+          <linearGradient id="juice-olive-metal" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#eaf5b8"/>
+            <stop offset="16%" stop-color="#c5d97c"/>
+            <stop offset="32%" stop-color="#94b048"/>
+            <stop offset="48%" stop-color="#d4e58c"/>
+            <stop offset="56%" stop-color="#f0f8c8"/>
+            <stop offset="72%" stop-color="#b8cd6b"/>
+            <stop offset="88%" stop-color="#8aa83d"/>
+            <stop offset="100%" stop-color="#c5d97c"/>
+          </linearGradient>
+          <linearGradient id="juice-olive-metal-cool" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#eaf5b8"/>
+            <stop offset="16%" stop-color="#c5d97c"/>
+            <stop offset="32%" stop-color="#94b048"/>
+            <stop offset="48%" stop-color="#d4e58c"/>
+            <stop offset="56%" stop-color="#f0f8c8"/>
+            <stop offset="68%" stop-color="#6db8e0"/>
+            <stop offset="82%" stop-color="#b8cd6b"/>
+            <stop offset="92%" stop-color="#8aa83d"/>
+            <stop offset="100%" stop-color="#c5d97c"/>
+          </linearGradient>
+        </defs>
+        <text x="8" y="105" font-family="Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="120" font-weight="900" fill="url(#juice-olive-metal)" letter-spacing="-4">JU</text>
+        <path d="M 204 12 L 156 76 L 184 76 L 171 113 L 217 63 L 190 63 Z" fill="#ffffff" stroke-linejoin="round"/>
+        <text x="218" y="105" font-family="Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif" font-size="120" font-weight="900" fill="url(#juice-olive-metal-cool)" letter-spacing="0">CE</text>
+      </svg>
+    </div>
+  </div>
+
+  <div>
+    <span class="eyebrow">Proposta comercial · 2026</span>
+    <h1 class="cover-title">Faça sua marca virar hábito diário.</h1>
+    <p class="cover-sub">Pacotes de parceria, missões patrocinadas e mídia in-app pra alcançar a audiência mobile-first mais engajada do Brasil.</p>
+  </div>
+
+  <div class="cover-meta">
+    <div>
+      <div class="label">Preparado para</div>
+      <div class="value">[Nome da empresa / parceiro]</div>
+    </div>
+    <div>
+      <div class="label">Data</div>
+      <div class="value">[DD] de [mês] de 2026</div>
+    </div>
+    <div>
+      <div class="label">Preparado por</div>
+      <div class="value">Carol Uchoas · Growth & Comercial, Juice Mobile</div>
+    </div>
+    <div>
+      <div class="label">Validade da proposta</div>
+      <div class="value">30 dias a partir da data acima</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ POR QUE JUICE AGORA ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Por que Juice</span>
+  <h2>Audiência ativa, on-chain e em crescimento.</h2>
+  <p class="lead">A Juice é o primeiro DePIN brasileiro a transformar atividade humana — neste caso, o ato de carregar o celular — em prova on-chain na Solana. Cada minuto de uso vira um Memo verificado em mainnet. Isso filtra a base: quem está aqui, está aqui de verdade.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="v">9,7 mil</div>
+      <div class="l">Usuários ativos · últimos 90 dias</div>
+      <div class="n">Google Analytics 4 · projeto cnbmobile-2053c</div>
+    </div>
+    <div class="kpi">
+      <div class="v">168</div>
+      <div class="l">Ativos agora · últimos 30 min</div>
+      <div class="n">Realtime · ~92% Brasil (155 BR + 4 ET + 4 PT + 2 CO)</div>
+    </div>
+    <div class="kpi">
+      <div class="v">37 mil</div>
+      <div class="l">Sessões engajadas · últimos 90 dias</div>
+      <div class="n">Sessões com 10+ seg ou conversão registrada</div>
+    </div>
+    <div class="kpi">
+      <div class="v">1,1 milhão</div>
+      <div class="l">Eventos registrados · últimos 90 dias</div>
+      <div class="n">Toques, telas, missões, pontos creditados</div>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <h4>O que isso significa pra anunciante</h4>
+  <p>· <strong>9,7K usuários alcançados em 90 dias</strong>, com 4,4K convertendo em cadastro (45% de conversão app → conta).<br>
+     · ~30 mil horas de carregamento verificadas on-chain · Memos auditáveis em mainnet Solana.<br>
+     · 78 saques PIX já processados — produto funciona end-to-end, dinheiro real saindo.<br>
+     · 1.456 indicações ativas no programa de afiliados — base com hábito de compartilhar.<br>
+     · Tempo de tela com intenção: app só conta minutos com o cabo plugado.<br>
+     · Geografia primária Brasil — foco SP, RJ, MG, RS · ~92% do tráfego é BR.</p>
+
+  <p class="footnote tight">Fontes: Google Analytics 4 (reach + sessões + eventos) · Firestore (cadastros + on-chain). Snapshot 13/05/2026.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ ANATOMIA DA BASE ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Anatomia da base</span>
+  <h2>Do primeiro toque até o PIX cair.</h2>
+  <p class="lead">Audiência não é caixa preta. Você escolhe qual camada do funil quer atingir e a campanha é targetada conforme. Quanto mais profundo o filtro, mais qualificado o usuário e mais relevante o resultado.</p>
+
+  <div class="funnel">
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 100%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Reach total · usuários ativos GA (90d)</span><span class="val">9.700</span></div>
+      </div>
+      <div class="funnel-pct">100%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 45.6%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Cadastraram conta · vinculada a carteira Solana</span><span class="val">4.427</span></div>
+      </div>
+      <div class="funnel-pct">45.6%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 30.8%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">MAU · ativos nos últimos 30 dias</span><span class="val">2.994</span></div>
+      </div>
+      <div class="funnel-pct">30.8%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 19.2%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Qualificados · 60+ min verificados</span><span class="val">1.862</span></div>
+      </div>
+      <div class="funnel-pct">19.2%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 9.7%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">DAU · ativos no dia de hoje</span><span class="val">942</span></div>
+      </div>
+      <div class="funnel-pct">9.7%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 7.1%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Heavy users · 10+ horas de uso</span><span class="val">689</span></div>
+      </div>
+      <div class="funnel-pct">7.1%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 1.2%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Power users · 50+ horas de uso</span><span class="val">114</span></div>
+      </div>
+      <div class="funnel-pct">1.2%</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar-track">
+        <div class="funnel-bar-fill" style="width: 0.8%;"></div>
+        <div class="funnel-bar-label"><span class="lbl">Sacaram PIX · funil completo</span><span class="val">78</span></div>
+      </div>
+      <div class="funnel-pct">0.8%</div>
+    </div>
+  </div>
+
+  <div class="proof-row">
+    <div class="proof-card">
+      <div class="proof-kicker"><span class="live-dot"></span> Realtime · Google Analytics 4</div>
+      <div class="proof-num green">168</div>
+      <div class="proof-label">Usuários ativos nos últimos 30 minutos</div>
+      <div class="proof-sub">155 BR · 4 ET · 4 PT · 2 CO · ~92% Brasil em tempo real</div>
+    </div>
+    <div class="proof-card">
+      <div class="proof-kicker">Comunidade · WhatsApp</div>
+      <div class="proof-num">939</div>
+      <div class="proof-label">Membros no grupo oficial Juice</div>
+      <div class="proof-sub">"Use Juice Mobile · Grupo Oficial" · ativo desde set/2023</div>
+    </div>
+  </div>
+
+  <p class="footnote tight">Fontes: GA4 cnbmobile-2053c (reach + realtime) · Firestore (cadastros + filtros de engajamento) · WhatsApp Business (comunidade). Snapshot 13/05/2026.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ AUDIÊNCIA ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Quem usa Juice</span>
+  <h2>Não é audiência genérica. É hábito diário com carteira na mão.</h2>
+  <p class="lead">Cada usuário se cadastrou, abriu o app, ativou prova on-chain. Filtro de qualidade que ad-network nenhum entrega.</p>
+
+  <div class="grid-2" style="margin-top: 22px;">
+    <div class="card">
+      <h3>Mobile-first</h3>
+      <p>100% no celular. Sessão começa com o cabo do carregador. Atenção real, não rolagem passiva.</p>
+    </div>
+    <div class="card">
+      <h3>Consciente de energia</h3>
+      <p>Quem usa Juice pensa no consumo elétrico. Marcas verdes, EV, mobilidade urbana e energia falam direto.</p>
+    </div>
+    <div class="card">
+      <h3>On-chain savvy</h3>
+      <p>Carteira Solana ativa, conforto com tokens, abertos a novos protocolos. Cripto não precisa de explicação.</p>
+    </div>
+    <div class="card">
+      <h3>Urbano e jovem</h3>
+      <p>18–45 anos, predominantemente capitais. Renda média/alta, alta predisposição a experimentar produtos novos.</p>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <h4>Encaixe natural pra</h4>
+  <p>Exchanges cripto · fintechs · cartões e neobanks · mobilidade (apps de carga EV, micromobilidade) · marcas de energia limpa · CPG focada em jovem urbano · plataformas Web3 · projetos Solana que precisam de distribuição em pt-BR.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ CATÁLOGO ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">O catálogo</span>
+  <h2>Como sua marca aparece no Juice.</h2>
+  <p class="lead">Escolha um formato ou combine. Mensuração end-to-end com prova on-chain opcional.</p>
+
+  <div style="margin-top: 22px;">
+    <div class="offer">
+      <div>
+        <div class="name">Missões Patrocinadas</div>
+        <div class="metric">CPCM · destaque</div>
+      </div>
+      <div class="desc">Sua marca briefa uma missão (ex: visite uma loja, teste o app, compartilhe um conteúdo). O usuário completa, recebe JUICE + sua recompensa, e você mede por completion real verificado.</div>
+      <div class="metric" style="color: var(--lime);">Custo por Completion</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Banners In-App Nativos</div>
+        <div class="metric">CPM · CPC</div>
+      </div>
+      <div class="desc">Card patrocinado dentro do feed do app, entre missões. Sem pop-up, sem interrupção. Targeting por perfil de usuário.</div>
+      <div class="metric" style="color: var(--lime);">CPM / CPC</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Co-marketing nas redes sociais</div>
+        <div class="metric">Posts dedicados</div>
+      </div>
+      <div class="desc">Posts patrocinados nas redes oficiais do Juice — X <strong>@cnbmobile</strong> · Instagram <strong>@usejuicemobile</strong>. Conteúdo co-criado, com endosso do founder quando aplicável.</div>
+      <div class="metric" style="color: var(--lime);">Reach + Engajamento</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Push notifications segmentadas</div>
+        <div class="metric">CPM segmentado</div>
+      </div>
+      <div class="desc">Disparo direcionado pra segmentos definidos (geo, idade, nível de atividade). Limitado a 1 disparo patrocinado por usuário por semana — preservamos a base.</div>
+      <div class="metric" style="color: var(--lime);">Open + Click rate</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Campanhas geo-fenced</div>
+        <div class="metric">Visit Rate</div>
+      </div>
+      <div class="desc">Missões e banners ativados por localização. Ideal pra varejo físico, postos, eventos, ativações IRL com mensuração de footfall.</div>
+      <div class="metric" style="color: var(--lime);">Footfall Lift</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Cashback / Pagamento em JUICE</div>
+        <div class="metric">GMV tokenizado</div>
+      </div>
+      <div class="desc">Sua marca aceita JUICE como pagamento (com auto-conversão pra BRL via gateway parceiro) ou emite cashback em JUICE pra ações fora do app.</div>
+      <div class="metric" style="color: var(--lime);">GMV · Volume</div>
+    </div>
+    <div class="offer">
+      <div>
+        <div class="name">Loyalty Bridge</div>
+        <div class="metric">Integração custom</div>
+      </div>
+      <div class="desc">Conecte seu programa de pontos com JUICE. Usuário queima pontos da sua marca, ganha JUICE. Reverso: gasta JUICE, vira pontos pra você. Fidelização cruzada.</div>
+      <div class="metric" style="color: var(--lime);">Conversion Rate</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ PARCEIROS & ANUNCIANTES ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Quem confia no Juice</span>
+  <h2>Parceiros e anunciantes que já operam com a gente.</h2>
+  <p class="lead">Marcas validadas como anunciantes (missões + mídia in-app) e/ou parceiros estratégicos do ecossistema. Toda relação inclui programa de afiliados ativo.</p>
+
+  <div class="grid-2" style="margin-top: 22px;">
+    <div class="card">
+      <h4>Exchange parceira</h4>
+      <h3>BingX</h3>
+      <p>Exchange global parceira da Juice Mobile e Official Crypto Exchange Partner do Chelsea FC. Liquidez, infraestrutura e alcance internacional pro JUICE token.</p>
+    </div>
+    <div class="card">
+      <h4>Exchange & Pagamentos</h4>
+      <h3>OKX</h3>
+      <p>Exchange líder global parceira da Juice, criadora do X Pay para pagamentos cripto end-to-end. Operação ativa em campanhas patrocinadas.</p>
+    </div>
+    <div class="card">
+      <h4>Cartão cripto parceiro</h4>
+      <h3>KAST</h3>
+      <p>Cartão Visa Platinum cripto. Leva o saldo on-chain pra rotina real de pagamento — mesma direção do Juice. Banner ativo no feed do app.</p>
+    </div>
+    <div class="card">
+      <h4>Neobank brasileiro na Solana</h4>
+      <h3>Kaxis Club</h3>
+      <p>Neobank construído sobre a Solana — conta, cartão e cripto no mesmo app, alinhado com a missão Juice de levar Web3 pra rotina real.</p>
+    </div>
+    <div class="card">
+      <h4>Carteira oficial Solana</h4>
+      <h3>Solflare</h3>
+      <p>A carteira mais poderosa da Solana — staking, swap e NFTs nativos. Integração natural pra quem ganha pontos JUICE e quer custodiar com segurança.</p>
+    </div>
+    <div class="card">
+      <h4>Camada A2A · Solana</h4>
+      <h3>Mind Protocol</h3>
+      <p>Transforma a Solana na camada de liquidação agente-pra-agente — infraestrutura pra próxima geração de pagamentos on-chain automatizados.</p>
+    </div>
+  </div>
+
+  <p class="footnote">Cada relação inclui condições específicas combinadas em contrato — formato, métrica e exclusividade. Detalhes sob NDA.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ PACOTES (PREÇOS) ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Investimento</span>
+  <h2>Pacotes de partida.</h2>
+  <p class="lead">Toda parceria é customizável. Valores abaixo são ponto de entrada — combinamos escopo final em call de briefing.</p>
+
+  <div class="tiers" style="margin-top: 24px;">
+    <div class="tier">
+      <span class="ribbon">Pilot · 30 dias</span>
+      <h3>Pilot</h3>
+      <div class="dur">Teste rápido e mensurável</div>
+      <div class="price">R$ 6.000</div>
+      <div class="price-sub">À vista · Pagamento em BRL</div>
+      <ul>
+        <li>1 missão patrocinada com até 2.500 completions</li>
+        <li>Targeting por perfil de usuário</li>
+        <li>Dashboard de mensuração em tempo real</li>
+        <li>Relatório final consolidado em até 7 dias após encerramento</li>
+        <li>CPCM efetivo: R$ 2,40</li>
+      </ul>
+    </div>
+
+    <div class="tier featured">
+      <span class="ribbon">Growth · 90 dias · Recomendado</span>
+      <h3>Growth</h3>
+      <div class="dur">Presença contínua</div>
+      <div class="price">R$ 15.000</div>
+      <div class="price-sub">Avulso ou 3× R$ 5.000 · BRL ou JUICE</div>
+      <ul>
+        <li>Até 3 missões patrocinadas (até 2.500 completions cada · 7.500 no total)</li>
+        <li>Até 2 banners rotativos no feed da home</li>
+        <li>Geo-fencing incluído</li>
+        <li>4 posts patrocinados nas redes sociais Juice (Twitter + Instagram)</li>
+        <li>Co-marketing em 1 newsletter mensal</li>
+        <li>Account manager compartilhado</li>
+        <li>CPCM efetivo: R$ 2,00</li>
+        <li>Pagamento em BRL ou JUICE (10% de desconto se JUICE)</li>
+      </ul>
+    </div>
+
+    <div class="tier">
+      <span class="ribbon">Enterprise · 12 meses+</span>
+      <h3>Enterprise</h3>
+      <div class="dur">Integração estratégica</div>
+      <div class="price">A partir de R$ 96.000<span style="font-size: 12pt;"> / ano</span></div>
+      <div class="price-sub">R$ 8.000/mês · 12 meses mínimo</div>
+      <ul>
+        <li>Missões customizadas ilimitadas</li>
+        <li>Loyalty bridge ou integração nativa de token</li>
+        <li>Brand activation IRL co-produzida (1 evento/ano incluído)</li>
+        <li>Account manager dedicado</li>
+        <li>Cláusula de exclusividade no segmento (negociável)</li>
+        <li>Acesso a dados anonimizados de comportamento</li>
+        <li>1 feature co-criada por ano no app</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="footnote">Valores em Reais (BRL). Impostos não inclusos. Pagamento em JUICE sujeito a câmbio do dia da emissão da NF, conforme tabela de conversão acordada em contrato.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ ADD-ONS ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Customização</span>
+  <h2>Adicione o que faltar.</h2>
+  <p class="lead">Add-ons combinam com qualquer pacote. Use pra extender campanha, testar formato novo, ou cobrir um evento específico.</p>
+
+  <table class="addons">
+    <thead>
+      <tr>
+        <th>Add-on</th>
+        <th>Descrição</th>
+        <th style="text-align: right;">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Missão extra</strong></td>
+        <td>Além das incluídas no pacote, por completion adicional</td>
+        <td class="price">R$ 1,25 / completion</td>
+      </tr>
+      <tr>
+        <td><strong>Banner adicional</strong></td>
+        <td>Espaço extra no carrossel da home, rotação ponderada</td>
+        <td class="price">R$ 1.800 / mês</td>
+      </tr>
+      <tr>
+        <td><strong>Post extra rede social</strong></td>
+        <td>Post dedicado no Twitter/X ou Instagram da Juice</td>
+        <td class="price">R$ 1.100 / post</td>
+      </tr>
+      <tr>
+        <td><strong>Push notification segmentada</strong></td>
+        <td>Disparo único pra segmento definido — até 30k usuários</td>
+        <td class="price">R$ 2.200 / disparo</td>
+      </tr>
+      <tr>
+        <td><strong>Push notification global</strong></td>
+        <td>Disparo pra base completa — sujeito a calendário</td>
+        <td class="price">R$ 5.000 / disparo</td>
+      </tr>
+      <tr>
+        <td><strong>Geo-fencing isolado</strong></td>
+        <td>Quando contratado fora do Growth/Enterprise</td>
+        <td class="price">R$ 2.200 / campanha</td>
+      </tr>
+      <tr>
+        <td><strong>Custom landing page</strong></td>
+        <td>Página em usejuicemobile.com co-branded</td>
+        <td class="price">R$ 2.200 one-time</td>
+      </tr>
+      <tr>
+        <td><strong>Token integration setup</strong></td>
+        <td>Loyalty bridge técnica, sem mensalidade adicional</td>
+        <td class="price">R$ 16.500 one-time</td>
+      </tr>
+      <tr>
+        <td><strong>IRL activation</strong></td>
+        <td>Evento físico co-produzido, até 200 pessoas</td>
+        <td class="price">R$ 9.500 / evento</td>
+      </tr>
+      <tr>
+        <td><strong>Relatório custom aprofundado</strong></td>
+        <td>Análise pós-campanha com cortes específicos solicitados</td>
+        <td class="price">R$ 1.400 / relatório</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">Combos de 3+ add-ons recebem desconto de 10%. Add-ons contratados após assinatura da proposta inicial são faturados em ciclos mensais separados.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ MENSURAÇÃO + FLOW ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Mensuração & atribuição</span>
+  <h2>Tudo o que rola, você consegue verificar.</h2>
+  <p class="lead">Mensurar campanha em ad-network tradicional é um ato de fé. No Juice, cada interação relevante tem rastro auditável.</p>
+
+  <div class="grid-2" style="margin-top: 22px;">
+    <div class="card">
+      <h3>Dashboard em tempo real</h3>
+      <p>Painel co-branded com sua marca, com completions, impressões, cliques e geo segmentado por hora. Acesso via login dedicado.</p>
+    </div>
+    <div class="card">
+      <h3>Provas on-chain (opcional)</h3>
+      <p>Cada missão pode gerar um Memo na Solana mainnet com hash da completion. Verificável em Solscan, sem confiança no Juice.</p>
+    </div>
+    <div class="card">
+      <h3>Atribuição multi-camada</h3>
+      <p>UTM + device fingerprint + comportamento in-app. Identifica fraude (device repetido, IP correlacionado) e descarta automaticamente.</p>
+    </div>
+    <div class="card">
+      <h3>Relatório consolidado</h3>
+      <p>Entregue em até 7 dias úteis após encerramento. Inclui cortes por persona, comparativo vs benchmark Juice, e insights qualitativos.</p>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <span class="eyebrow">Como começamos</span>
+  <h2 style="margin-top: 8px;">Do "topa?" ao "no ar" em até 5 dias úteis.</h2>
+
+  <div class="flow">
+    <div class="step">
+      <div class="t">Brief inicial</div>
+      <div class="d">Call de 30min. Você conta objetivo, público-alvo, KPIs.</div>
+    </div>
+    <div class="step">
+      <div class="t">Proposta customizada</div>
+      <div class="d">Devolvemos em até 24h úteis com formatos e valores finais.</div>
+    </div>
+    <div class="step">
+      <div class="t">Contrato + ordem</div>
+      <div class="d">Assinatura digital. 50% upfront, 50% no encerramento (Pilot/Growth).</div>
+    </div>
+    <div class="step">
+      <div class="t">Kickoff & criativos</div>
+      <div class="d">Brief criativo, aprovações, configuração de targeting. ~2 dias úteis.</div>
+    </div>
+    <div class="step">
+      <div class="t">Vai ao ar</div>
+      <div class="d">Campanha live. Dashboard libera no momento da publicação.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ CONTATO ═══════════════════════════════════════════ -->
+<section class="page">
+  <span class="eyebrow">Próximos passos</span>
+  <h2>Bora marcar a call de briefing.</h2>
+  <p class="lead">Resposta em até 24h úteis, direto com a fundação. Sem fila de SDR, sem ping-pong de email com agência.</p>
+
+  <div class="contact">
+    <div class="who">Carol Uchoas</div>
+    <div class="role">Growth & Comercial · Juice Mobile</div>
+    <div class="row">
+      <div><strong>Email:</strong> <a href="mailto:contato@criptonobolso.com.br">contato@criptonobolso.com.br</a></div>
+      <div><strong>WhatsApp:</strong> <a href="https://wa.me/5512991898062">+55 12 99189-8062</a></div>
+      <div><strong>Site:</strong> <a href="https://usejuicemobile.com">usejuicemobile.com</a></div>
+      <div><strong>Instagram:</strong> <a href="https://instagram.com/usejuicemobile">@usejuicemobile</a></div>
+    </div>
+  </div>
+
+  <div class="contact" style="margin-top: 14px;">
+    <div class="who">Rafael Mariano</div>
+    <div class="role">CEO & Founder · Juice Mobile</div>
+    <div class="row">
+      <div><strong>Email:</strong> <a href="mailto:contato@rafaelmariano.com.br">contato@rafaelmariano.com.br</a></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <h4>Condições gerais</h4>
+  <p style="font-size: 9.5pt;">
+    Esta proposta tem validade de 30 dias a partir da data informada na capa. Valores em BRL, impostos não inclusos. Pagamentos sujeitos a emissão de Nota Fiscal pela razão social responsável pela Juice Mobile, conforme registro fiscal vigente — informada em contrato. Cláusulas de confidencialidade, exclusividade e propriedade intelectual são detalhadas no contrato final. Cancelamento por parte do anunciante após kickoff incorre em retenção de 50% do valor contratado, salvo cláusulas específicas negociadas. Em caso de descumprimento técnico por parte do Juice Mobile (downtime &gt; 5% do período contratado), reembolso proporcional automático.
+  </p>
+
+  <p class="footnote tight">Juice Mobile · Brasil · 2026</p>
+</section>
+
+</body>
+</html>
