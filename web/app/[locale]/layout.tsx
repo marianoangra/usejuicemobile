@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Nav } from '@/components/ui/Nav';
 import { BackToTop } from '@/components/ui/BackToTop';
+import { TelegramBubble } from '@/components/ui/TelegramBubble';
 import { Footer } from '@/components/sections/Footer';
 
 export function generateStaticParams() {
@@ -83,6 +84,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <Nav />
       <main className="min-h-screen">{children}</main>
       <Footer />
+      <TelegramBubble />
       <BackToTop />
     </NextIntlClientProvider>
   );

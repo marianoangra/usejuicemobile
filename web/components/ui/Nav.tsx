@@ -129,7 +129,7 @@ function SocialLinks() {
         </svg>
       </a>
       <a
-        href="https://t.me/grupcriptocnb"
+        href="https://t.me/grupjuicemobile"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Telegram"

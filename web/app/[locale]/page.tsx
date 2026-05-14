@@ -48,7 +48,7 @@ export default async function HomePage({ params }: Props) {
         sameAs: [
           'https://x.com/usejuicemobile',
           'https://www.instagram.com/usejuicemobile',
-          'https://t.me/grupcriptocnb',
+          'https://t.me/grupjuicemobile',
           'https://chat.whatsapp.com/GsIEmnUPKsn2W95HEjPwW8',
           'https://github.com/marianoangra/cnbapp',
         ],

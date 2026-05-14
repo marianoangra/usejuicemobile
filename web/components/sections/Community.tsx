@@ -15,8 +15,8 @@ const SOCIALS = [
   },
   {
     key: 'telegram' as const,
-    href: 'https://t.me/grupcriptocnb',
-    handle: '@grupcriptocnb',
+    href: 'https://t.me/grupjuicemobile',
+    handle: '@grupjuicemobile',
     Icon: Send,
   },
   {
