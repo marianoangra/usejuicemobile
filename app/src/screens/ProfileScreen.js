@@ -569,7 +569,7 @@ export default function ProfileScreen({ route, navigation }) {
                   {afiliados.ativas} de {afiliados.total} indicados já ativaram
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textFaint, marginTop: 2 }}>
-                  Ativo = carregou o celular por 3+ minutos
+                  Ativo = carregou o celular por 1 hora completa
                 </Text>
               </View>
             </View>
