@@ -63,6 +63,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.0",
     "babel-preset-expo": "~54.0.10",
+    "firebase-admin": "^13.9.0",
     "typescript": "~5.9.2"
   }
 }
