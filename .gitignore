@@ -19,6 +19,9 @@ app/package-lock.json
 **/sa-key.json
 **/credentials.yml
 
+# Claude Code local settings (per-machine permissions)
+.claude/settings.local.json
+
 # Build outputs
 .expo/
 dist/
