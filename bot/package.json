@@ -1,0 +1,21 @@
+{
+  "name": "juice-telegram-bot",
+  "version": "0.1.0",
+  "description": "Bot oficial do Juice no Telegram — tira dúvidas usando Claude Haiku como cérebro",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^13.9.0",
+    "telegraf": "^4.16.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "private": true
+}
