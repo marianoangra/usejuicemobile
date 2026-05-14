@@ -190,6 +190,13 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Conversas do Telegram bot (escrita pelo bot via Admin SDK) ──────────
+    // Admin SDK bypassa as rules; cliente só lê pelo dashboard.
+    match /bot_conversations/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
     // ── Push tokens — owner escreve, admin lê pra disparar push ──────────────
     match /push_tokens/{uid} {
       allow read: if isAdmin();

@@ -132,6 +132,7 @@ footer a:hover{color:#00FF88}
     <a href="#waitlist">🎁 Waitlist</a>
     <a href="#analytics">📈 Analytics</a>
     <a href="#fraude">🚫 Antifraude</a>
+    <a href="#bot">🤖 Bot</a>
   </nav>
 
   <main id="module-container">
@@ -170,6 +171,7 @@ const MODULOS = {
   waitlist:  () => import('./admin/waitlist.js'),
   analytics: () => import('./admin/analytics.js'),
   fraude:    () => import('./admin/fraude.js'),
+  bot:       () => import('./admin/bot.js'),
 };
 
 let unsubsAtivos = [];
