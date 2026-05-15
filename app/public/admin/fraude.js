@@ -105,6 +105,10 @@ export async function init({ container }) {
     return u?.saquesBloqueados === true || u?.contaBanida === true;
   }
 
+  function isConfiavel(u) {
+    return u?.confiavel === true;
+  }
+
   async function carregar() {
     document.getElementById('fraude-resumo').textContent = 'carregando…';
 
@@ -132,7 +136,13 @@ export async function init({ container }) {
     const pendentes = saques.filter(s => s.status === 'pendente');
     const totalPendente = pendentes.reduce((s, x) => s + (x.pontos || 0), 0);
 
+    // Contas confiáveis (founder + parceiros) — excluídas dos flags abaixo.
+    // Marcadas via campo confiavel:true no doc /usuarios.
+    let confiaveisCount = 0;
+    for (const u of usuarios.values()) if (isConfiavel(u)) confiaveisCount++;
+
     // FLAG 1: PIX duplicada em uids diferentes
+    // (mantém grupo se ao menos 1 uid NÃO é confiável)
     const porPix = new Map();
     saques.forEach(s => {
       const k = (s.chavePix || '').trim().toLowerCase();
@@ -142,16 +152,19 @@ export async function init({ container }) {
       entry.uids.add(s.uid);
       entry.saques.push(s);
     });
-    const pixDup = [...porPix.values()].filter(p => p.uids.size > 1);
+    const pixDup = [...porPix.values()].filter(p => {
+      if (p.uids.size <= 1) return false;
+      return ![...p.uids].every(uid => isConfiavel(usuarios.get(uid)));
+    });
 
-    // FLAG 2: Sacou com <60 min verificados
+    // FLAG 2: Sacou com <60 min verificados (skip confiáveis)
     const sub60 = saques.filter(s => {
       const u = usuarios.get(s.uid);
-      if (!u) return false;
+      if (!u || isConfiavel(u)) return false;
       return (u.minutos || 0) < 60;
     });
 
-    // FLAG 3: Ratio pts/min desproporcional
+    // FLAG 3: Ratio pts/min desproporcional (skip confiáveis)
     const porUid = {};
     saques.forEach(s => {
       porUid[s.uid] = porUid[s.uid] || { uid: s.uid, total: 0, saques: [] };
@@ -161,7 +174,7 @@ export async function init({ container }) {
     const ratio = Object.values(porUid)
       .map(u => {
         const ud = usuarios.get(u.uid);
-        if (!ud) return null;
+        if (!ud || isConfiavel(ud)) return null;
         const min = ud.minutos || 0;
         const teto = min * LIMIT_PTS_PER_MIN;
         if (u.total < MIN_THRESHOLD_PTS) return null;
@@ -172,9 +185,10 @@ export async function init({ container }) {
       .filter(Boolean)
       .sort((a, b) => b.total - a.total);
 
-    // FLAG 4: Pendentes parados > 7 dias
+    // FLAG 4: Pendentes parados > 7 dias (skip confiáveis — eles estão fora do antifraude)
     const agora = Date.now();
     const antigos = pendentes
+      .filter(s => !isConfiavel(usuarios.get(s.uid)))
       .map(s => {
         const t = s.criadoEm?.toDate?.() || (typeof s.criadoEm === 'string' ? new Date(s.criadoEm) : null);
         const dias = t ? Math.floor((agora - t.getTime()) / 86400000) : 0;
@@ -184,8 +198,9 @@ export async function init({ container }) {
       .sort((a, b) => b.dias - a.dias);
 
     // KPIs no topo
+    const sufixoConfiaveis = confiaveisCount ? ` · 🛡️ ${confiaveisCount} confiável(is) excluído(s)` : '';
     document.getElementById('fraude-resumo').textContent =
-      `${pixDup.length} PIX dup · ${sub60.length} sub-60 · ${ratio.length} ratio · ${antigos.length} antigos`;
+      `${pixDup.length} PIX dup · ${sub60.length} sub-60 · ${ratio.length} ratio · ${antigos.length} antigos${sufixoConfiaveis}`;
 
     document.getElementById('fraude-cards').innerHTML = `
       <div class="kpi-card"><div class="v ${pixDup.length > 0 ? 'danger' : 'ok'}">${pixDup.length}</div><div class="l">Chaves PIX em múltiplos uids</div></div>
