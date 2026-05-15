@@ -30,6 +30,7 @@ import { setUsuarioId, resetUsuarioId, logLoginDiario } from './src/services/ana
 import { setUsuarioCrash } from './src/services/crashlytics';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { AccentProvider, useAccent } from './src/context/AccentContext';
+import { TabBarProvider, useTabBarEscondido, useTabBarActions } from './src/context/TabBarContext';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { Home, Zap, Trophy, User, Target } from 'lucide-react-native';
 import Svg, { Polygon, Circle } from 'react-native-svg';
@@ -88,6 +89,25 @@ const TAB_ICONS = {
 function FloatingTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
   const centerColor = useAccent();
+
+  // ── Auto-hide do menu no scroll (controlado pelo TabBarContext) ──
+  const escondido = useTabBarEscondido();
+  const { mostrar } = useTabBarActions();
+  const hideAnim = useRef(new Animated.Value(0)).current;
+  // Distância pra empurrar o menu inteiro pra fora da tela.
+  const BAR_OFFSCREEN = insets.bottom + 112;
+  useEffect(() => {
+    Animated.timing(hideAnim, {
+      toValue: escondido ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  }, [escondido]);
+  const tabBarTranslateY = hideAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, BAR_OFFSCREEN],
+  });
 
   // ── Estado de carregamento para animação do botão central ──
   const [charging, setCharging] = useState(false);
@@ -153,7 +173,13 @@ function FloatingTabBar({ state, descriptors, navigation }) {
   }, [charging]);
 
   return (
-    <>
+    <Animated.View
+      pointerEvents="box-none"
+      style={{
+        position: 'absolute', left: 0, right: 0, bottom: 0,
+        height: BAR_OFFSCREEN,
+        transform: [{ translateY: tabBarTranslateY }],
+      }}>
       {/* Bloco sólido abaixo da pill — impede conteúdo de aparecer sob o menu */}
       <View
         pointerEvents="none"
@@ -201,6 +227,7 @@ function FloatingTabBar({ state, descriptors, navigation }) {
 
             function onPress() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              mostrar(); // trocar de aba sempre revela o menu
               const event = navigation.emit({
                 type: 'tabPress',
                 target: route.key,
@@ -296,16 +323,17 @@ function FloatingTabBar({ state, descriptors, navigation }) {
           })}
         </View>
       </View>
-    </>
+    </Animated.View>
   );
 }
 
 function MainTabs({ user, perfil, onAtualizar, atualizarPerfil }) {
   return (
-    <Tab.Navigator
-      tabBar={(props) => <FloatingTabBar {...props} />}
-      sceneContainerStyle={{ backgroundColor: 'transparent' }}
-      screenOptions={{ headerShown: false }}>
+    <TabBarProvider>
+      <Tab.Navigator
+        tabBar={(props) => <FloatingTabBar {...props} />}
+        sceneContainerStyle={{ backgroundColor: 'transparent' }}
+        screenOptions={{ headerShown: false }}>
       <Tab.Screen name="Home" options={{ tabBarLabel: 'Início' }}>
         {(props) => <HomeScreen {...props} route={{ ...props.route, params: { user, perfil, onAtualizar } }} />}
       </Tab.Screen>
@@ -321,7 +349,8 @@ function MainTabs({ user, perfil, onAtualizar, atualizarPerfil }) {
       <Tab.Screen name="Perfil" options={{ tabBarLabel: 'Perfil' }}>
         {(props) => <ProfileScreen {...props} route={{ ...props.route, params: { user, perfil, onAtualizar, atualizarPerfil } }} />}
       </Tab.Screen>
-    </Tab.Navigator>
+      </Tab.Navigator>
+    </TabBarProvider>
   );
 }
 
@@ -330,25 +359,10 @@ function AppNavigator({ user, perfil, onAtualizar, atualizarPerfil }) {
   const headerStyle = { backgroundColor: colors.card };
   const headerTintColor = colors.white;
 
-  // Primeiro login: perfil.modo ainda null → tela de escolha bloqueia o resto.
-  const precisaEscolherModo = perfil && (perfil.modo === null || perfil.modo === undefined);
+  // Sem onboarding de modo: todo usuário (novo ou antigo) entra como 'tech'.
+  // A escolha Tech/Lite continua disponível sob demanda no Perfil → ModoEscolha.
   const modo = perfil?.modo ?? 'tech';
   const isTech = modo === 'tech';
-
-  if (precisaEscolherModo) {
-    return (
-      <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
-        <Stack.Screen name="ModoEscolha">
-          {(props) => (
-            <ModoEscolhaScreen
-              {...props}
-              route={{ ...props.route, params: { uid: user?.uid, currentMode: null, atualizarPerfil } }}
-            />
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    );
-  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

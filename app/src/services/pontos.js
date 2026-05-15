@@ -47,7 +47,7 @@ export async function criarPerfil(uid, nome, email, codigoIndicacao = null) {
     referidoPor: null,
     referidos: 0,
     ultimoLogin: null,
-    modo: null, // novo usuário escolhe na tela ModoEscolha; null = ainda não escolheu
+    modo: 'tech', // padrão para todo novo usuário; pode trocar para 'lite' no Perfil
     criadoEm: serverTimestamp(),
   };
   const batch = writeBatch(db);

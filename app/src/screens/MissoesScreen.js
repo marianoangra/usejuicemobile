@@ -13,6 +13,7 @@ import {
   CheckCircle, Lock, Clock,
 } from 'lucide-react-native';
 import { useAccent } from '../context/AccentContext';
+import { useTabBarScroll } from '../context/TabBarContext';
 
 // ─── Constantes de estilo ──────────────────────────────────────────────────────
 const PRIMARY     = '#c6ff4a';
@@ -314,6 +315,7 @@ function ordenarMissoes(missoes) {
 
 // ─── Tela principal ───────────────────────────────────────────────────────────
 export default function MissoesScreen({ route, navigation }) {
+  const barraScroll = useTabBarScroll();
   const PRIMARY = useAccent();
   const { t } = useTranslation();
   const { user, perfil } = route?.params || {};
@@ -460,6 +462,7 @@ export default function MissoesScreen({ route, navigation }) {
     >
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <ScrollView
+          {...barraScroll}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >

@@ -14,6 +14,7 @@ import { Trophy, Users, Flame, Crown, AlertCircle, Clock } from 'lucide-react-na
 import { getRanking, getRankingIndicacoes, getPosicaoRanking } from '../services/pontos';
 import Avatar from '../components/Avatar';
 import { useAccent } from '../context/AccentContext';
+import { useTabBarScroll } from '../context/TabBarContext';
 
 // ─── Helper: início da semana atual (domingo 00:30 local) ────────────────────
 function inicioSemanaAtual() {
@@ -242,6 +243,7 @@ function RankingItem({ item, uid, index, modo }) {
 
 // ─── Tela principal ───────────────────────────────────────────────────────────
 export default function RankingScreen({ route }) {
+  const barraScroll = useTabBarScroll();
   const PRIMARY = useAccent();
   const { t } = useTranslation();
   const { uid, perfil } = route?.params || {};
@@ -317,6 +319,7 @@ export default function RankingScreen({ route }) {
     <LinearGradient colors={['#0b1310', '#0a0f0d', '#000000']} locations={[0, 0.5, 1]} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <FlatList
+          {...barraScroll}
           data={listaAbaixoPodium}
           keyExtractor={i => i.uid}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}

@@ -12,7 +12,7 @@ function novoEstado() {
     saques: [],                 // array de { id, ...data }
     usuarios: new Map(),        // uid -> data (snapshot leve)
     filtro: {
-      status: 'todos',          // todos | pendente | processado | bloqueado
+      status: 'pendente',       // todos | pendente | processado | bloqueado
       janela: '30d',            // 7d | 30d | 90d | todos
       busca: '',                // matches nome/chavePix/uid
     },
@@ -36,7 +36,7 @@ export async function init({ container, registerCleanup }) {
       <div class="card" style="padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
         <select id="f-status" class="filter-select">
           <option value="todos">Todos status</option>
-          <option value="pendente">⏳ Pendentes</option>
+          <option value="pendente" selected>⏳ Pendentes</option>
           <option value="processado">✅ Processados</option>
           <option value="bloqueado">🚫 Bloqueados (user)</option>
         </select>
@@ -50,7 +50,7 @@ export async function init({ container, registerCleanup }) {
       </div>
     </div>
 
-    <div class="grid-2" id="cards-resumo"></div>
+    <div id="cards-resumo" class="saques-stats"></div>
 
     <div id="alert-pix" style="margin-bottom:16px"></div>
 
@@ -84,6 +84,16 @@ export async function init({ container, registerCleanup }) {
       .dup-link{color:#9945FF;cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;font:inherit}
       #bulk-bar{display:none}
       #bulk-bar.ativo{display:flex !important}
+      .saques-stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+      .saques-stats .stat{background:#0d1421;border:1px solid #1a2535;border-radius:10px;padding:7px 13px;display:flex;align-items:baseline;gap:7px}
+      .saques-stats .stat b{font-size:17px;font-weight:700;line-height:1}
+      .saques-stats .stat span{font-size:11px;color:#8a9a8a}
+      .saques-stats .stat.alert{border-color:#ff4d4d;background:#1f0d0d}
+      .sit{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+      .sit-pendente{background:#161d2b;color:#8a9a8a}
+      .sit-suspeito{background:#2a2400;color:#FFC533;border:1px solid #FFB80066}
+      .sit-bloqueado{background:#2a0d0d;color:#ff5c5c;border:1px solid #ff4d4d66}
+      .sit-pago{background:#0d1f0d;color:#00FF88}
     `;
     document.head.appendChild(s);
   }
@@ -196,13 +206,13 @@ function renderResumo(state, container) {
   container.querySelector('#saques-resumo').textContent =
     `${filtrados} de ${state.saques.length} (filtro)`;
 
-  const cards = container.querySelector('#cards-resumo');
-  cards.innerHTML = `
-    <div class="card y"><div class="card-label">Pendentes a pagar</div><div class="card-value yellow">${fmtNum(pend)}</div><div style="font-size:11px;color:#8a9a8a;margin-top:6px">${fmtNum(ptsPend)} pts</div></div>
-    <div class="card r"><div class="card-label">⏰ Atrasados &gt;${PRAZO_SAQUE_HORAS}h</div><div class="card-value red">${fmtNum(atrasados)}</div><div style="font-size:11px;color:#8a9a8a;margin-top:6px">${fmtNum(ptsAtrasados)} pts · SLA estourado</div></div>
-    <div class="card r"><div class="card-label">Bloqueados (antifraude)</div><div class="card-value red">${fmtNum(bloq)}</div></div>
-    <div class="card g"><div class="card-label">Processados</div><div class="card-value green">${fmtNum(proc)}</div></div>
-    <div class="card p"><div class="card-label">Total no DB</div><div class="card-value purple">${fmtNum(state.saques.length)}</div></div>
+  const strip = container.querySelector('#cards-resumo');
+  strip.innerHTML = `
+    <div class="stat"><b style="color:#FFB800">${fmtNum(pend)}</b><span>pendentes · ${fmtNum(ptsPend)} pts</span></div>
+    <div class="stat${atrasados ? ' alert' : ''}"><b style="color:#ff4d4d">${fmtNum(atrasados)}</b><span>⏰ atrasados &gt;${PRAZO_SAQUE_HORAS}h · ${fmtNum(ptsAtrasados)} pts</span></div>
+    <div class="stat"><b style="color:#ff4d4d">${fmtNum(bloq)}</b><span>🚫 bloqueados (antifraude)</span></div>
+    <div class="stat"><b style="color:#00FF88">${fmtNum(proc)}</b><span>processados</span></div>
+    <div class="stat"><b style="color:#9945FF">${fmtNum(state.saques.length)}</b><span>total no DB</span></div>
   `;
 }
 
@@ -270,47 +280,55 @@ function renderTabela(state, container, redesenha) {
     if (k) pixCount.set(k, (pixCount.get(k) ?? 0) + 1);
   }
 
+  // A coluna "Situação" só agrega informação quando o filtro mistura estados.
+  // Em "Pendentes"/"Processados" o próprio filtro já diz o status — a coluna
+  // viraria uma fileira de valores idênticos (o ruído visual de antes).
+  const mostrarSituacao = state.filtro.status === 'todos' || state.filtro.status === 'bloqueado';
+
   const head = `
     <thead><tr>
       <th style="width:30px"><input type="checkbox" id="check-all"></th>
       <th>Nome</th>
       <th>Chave PIX</th>
       <th>Pontos</th>
-      <th>Status</th>
-      <th>Conta</th>
       <th>Data</th>
+      ${mostrarSituacao ? '<th>Situação</th>' : ''}
       <th>Ações</th>
     </tr></thead>
   `;
   const body = rows.map(s => {
     const u = state.usuarios.get(s.uid);
-    const userBloq = u?.saquesBloqueados === true || u?.contaBanida === true || u?.contaSuspeita === true;
+    const banido   = u?.saquesBloqueados === true || u?.contaBanida === true;
+    const suspeito = u?.contaSuspeita === true;
+    const userBloq = banido || suspeito;
     const isPend = s.status === 'pendente' && !userBloq;
     const dup = pixCount.get((s.chavePix ?? '').trim()) > 1;
     const checked = state.selecionados.has(s.id);
-    const statusTexto = s.status === 'processado' ? 'processado'
-                      : userBloq && s.status === 'pendente' ? 'bloqueado'
-                      : s.status ?? 'pendente';
-    const statusBadge = s.status === 'processado' ? 'status-processado'
-                      : userBloq && s.status === 'pendente' ? 'status-bloqueado'
-                      : 'status-pendente';
-    const contaInfo = userBloq
-      ? `<span style="color:#ff4d4d;font-size:11px">🚫 ${esc(u?.motivoBloqueio?.slice?.(0, 40) ?? 'bloqueado')}…</span>`
-      : `<span style="color:#8a9a8a;font-size:11px">ok</span>`;
+
+    // Situação resolvida (precedência: pago > bloqueado > suspeito > pendente)
+    let sitCls, sitTxt, sitTitle = '';
+    if (s.status === 'processado') { sitCls = 'sit-pago';      sitTxt = '✅ pago'; }
+    else if (banido)               { sitCls = 'sit-bloqueado'; sitTxt = '🚫 bloqueado'; sitTitle = u?.motivoBloqueio ?? ''; }
+    else if (suspeito)             { sitCls = 'sit-suspeito';  sitTxt = '⚠️ suspeito';  sitTitle = u?.motivoBloqueio ?? 'Conta marcada como suspeita — revisar antes de pagar.'; }
+    else                           { sitCls = 'sit-pendente';  sitTxt = '⏳ pendente'; }
+
     const horasPend = isPend ? horasDesde(s.criadoEm) : null;
     const atrasado = horasPend != null && horasPend >= PRAZO_SAQUE_HORAS;
     const badgeAtraso = atrasado
       ? `<div style="margin-top:3px"><span style="background:#3a0e0e;color:#ff7a7a;font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;letter-spacing:.3px">⏰ atrasado ${horasPend}h</span></div>`
       : '';
+    const sitCell = mostrarSituacao
+      ? `<td><span class="sit ${sitCls}"${sitTitle ? ` title="${esc(sitTitle)}"` : ''}>${sitTxt}</span></td>`
+      : '';
+
     return `
       <tr class="${checked ? 'selecionado' : ''}" data-id="${esc(s.id)}">
         <td><input type="checkbox" class="row-check" data-id="${esc(s.id)}" ${checked ? 'checked' : ''} ${isPend ? '' : 'disabled'}></td>
         <td><a href="#usuarios?uid=${esc(s.uid)}" style="color:#fff;text-decoration:none;border-bottom:1px dotted #8a9a8a">${esc(s.nome)}</a></td>
         <td style="font-family:monospace;font-size:12px" class="${dup ? 'pix-dup' : ''}">${esc(s.chavePix)}${dup ? ' ⚠️' : ''}</td>
         <td>${fmtNum(s.pontos)}</td>
-        <td><span class="status-badge ${statusBadge}">${esc(statusTexto)}</span></td>
-        <td>${contaInfo}</td>
         <td>${fmtDateTime(s.criadoEm)}${badgeAtraso}</td>
+        ${sitCell}
         <td style="white-space:nowrap">
           ${isPend ? `<button class="btn-small btn-ok" data-acao="processar" data-id="${esc(s.id)}">✓ Pago</button>` : ''}
           ${isPend ? `<button class="btn-small btn-danger" data-acao="bloquear" data-uid="${esc(s.uid)}" data-nome="${esc(s.nome)}">🚫 Bloq.</button>` : ''}
@@ -327,7 +345,7 @@ function renderTabela(state, container, redesenha) {
     if (checkAll.checked) {
       rows.forEach(s => {
         const u = state.usuarios.get(s.uid);
-        const userBloq = u?.saquesBloqueados === true;
+        const userBloq = u?.saquesBloqueados === true || u?.contaBanida === true || u?.contaSuspeita === true;
         if (s.status === 'pendente' && !userBloq) state.selecionados.add(s.id);
       });
     } else {

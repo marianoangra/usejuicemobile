@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Zap, Cpu, Check } from 'lucide-react-native';
+import { Zap, Cpu, Check, ArrowLeft } from 'lucide-react-native';
 import { atualizarModo } from '../services/pontos';
 
 const PRIMARY = '#c6ff4a';
@@ -56,6 +56,8 @@ function ModeCard({ tipo, selecionado, onPress }) {
 
 export default function ModoEscolhaScreen({ route, navigation }) {
   const { uid, currentMode, atualizarPerfil } = route?.params || {};
+  // Onboarding = primeira escolha (currentMode null). Aberto pelo Perfil → mostra voltar.
+  const isOnboarding = currentMode == null;
   const [selecionado, setSelecionado] = useState(currentMode ?? 'tech');
   const [salvando, setSalvando] = useState(false);
 
@@ -88,6 +90,19 @@ export default function ModoEscolhaScreen({ route, navigation }) {
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: Platform.OS === 'ios' ? 12 : 24 }}>
+          {!isOnboarding && (
+            <TouchableOpacity
+              onPress={() => { if (navigation?.canGoBack?.()) navigation.goBack(); }}
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              style={{
+                width: 40, height: 40, borderRadius: 20,
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                alignItems: 'center', justifyContent: 'center', marginBottom: 14,
+              }}>
+              <ArrowLeft size={22} color="#fff" strokeWidth={2.4} />
+            </TouchableOpacity>
+          )}
           <Text style={{ fontSize: 28, fontWeight: '700', color: '#fff', marginBottom: 6 }}>
             Escolha seu modo
           </Text>

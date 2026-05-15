@@ -18,6 +18,7 @@ import {
   Gift, Wallet, Activity, Zap, Database, Cpu,
 } from 'lucide-react-native';
 import Avatar from '../components/Avatar';
+import { useTabBarScroll } from '../context/TabBarContext';
 import { diaKey, diaKeyDe } from '../utils/date';
 import {
   notificacoesAtivas, agendarLembreteCarregamento,
@@ -25,6 +26,7 @@ import {
 } from '../services/notificacoes';
 
 import BannerCarousel from '../components/BannerCarousel';
+import RewardedAdCard from '../components/RewardedAdCard';
 import { getSaques, atualizarModo } from '../services/pontos';
 import { useAccent } from '../context/AccentContext';
 import { useTheme } from '../context/ThemeContext';
@@ -384,6 +386,7 @@ function Atividades({ atividades, loading }) {
 
 // ─── Tela principal ───────────────────────────────────────────────────────────
 export default function HomeScreen({ route, navigation }) {
+  const barraScroll = useTabBarScroll();
   useScreenTrace('home_screen');
   const PRIMARY = useAccent();
   const { colors, isDark } = useTheme();
@@ -705,6 +708,7 @@ export default function HomeScreen({ route, navigation }) {
 
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <ScrollView
+          {...barraScroll}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
@@ -791,6 +795,9 @@ export default function HomeScreen({ route, navigation }) {
             </Text>
             <BannerCarousel uid={perfil?.uid} perfil={perfil} />
           </Animated.View>
+
+          {/* ── Anúncio premiado — ganhe pontos assistindo ── */}
+          <RewardedAdCard uid={perfil?.uid} />
 
           {/* ── Atividades ── */}
           <Animated.View style={a4}>

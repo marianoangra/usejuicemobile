@@ -19,6 +19,7 @@ import { limparSessao } from '../services/session';
 import { getSaques, excluirConta, getAfiliados, processarIndicacao, getPosicaoRanking } from '../services/pontos';
 import { registrarTokenPush } from '../services/notificacoes';
 import Avatar from '../components/Avatar';
+import { useTabBarScroll } from '../context/TabBarContext';
 import {
   Wallet, Share2, Copy, LogOut,
   ChevronRight, Shield, Bell, Settings, Award, User, Users, Database, Inbox, Cpu, Zap,
@@ -130,6 +131,7 @@ function MenuItem({ Icon, title, sub, onPress, danger }) {
 
 // ─── Tela principal ───────────────────────────────────────────────────────────
 export default function ProfileScreen({ route, navigation }) {
+  const barraScroll = useTabBarScroll();
   const PRIMARY = useAccent();
   const { colors, isDark } = useTheme();
   const { t } = useTranslation();
@@ -375,6 +377,7 @@ export default function ProfileScreen({ route, navigation }) {
     <LinearGradient colors={bgGradient} locations={[0, 0.5, 1]} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <ScrollView
+          {...barraScroll}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >

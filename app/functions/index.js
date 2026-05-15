@@ -2020,3 +2020,139 @@ exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, mem
 // TEMP DESABILITADO no Windows: investigarFraude.js só existe no Mac, não commitado.
 // const { investigarFraude } = require('./investigarFraude');
 // exports.investigarFraude = investigarFraude;
+
+// ─── AdMob SSV — verificação server-side de anúncios premiados ───────────────
+// O AdMob chama esta função quando um usuário TERMINA de assistir um anúncio
+// premiado. Validamos a assinatura ECDSA do Google e creditamos os pontos.
+// O cliente NUNCA credita pontos — isso impede farm de pontos via APK modificado
+// (o app paga PIX real; crédito client-side seria uma torneira de fraude).
+//
+// Configurar no AdMob console (bloco premiado → "Verificação no servidor"):
+//   URL = https://us-central1-cnbmobile-2053c.cloudfunctions.net/admobSSV
+// Docs: https://developers.google.com/admob/android/ssv
+
+const ADMOB_VERIFIER_KEYS_URL = 'https://www.gstatic.com/admob/reward/verifier-keys.json';
+const PONTOS_POR_ANUNCIO = 10;
+const ADS_CAP_DIARIO = 200; // teto de anúncios premiados creditados por usuário/dia
+
+// Chaves públicas do AdMob (rotacionam raramente) — cache de 6h em memória.
+let _admobKeys = null;
+let _admobKeysEm = 0;
+async function getAdMobKeys() {
+  if (_admobKeys && Date.now() - _admobKeysEm < 6 * 3600 * 1000) return _admobKeys;
+  const resp = await fetch(ADMOB_VERIFIER_KEYS_URL);
+  if (!resp.ok) throw new Error(`verifier-keys HTTP ${resp.status}`);
+  const json = await resp.json();
+  const mapa = {};
+  for (const k of json.keys ?? []) mapa[String(k.keyId)] = k.pem;
+  _admobKeys = mapa;
+  _admobKeysEm = Date.now();
+  return mapa;
+}
+
+// O conteúdo assinado é a query string SEM os dois últimos parâmetros
+// (signature e key_id — sempre nessa ordem, no fim).
+function verificarAssinaturaAdMob(rawQuery, pemPorKeyId) {
+  const idx = rawQuery.indexOf('&signature=');
+  if (idx === -1) return false;
+  const conteudo = rawQuery.substring(0, idx);
+  const params = new URLSearchParams(rawQuery);
+  const signature = params.get('signature');
+  const keyId = params.get('key_id');
+  const pem = pemPorKeyId[String(keyId)];
+  if (!pem || !signature) return false;
+  try {
+    // signature vem em base64url — normaliza p/ base64 (aceita os dois formatos)
+    const sigBuf = Buffer.from(signature.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
+    const verifier = crypto.createVerify('sha256');
+    verifier.update(conteudo);
+    verifier.end();
+    return verifier.verify(pem, sigBuf); // chave EC → ECDSA-SHA256
+  } catch (e) {
+    console.error('[admobSSV] erro na verificação:', e.message);
+    return false;
+  }
+}
+
+exports.admobSSV = onRequest(
+  { region: 'us-central1', cors: false },
+  async (req, res) => {
+    if (req.method !== 'GET') { res.status(405).send('method not allowed'); return; }
+
+    const rawQuery = (req.originalUrl || req.url || '').split('?')[1] || '';
+    if (!rawQuery) { res.status(400).send('no query'); return; }
+
+    // 1. Verificação da assinatura — prova que o callback veio do Google.
+    let keys;
+    try {
+      keys = await getAdMobKeys();
+    } catch (e) {
+      console.error('[admobSSV] falha ao buscar chaves do verificador:', e.message);
+      res.status(500).send('keys unavailable'); // 5xx → AdMob re-tenta depois
+      return;
+    }
+    if (!verificarAssinaturaAdMob(rawQuery, keys)) {
+      console.warn('[admobSSV] assinatura inválida — callback rejeitado');
+      res.status(403).send('invalid signature');
+      return;
+    }
+
+    // 2. Dados do callback (já verificado).
+    const p = new URLSearchParams(rawQuery);
+    const uid = p.get('user_id');             // setado no app via serverSideVerificationOptions
+    const transactionId = p.get('transaction_id');
+    const adUnit = p.get('ad_unit') ?? null;
+    if (!uid || !transactionId) {
+      console.warn('[admobSSV] callback sem user_id/transaction_id');
+      res.status(200).send('ignored'); // assinado mas inútil — não re-tentar
+      return;
+    }
+
+    // 3. Crédito idempotente (dedup por transaction_id) + teto diário + antifraude.
+    const db = getFirestore();
+    const txRef = db.doc(`admob_rewards/${transactionId}`);
+    const userRef = db.doc(`usuarios/${uid}`);
+    const hoje = new Date().toISOString().slice(0, 10);
+
+    try {
+      await db.runTransaction(async (t) => {
+        const txSnap = await t.get(txRef);
+        if (txSnap.exists) return; // AdMob reentregou o callback — já processado
+
+        const userSnap = await t.get(userRef);
+        if (!userSnap.exists) {
+          t.set(txRef, { uid, status: 'usuario_inexistente', adUnit, criadoEm: FieldValue.serverTimestamp() });
+          return;
+        }
+        const u = userSnap.data() || {};
+
+        if (u.contaBanida === true) {
+          t.set(txRef, { uid, status: 'conta_banida', adUnit, criadoEm: FieldValue.serverTimestamp() });
+          return;
+        }
+
+        const adsHoje = (u.adsRecompensados?.dia === hoje) ? (u.adsRecompensados.count || 0) : 0;
+        if (adsHoje >= ADS_CAP_DIARIO) {
+          t.set(txRef, { uid, status: 'cap_diario', adUnit, criadoEm: FieldValue.serverTimestamp() });
+          return;
+        }
+
+        t.update(userRef, {
+          pontos: FieldValue.increment(PONTOS_POR_ANUNCIO),
+          adsRecompensados: { dia: hoje, count: adsHoje + 1 },
+        });
+        t.set(txRef, {
+          uid, pontos: PONTOS_POR_ANUNCIO, adUnit,
+          status: 'creditado', criadoEm: FieldValue.serverTimestamp(),
+        });
+        console.log(`[admobSSV] +${PONTOS_POR_ANUNCIO} pts → ${uid} (tx ${transactionId})`);
+      });
+    } catch (e) {
+      console.error('[admobSSV] erro ao creditar:', e.message);
+      res.status(500).send('error'); // 5xx → AdMob re-tenta
+      return;
+    }
+
+    res.status(200).send('ok');
+  }
+);
