@@ -6,22 +6,15 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Play, Check } from 'lucide-react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useAccent } from '../context/AccentContext';
+import { useTranslation } from 'react-i18next';
 import { preloadRewarded, isRewardedReady, showRewarded } from '../services/ads';
 
 const PONTOS_POR_AD = 10;
 
-// titulo/sub por estado; `destaque` = visual verde (oportunidade ativa)
-const TEXTOS = {
-  carregando:   { titulo: 'Preparando anúncio…',                  sub: 'Só um instante',              destaque: false },
-  pronto:       { titulo: `Ganhe ${PONTOS_POR_AD} pontos`,         sub: 'Assista a um anúncio rápido', destaque: true  },
-  assistindo:   { titulo: 'Abrindo anúncio…',                      sub: 'Aguarde',                     destaque: false },
-  recompensado: { titulo: `+${PONTOS_POR_AD} pontos a caminho!`,   sub: 'Obrigado por assistir 🙌',    destaque: true  },
-  indisponivel: { titulo: 'Anúncios indisponíveis',                sub: 'Tente de novo em instantes',  destaque: false },
-};
-
 export default function RewardedAdCard({ uid }) {
   const { colors } = useTheme();
   const accent = useAccent();
+  const { t } = useTranslation();
   const [status, setStatus] = useState('carregando');
 
   // "carregando": pré-carrega e observa até o anúncio ficar pronto.
@@ -69,7 +62,15 @@ export default function RewardedAdCard({ uid }) {
     setTimeout(() => setStatus('carregando'), 3500);
   }, [status, uid]);
 
-  const ui = TEXTOS[status];
+  // titulo/sub por estado; `destaque` = visual verde (oportunidade ativa)
+  const textos = {
+    carregando:   { titulo: t('ads.loadingTitle'),                            sub: t('ads.loadingSub'),     destaque: false },
+    pronto:       { titulo: t('ads.readyTitle', { points: PONTOS_POR_AD }),    sub: t('ads.readySub'),       destaque: true  },
+    assistindo:   { titulo: t('ads.watchingTitle'),                           sub: t('ads.watchingSub'),    destaque: false },
+    recompensado: { titulo: t('ads.rewardedTitle', { points: PONTOS_POR_AD }), sub: t('ads.rewardedSub'),    destaque: true  },
+    indisponivel: { titulo: t('ads.unavailableTitle'),                        sub: t('ads.unavailableSub'), destaque: false },
+  };
+  const ui = textos[status];
   const interativo = status === 'pronto';
   const corIcone = status === 'indisponivel' ? colors.textDim : accent;
 
@@ -79,7 +80,7 @@ export default function RewardedAdCard({ uid }) {
         fontSize: 10, letterSpacing: 2, color: colors.textFaint,
         textTransform: 'uppercase', marginBottom: 8,
       }}>
-        Ganhe pontos
+        {t('ads.sectionTitle')}
       </Text>
 
       <TouchableOpacity
@@ -130,7 +131,7 @@ export default function RewardedAdCard({ uid }) {
             backgroundColor: accent, paddingHorizontal: 14, paddingVertical: 9, borderRadius: 10,
           }}>
             <Play size={12} color="#000" fill="#000" />
-            <Text style={{ fontSize: 13, fontWeight: '700', color: '#000' }}>Assistir</Text>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: '#000' }}>{t('ads.watchBtn')}</Text>
           </View>
         )}
       </TouchableOpacity>

@@ -2035,6 +2035,19 @@ const ADMOB_VERIFIER_KEYS_URL = 'https://www.gstatic.com/admob/reward/verifier-k
 const PONTOS_POR_ANUNCIO = 10;
 const ADS_CAP_DIARIO = 200; // teto de anúncios premiados creditados por usuário/dia
 
+// Chave de dia YYYYMMDD em horário de Brasília. Alinha com diaKey() do app
+// (src/utils/date.js), que usa o horário local do device. Esta função roda em
+// us-central1 (UTC); sem converter o fuso, um anúncio visto à noite cairia no
+// bucket do dia seguinte e o "Histórico Recente" da Home mostraria a data errada.
+function diaKeyBR(date = new Date()) {
+  const partes = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(date);
+  const v = (t) => partes.find((p) => p.type === t).value;
+  return `${v('year')}${v('month')}${v('day')}`;
+}
+
 // Chaves públicas do AdMob (rotacionam raramente) — cache de 6h em memória.
 let _admobKeys = null;
 let _admobKeysEm = 0;
@@ -2113,6 +2126,7 @@ exports.admobSSV = onRequest(
     const txRef = db.doc(`admob_rewards/${transactionId}`);
     const userRef = db.doc(`usuarios/${uid}`);
     const hoje = new Date().toISOString().slice(0, 10);
+    const diaBR = diaKeyBR();
 
     try {
       await db.runTransaction(async (t) => {
@@ -2140,6 +2154,9 @@ exports.admobSSV = onRequest(
         t.update(userRef, {
           pontos: FieldValue.increment(PONTOS_POR_ANUNCIO),
           adsRecompensados: { dia: hoje, count: adsHoje + 1 },
+          // Agrega pontos de anúncio por dia → alimenta o "Histórico Recente"
+          // da Home, espelhando o mapa atividadeDias usado pelo carregamento.
+          [`anunciosDias.${diaBR}`]: FieldValue.increment(PONTOS_POR_ANUNCIO),
         });
         t.set(txRef, {
           uid, pontos: PONTOS_POR_ANUNCIO, adUnit,

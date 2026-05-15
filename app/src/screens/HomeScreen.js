@@ -14,7 +14,7 @@ import Animated, {
 import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 import * as Battery from 'expo-battery';
 import {
-  Bell, ArrowUpRight, ArrowDownLeft,
+  Bell, ArrowUpRight, ArrowDownLeft, Play,
   Gift, Wallet, Activity, Zap, Database, Cpu,
 } from 'lucide-react-native';
 import Avatar from '../components/Avatar';
@@ -48,33 +48,13 @@ function saudacaoKey() {
   return 'home.goodEvening';
 }
 
-const FRASES_MOTIVACIONAIS = [
-  'Vamos somar pontos hoje?',
-  'Quero acumular mais pontos!',
-  'Vou ver uma missão interessante hoje',
-  'Cada carregada vale mais um passo',
-  'Sua energia move o ranking',
-  'Hora de subir na classificação!',
-  'Que tal uma nova missão agora?',
-  'Carregar é ganhar — bora lá!',
-  'Mais um dia, mais pontos no bolso',
-  'Você está a um carregamento do topo',
-  'O ranking te espera. Vamos nessa?',
-  'Seus pontos estão chamando!',
-  'Hoje é um bom dia pra carregar',
-  'Missões disponíveis — não perca!',
-  'Pequenos passos, grandes pontos',
-  'Carregue e suba no ranking',
-  'Bora acumular e conquistar!',
-  'Cada kWh conta. Vamos carregar?',
-  'Seu saldo cresce a cada missão',
-  'A liderança está ao seu alcance!',
-];
-
-function fraseDoDia() {
+// Índice estável por dia: mesma frase o dia inteiro, troca à meia-noite.
+// As frases vêm do i18n (home.phrases) — resolvidas no componente.
+function indiceFraseDoDia(total) {
+  if (!total) return 0;
   const d = new Date();
   const seed = d.getFullYear() * 1000 + Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
-  return FRASES_MOTIVACIONAIS[seed % FRASES_MOTIVACIONAIS.length];
+  return seed % total;
 }
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -114,15 +94,15 @@ function useCarregando() {
 
 // ─── Dados estáticos (Figma) ──────────────────────────────────────────────────
 const ATALHOS = [
-  { Icon: Wallet,    label: 'Wallet',  id: 'wallet'  },
-  { Icon: Activity,  label: 'DePIN',   id: 'depin'   },
-  { Icon: Gift,      label: 'Airdrop', id: 'airdrop' },
-  { Icon: Database,  label: 'Dados',   id: 'dados'   },
+  { Icon: Wallet,    labelKey: 'shortcutWallet',  id: 'wallet'  },
+  { Icon: Activity,  labelKey: 'shortcutDepin',   id: 'depin'   },
+  { Icon: Gift,      labelKey: 'shortcutAirdrop', id: 'airdrop' },
+  { Icon: Database,  labelKey: 'shortcutData',    id: 'dados'   },
 ];
 
 // Constrói lista de atividades reais a partir de saques + atividadeDias do perfil
 
-async function buscarAtividades(uid, atividadeDias) {
+async function buscarAtividades(uid, atividadeDias, anunciosDias, t, locale) {
   const items = [];
 
   // 1. Últimos saques (máx 3)
@@ -130,12 +110,16 @@ async function buscarAtividades(uid, atividadeDias) {
     const saques = await getSaques(uid);
     saques.slice(0, 3).forEach(s => {
       const ts = s.criadoEm?.toDate ? s.criadoEm.toDate() : new Date(0);
-      const tipo = s.chavePix ? 'Saque PIX' : s.walletAddress ? 'Resgate JUICE' : 'Saque';
+      const tipo = s.chavePix
+        ? t('home.activityWithdrawPix')
+        : s.walletAddress ? t('home.activityWithdrawJuice') : t('home.activityWithdraw');
       items.push({
         Icon: ArrowUpRight,
         title: tipo,
-        sub: ts.getTime() ? ts.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : 'Em processamento',
-        value: `-${(s.pontos ?? 0).toLocaleString('pt-BR')} pts`,
+        sub: ts.getTime()
+          ? ts.toLocaleDateString(locale, { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
+          : t('home.activityProcessing'),
+        value: `-${(s.pontos ?? 0).toLocaleString(locale)} pts`,
         pos: false,
         ts: ts.getTime(),
       });
@@ -149,14 +133,32 @@ async function buscarAtividades(uid, atividadeDias) {
     d.setDate(hoje.getDate() - i);
     const pts = atividadeDias?.[diaKeyDe(d)] ?? 0;
     if (pts > 0) {
-      const labelDia = i === 0 ? 'Hoje' : i === 1 ? 'Ontem' : d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+      const labelDia = i === 0 ? t('home.today') : i === 1 ? t('home.yesterday') : d.toLocaleDateString(locale, { day:'2-digit', month:'2-digit' });
       items.push({
         Icon: ArrowDownLeft,
-        title: 'Pontos de carregamento',
-        sub: `${labelDia} · carregamento`,
-        value: `+${pts.toLocaleString('pt-BR')} pts`,
+        title: t('home.activityCharging'),
+        sub: t('home.activityChargingSub', { day: labelDia }),
+        value: `+${pts.toLocaleString(locale)} pts`,
         pos: true,
         ts: d.setHours(23, 59, 59),
+      });
+    }
+  }
+
+  // 3. Dias com pontos de anúncios premiados (últimos 7 dias)
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(hoje);
+    d.setDate(hoje.getDate() - i);
+    const pts = anunciosDias?.[diaKeyDe(d)] ?? 0;
+    if (pts > 0) {
+      const labelDia = i === 0 ? t('home.today') : i === 1 ? t('home.yesterday') : d.toLocaleDateString(locale, { day:'2-digit', month:'2-digit' });
+      items.push({
+        Icon: Play,
+        title: t('home.activityAds'),
+        sub: t('home.activityAdsSub', { day: labelDia }),
+        value: `+${pts.toLocaleString(locale)} pts`,
+        pos: true,
+        ts: d.setHours(23, 59, 58),
       });
     }
   }
@@ -302,9 +304,10 @@ function CardPontos({ pontos, progresso, faltam, user, estaCarregando, onSaque, 
 function Atalhos({ onPress }) {
   const PRIMARY = useAccent();
   const { colors } = useTheme();
+  const { t } = useTranslation();
   return (
     <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-      {ATALHOS.map(({ Icon, label, id }) => (
+      {ATALHOS.map(({ Icon, labelKey, id }) => (
         <TouchableOpacity
           key={id}
           onPress={() => onPress(id)}
@@ -318,7 +321,7 @@ function Atalhos({ onPress }) {
           }}
         >
           <Icon size={22} color={PRIMARY} />
-          <Text style={{ fontSize: 10, color: colors.textMuted }}>{label}</Text>
+          <Text style={{ fontSize: 10, color: colors.textMuted }}>{t(`home.${labelKey}`)}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -390,13 +393,16 @@ export default function HomeScreen({ route, navigation }) {
   useScreenTrace('home_screen');
   const PRIMARY = useAccent();
   const { colors, isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, perfil, onAtualizar } = route?.params || {};
   usePresence(perfil?.uid);
   const onAtualizarRef = useRef(onAtualizar);
   useEffect(() => { onAtualizarRef.current = onAtualizar; }, [onAtualizar]);
 
-  const [frase] = useState(fraseDoDia);
+  const frasesMotivacionais = t('home.phrases', { returnObjects: true });
+  const frase = Array.isArray(frasesMotivacionais)
+    ? frasesMotivacionais[indiceFraseDoDia(frasesMotivacionais.length)]
+    : '';
   const [atividades, setAtividades]           = useState([]);
   const [loadingAtividades, setLoadingAtiv]   = useState(false);
   const [refreshing, setRefreshing]           = useState(false);
@@ -467,17 +473,18 @@ export default function HomeScreen({ route, navigation }) {
   useEffect(() => {
     if (!perfil?.uid) { setAtividades([]); return; }
     setLoadingAtiv(true);
-    buscarAtividades(perfil.uid, perfil.atividadeDias)
+    const locale = i18n.language?.startsWith('en') ? 'en-US' : 'pt-BR';
+    buscarAtividades(perfil.uid, perfil.atividadeDias, perfil.anunciosDias, t, locale)
       .then(setAtividades)
       .catch(() => setAtividades([]))
       .finally(() => setLoadingAtiv(false));
-  }, [perfil?.uid, perfil?.pontos]);
+  }, [perfil?.uid, perfil?.pontos, i18n.language]);
 
   const pontos    = perfil?.pontos ?? 0;
   const progresso = Math.min(pontos / META, 1);
   const faltam    = Math.max(META - pontos, 0);
   const podeSacar = pontos >= META;
-  const nome      = perfil?.nome?.split(' ')[0] ?? (user ? t('common.user') : 'Visitante');
+  const nome      = perfil?.nome?.split(' ')[0] ?? (user ? t('common.user') : t('home.visitor'));
   const estaCarregando = useCarregando();
 
   // Badge dinâmico: pontos ganhos hoje vs ontem
@@ -791,7 +798,7 @@ export default function HomeScreen({ route, navigation }) {
           {/* ── Banners (carousel) ── */}
           <Animated.View style={[{ marginBottom: 20 }, a3]}>
             <Text style={{ fontSize: 10, letterSpacing: 2, color: colors.textFaint, textTransform: 'uppercase', marginBottom: 8 }}>
-              Parceiros
+              {t('home.partners')}
             </Text>
             <BannerCarousel uid={perfil?.uid} perfil={perfil} />
           </Animated.View>
