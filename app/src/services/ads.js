@@ -5,18 +5,25 @@
 // o uid em serverSideVerificationOptions.userId, o Google chama a Cloud Function
 // `admobSSV` (functions/index.js), que valida a assinatura e credita no Firestore.
 // O saldo na Home atualiza sozinho pelo snapshot do perfil.
+import { Platform } from 'react-native';
 import mobileAds, {
   RewardedAd, RewardedAdEventType, AdEventType,
 } from 'react-native-google-mobile-ads';
 
-export const ADMOB_APP_ID     = 'ca-app-pub-8328091197924465~3773866030';
-export const REWARDED_UNIT_ID = 'ca-app-pub-8328091197924465/5635936254';
+// IDs do AdMob por plataforma. O app ID também é declarado no app.json (plugin
+// react-native-google-mobile-ads) — é de lá que o SDK nativo lê; os daqui são
+// referência/uso em JS.
+export const ADMOB_APP_ID_ANDROID     = 'ca-app-pub-8328091197924465~3773866030';
+export const ADMOB_APP_ID_IOS         = 'ca-app-pub-8328091197924465~3345648983';
+export const REWARDED_UNIT_ID_ANDROID = 'ca-app-pub-8328091197924465/5635936254';
+export const REWARDED_UNIT_ID_IOS     = 'ca-app-pub-8328091197924465/3042396659';
 
-// Usa SEMPRE o bloco real — só assim o AdMob dispara o callback SSV (a URL de
-// verificação fica configurada nesse bloco). Em dev registramos o emulador como
-// dispositivo de teste (initAds), então ele recebe anúncios de TESTE com
-// segurança, mas servidos pelo bloco real → o SSV é acionado.
-const UNIT_ID = REWARDED_UNIT_ID;
+// Usa SEMPRE o bloco real da plataforma atual — só assim o AdMob dispara o
+// callback SSV (a URL de verificação fica configurada em cada bloco, e iOS e
+// Android têm blocos separados). Em dev registramos o emulador como dispositivo
+// de teste (initAds), então ele recebe anúncios de TESTE com segurança, mas
+// servidos pelo bloco real → o SSV é acionado.
+const UNIT_ID = Platform.OS === 'ios' ? REWARDED_UNIT_ID_IOS : REWARDED_UNIT_ID_ANDROID;
 
 let _ad = null;
 let _pronto = false;
