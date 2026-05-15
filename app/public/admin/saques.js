@@ -165,15 +165,32 @@ function aplicarFiltros(state) {
 
 // ─── Renderizadores ──────────────────────────────────────────────────────────
 
+// SLA público de saque: 72h. Pendentes acima disso aparecem destacados.
+const PRAZO_SAQUE_HORAS = 72;
+function horasDesde(ts) {
+  if (!ts) return null;
+  const ms = ts?.toDate?.()?.getTime?.()
+    ?? (ts?.seconds ? ts.seconds * 1000 : null)
+    ?? (typeof ts === 'string' ? new Date(ts).getTime() : null);
+  if (!ms) return null;
+  return Math.floor((Date.now() - ms) / 3600000);
+}
+
 function renderResumo(state, container) {
   // Totais globais (ignora filtro), mostra estado da operação
-  let pend = 0, proc = 0, bloq = 0, ptsPend = 0;
+  let pend = 0, proc = 0, bloq = 0, ptsPend = 0, atrasados = 0, ptsAtrasados = 0;
   for (const s of state.saques) {
     const u = state.usuarios.get(s.uid);
     const userBloq = u?.saquesBloqueados === true || u?.contaBanida === true || u?.contaSuspeita === true;
     if (s.status === 'processado') proc++;
     else if (s.status === 'pendente' && userBloq) bloq++;
-    else if (s.status === 'pendente') { pend++; ptsPend += Number(s.pontos ?? 0); }
+    else if (s.status === 'pendente') {
+      pend++; ptsPend += Number(s.pontos ?? 0);
+      const h = horasDesde(s.criadoEm);
+      if (h != null && h >= PRAZO_SAQUE_HORAS) {
+        atrasados++; ptsAtrasados += Number(s.pontos ?? 0);
+      }
+    }
   }
   const filtrados = aplicarFiltros(state).length;
   container.querySelector('#saques-resumo').textContent =
@@ -182,6 +199,7 @@ function renderResumo(state, container) {
   const cards = container.querySelector('#cards-resumo');
   cards.innerHTML = `
     <div class="card y"><div class="card-label">Pendentes a pagar</div><div class="card-value yellow">${fmtNum(pend)}</div><div style="font-size:11px;color:#8a9a8a;margin-top:6px">${fmtNum(ptsPend)} pts</div></div>
+    <div class="card r"><div class="card-label">⏰ Atrasados &gt;${PRAZO_SAQUE_HORAS}h</div><div class="card-value red">${fmtNum(atrasados)}</div><div style="font-size:11px;color:#8a9a8a;margin-top:6px">${fmtNum(ptsAtrasados)} pts · SLA estourado</div></div>
     <div class="card r"><div class="card-label">Bloqueados (antifraude)</div><div class="card-value red">${fmtNum(bloq)}</div></div>
     <div class="card g"><div class="card-label">Processados</div><div class="card-value green">${fmtNum(proc)}</div></div>
     <div class="card p"><div class="card-label">Total no DB</div><div class="card-value purple">${fmtNum(state.saques.length)}</div></div>
@@ -279,6 +297,11 @@ function renderTabela(state, container, redesenha) {
     const contaInfo = userBloq
       ? `<span style="color:#ff4d4d;font-size:11px">🚫 ${esc(u?.motivoBloqueio?.slice?.(0, 40) ?? 'bloqueado')}…</span>`
       : `<span style="color:#8a9a8a;font-size:11px">ok</span>`;
+    const horasPend = isPend ? horasDesde(s.criadoEm) : null;
+    const atrasado = horasPend != null && horasPend >= PRAZO_SAQUE_HORAS;
+    const badgeAtraso = atrasado
+      ? `<div style="margin-top:3px"><span style="background:#3a0e0e;color:#ff7a7a;font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;letter-spacing:.3px">⏰ atrasado ${horasPend}h</span></div>`
+      : '';
     return `
       <tr class="${checked ? 'selecionado' : ''}" data-id="${esc(s.id)}">
         <td><input type="checkbox" class="row-check" data-id="${esc(s.id)}" ${checked ? 'checked' : ''} ${isPend ? '' : 'disabled'}></td>
@@ -287,7 +310,7 @@ function renderTabela(state, container, redesenha) {
         <td>${fmtNum(s.pontos)}</td>
         <td><span class="status-badge ${statusBadge}">${esc(statusTexto)}</span></td>
         <td>${contaInfo}</td>
-        <td>${fmtDateTime(s.criadoEm)}</td>
+        <td>${fmtDateTime(s.criadoEm)}${badgeAtraso}</td>
         <td style="white-space:nowrap">
           ${isPend ? `<button class="btn-small btn-ok" data-acao="processar" data-id="${esc(s.id)}">✓ Pago</button>` : ''}
           ${isPend ? `<button class="btn-small btn-danger" data-acao="bloquear" data-uid="${esc(s.uid)}" data-nome="${esc(s.nome)}">🚫 Bloq.</button>` : ''}
