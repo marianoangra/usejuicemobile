@@ -2173,3 +2173,110 @@ exports.admobSSV = onRequest(
     res.status(200).send('ok');
   }
 );
+
+// ─── Reconciliação de sessão de carregamento (Camada 1) ──────────────────────
+// O crédito por-minuto (adicionarMinutoComBonus, no cliente) só roda enquanto o
+// foreground service está vivo. Quando o SO mata o service — típico à noite —
+// os minutos seguintes não são creditados, e a regra do Firestore (50s entre
+// escritas, teto +60pts/+1min) impede o cliente de creditar o backlog. Esta
+// função credita esse buraco server-side (Admin SDK ignora as rules), validada
+// contra o tempo real de relógio. Chamada no fim da sessão e na reabertura do
+// app quando uma sessão "fantasma" é detectada. Ver useCarregamento.js.
+//
+// Anti-duplo-crédito: minutosUltimaReconciliacao guarda o valor de `minutos` na
+// última reconciliação; o que o caminho por-minuto creditou desde então é
+// `minutos - minutosUltimaReconciliacao`, e só o restante (gap) é creditado.
+exports.reconciliarSessao = onCall(
+  { region: 'us-central1' },
+  async (request) => {
+    if (!request.auth) throw new HttpsError('unauthenticated', 'Login necessário.');
+    const uid = request.auth.uid;
+    const { chargeStartedAt, chargeEndedAt, batteryStart, batteryEnd, deviceHash } = request.data || {};
+
+    const inicio = Number(chargeStartedAt);
+    const fim = chargeEndedAt != null ? Number(chargeEndedAt) : Date.now();
+    if (!Number.isFinite(inicio) || !Number.isFinite(fim) || fim <= inicio) {
+      throw new HttpsError('invalid-argument', 'Janela de sessão inválida.');
+    }
+
+    const PONTOS_POR_MIN = 10;
+    const BONUS_HORA     = 50;
+    const TETO_MINUTOS   = 480; // mesmo anti-bot de 8h do backgroundService
+
+    const db = getFirestore();
+    const userRef = db.doc(`usuarios/${uid}`);
+    let creditado = 0;
+    let pontosCreditados = 0;
+
+    await db.runTransaction(async (t) => {
+      const snap = await t.get(userRef);
+      if (!snap.exists) throw new HttpsError('not-found', 'Usuário não encontrado.');
+      const u = snap.data() || {};
+      if (u.contaBanida === true) return; // conta banida não credita
+
+      const minutosAtuais  = u.minutos ?? 0;
+      const ultimaReconcMs = u.ultimaReconciliacao?.toDate?.()?.getTime?.() ?? null;
+
+      // Tempo alegado pelo cliente, limitado pela parede do relógio (minutos
+      // desde a última reconciliação) e pelo teto de 8h. Sem tolerância somada:
+      // uma 2ª chamada logo após a 1ª resulta em elapsed ~0 (idempotência).
+      const elapsedAlegado = Math.floor((fim - inicio) / 60000);
+      const limiteParede   = ultimaReconcMs != null
+        ? Math.floor((Date.now() - ultimaReconcMs) / 60000)
+        : elapsedAlegado;
+      const elapsed = Math.max(0, Math.min(elapsedAlegado, limiteParede, TETO_MINUTOS));
+
+      // Minutos já creditados nesta sessão pelo caminho por-minuto.
+      // Rollout-safe: se minutosUltimaReconciliacao ainda não existe (1ª chamada
+      // de um usuário antigo), assume tudo já creditado → gap 0, só firma o
+      // marcador. Da 2ª chamada em diante o cálculo é exato.
+      const jaCreditado = (u.minutosUltimaReconciliacao === undefined)
+        ? elapsed
+        : Math.max(0, minutosAtuais - u.minutosUltimaReconciliacao);
+
+      const gap = elapsed - jaCreditado;
+      const agora = new Date();
+
+      if (gap <= 0) {
+        t.update(userRef, { ultimaReconciliacao: agora, minutosUltimaReconciliacao: minutosAtuais });
+        return;
+      }
+
+      const minutosFinal = minutosAtuais + gap;
+      // Bônus de hora: múltiplos de 60 cruzados ao aplicar o gap.
+      const bonus = (Math.floor(minutosFinal / 60) - Math.floor(minutosAtuais / 60)) * BONUS_HORA;
+      pontosCreditados = gap * PONTOS_POR_MIN + bonus;
+      creditado = gap;
+
+      t.update(userRef, {
+        pontos:  FieldValue.increment(pontosCreditados),
+        minutos: FieldValue.increment(gap),
+        [`atividadeDias.${diaKeyBR(agora)}`]: FieldValue.increment(pontosCreditados),
+        ultimaReconciliacao: agora,
+        minutosUltimaReconciliacao: minutosFinal,
+      });
+
+      // Auditoria p/ o módulo de fraude: corroboração pelo nível de bateria.
+      // Carga real sobe a bateria (ou crava em 100%); queda relevante é suspeita.
+      const bs = Number(batteryStart);
+      const be = Number(batteryEnd);
+      const bateriaOk = (!Number.isFinite(bs) || !Number.isFinite(be))
+        ? null
+        : be >= bs - 0.05;
+      t.set(db.collection('reconciliacoes').doc(), {
+        uid, gap, pontos: pontosCreditados, elapsed, jaCreditado,
+        batteryStart: Number.isFinite(bs) ? bs : null,
+        batteryEnd:   Number.isFinite(be) ? be : null,
+        bateriaOk,
+        deviceHash: (typeof deviceHash === 'string' && deviceHash.length >= 16)
+          ? deviceHash.slice(0, 64) : null,
+        criadoEm: FieldValue.serverTimestamp(),
+      });
+    });
+
+    if (creditado > 0) {
+      console.log(`[reconciliarSessao] uid=${uid} +${creditado}min (+${pontosCreditados}pts)`);
+    }
+    return { creditado, pontos: pontosCreditados };
+  }
+);
