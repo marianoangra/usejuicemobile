@@ -1,4 +1,5 @@
-// Push notifications — compor, segmentar audiência, enviar via Expo Push API.
+// Push notifications — compor, segmentar (audiência + plataforma), anexar
+// imagem e enviar na hora ou agendar. Dispara via Expo Push API.
 import { db, functions } from './lib/firebase.js';
 import {
   collection, query, orderBy, limit, onSnapshot,
@@ -43,6 +44,11 @@ export async function init({ container, registerCleanup }) {
           </div>
 
           <div>
+            <label class="label">Imagem (URL https) — opcional · aparece no Android (iOS em breve)</label>
+            <input id="p-imagem" class="filter-input" style="width:100%" placeholder="https://…/imagem.png">
+          </div>
+
+          <div>
             <h4 style="font-size:13px;margin:8px 0 6px">🎯 Audiência</h4>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <label class="radio-pill"><input type="radio" name="aud" value="todos" checked> Todos com push token</label>
@@ -52,11 +58,30 @@ export async function init({ container, registerCleanup }) {
             </div>
           </div>
 
+          <div>
+            <h4 style="font-size:13px;margin:8px 0 6px">📱 Plataforma</h4>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <label class="radio-pill"><input type="radio" name="plat" value="todos" checked> Ambas</label>
+              <label class="radio-pill"><input type="radio" name="plat" value="android"> Android</label>
+              <label class="radio-pill"><input type="radio" name="plat" value="ios"> iOS</label>
+            </div>
+          </div>
+
+          <div>
+            <h4 style="font-size:13px;margin:8px 0 6px">⏰ Quando</h4>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <label class="radio-pill"><input type="radio" name="quando" value="agora" checked> Enviar agora</label>
+              <label class="radio-pill"><input type="radio" name="quando" value="agendar"> Agendar</label>
+              <input id="p-quando-dt" type="datetime-local" class="filter-input" style="display:none">
+            </div>
+          </div>
+
           <div style="background:#0A0F1E;border:1px dashed #1a2535;border-radius:10px;padding:14px;margin-top:6px">
             <div style="font-size:11px;color:#555;margin-bottom:6px">📱 PREVIEW</div>
             <div style="background:#1a2535;border-radius:8px;padding:10px;color:#fff">
               <div id="prev-titulo" style="font-weight:600;font-size:14px;margin-bottom:4px">—</div>
               <div id="prev-corpo" style="font-size:13px;color:#aaa">—</div>
+              <img id="prev-img" style="display:none;margin-top:8px;max-width:100%;border-radius:6px" alt="">
             </div>
           </div>
         </div>
@@ -94,29 +119,48 @@ export async function init({ container, registerCleanup }) {
   const tInp = container.querySelector('#p-titulo');
   const cInp = container.querySelector('#p-corpo');
   const dInp = container.querySelector('#p-deeplink');
+  const imgInp = container.querySelector('#p-imagem');
   const prevT = container.querySelector('#prev-titulo');
   const prevC = container.querySelector('#prev-corpo');
+  const prevImg = container.querySelector('#prev-img');
   const tCount = container.querySelector('#p-titulo-count');
   const cCount = container.querySelector('#p-corpo-count');
+  const dtInp = container.querySelector('#p-quando-dt');
+  const btnEnviar = container.querySelector('#p-enviar');
 
   function updatePreview() {
     prevT.textContent = tInp.value || '—';
     prevC.textContent = cInp.value || '—';
     tCount.textContent = `${tInp.value.length}/120`;
     cCount.textContent = `${cInp.value.length}/500`;
+    const url = imgInp.value.trim();
+    if (url) { prevImg.src = url; prevImg.style.display = 'block'; }
+    else { prevImg.removeAttribute('src'); prevImg.style.display = 'none'; }
   }
   tInp.addEventListener('input', updatePreview);
   cInp.addEventListener('input', updatePreview);
+  imgInp.addEventListener('input', updatePreview);
   updatePreview();
 
+  // Mostra o seletor de data/hora só quando "Agendar" está marcado; ajusta o botão.
+  function updateQuando() {
+    const agendar = container.querySelector('input[name="quando"]:checked').value === 'agendar';
+    dtInp.style.display = agendar ? '' : 'none';
+    btnEnviar.textContent = agendar ? '⏰ Agendar' : '🚀 Enviar agora';
+  }
+  container.querySelectorAll('input[name="quando"]').forEach(r =>
+    r.addEventListener('change', updateQuando));
+  updateQuando();
+
   container.querySelector('#p-cancelar').onclick = () => {
-    tInp.value = ''; cInp.value = ''; dInp.value = '';
+    tInp.value = ''; cInp.value = ''; dInp.value = ''; imgInp.value = '';
     container.querySelector('#aud-pts').value = '100000';
     container.querySelector('#aud-uid').value = '';
+    dtInp.value = '';
     updatePreview();
   };
 
-  container.querySelector('#p-enviar').onclick = () => enviar(container);
+  btnEnviar.onclick = () => enviar(container);
 
   // Histórico de jobs
   registerCleanup(onSnapshot(
@@ -133,13 +177,19 @@ export async function init({ container, registerCleanup }) {
             const audDesc = j.audiencia?.tipo === 'pts_gte' ? `pts ≥ ${fmtNum(j.audiencia.valor)}`
                           : j.audiencia?.tipo === 'uid' ? `UID ${esc(j.audiencia.valor?.slice(0,10) ?? '')}…`
                           : j.audiencia?.tipo ?? '—';
+            const plat = j.plataforma && j.plataforma !== 'todos' ? ` · ${esc(j.plataforma)}` : '';
             const taxa = j.totalTokens ? `${fmtNum(j.sucesso ?? 0)} ✓ · ${fmtNum(j.falha ?? 0)} ✗ de ${fmtNum(j.totalTokens)} tokens` : '—';
+            const quando = j.status === 'agendado' && j.scheduledFor
+              ? `agendado p/ ${fmtDateTime(j.scheduledFor)}`
+              : fmtDateTime(j.criadoEm);
+            const st = j.status ?? '—';
+            const stClass = st === 'enviado' ? 'processado' : 'pendente';
             return `<tr>
-              <td>${fmtDateTime(j.criadoEm)}</td>
-              <td>${esc(j.titulo)}</td>
-              <td><span style="font-size:11px">${esc(audDesc)}</span></td>
+              <td>${esc(quando)}</td>
+              <td>${esc(j.titulo)}${j.imagem ? ' 🖼️' : ''}</td>
+              <td><span style="font-size:11px">${esc(audDesc)}${plat}</span></td>
               <td>${taxa}</td>
-              <td><span class="status-badge status-${j.status === 'enviado' ? 'processado' : 'pendente'}">${esc(j.status ?? '—')}</span></td>
+              <td><span class="status-badge status-${stClass}">${esc(st)}</span></td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -152,43 +202,67 @@ async function enviar(container) {
   const titulo = container.querySelector('#p-titulo').value.trim();
   const corpo  = container.querySelector('#p-corpo').value.trim();
   const deeplink = container.querySelector('#p-deeplink').value.trim();
+  const imagem = container.querySelector('#p-imagem').value.trim();
   const audTipo = container.querySelector('input[name="aud"]:checked').value;
+  const plataforma = container.querySelector('input[name="plat"]:checked').value;
+  const quando = container.querySelector('input[name="quando"]:checked').value;
 
   if (!titulo || titulo.length < 3) return toast('Título obrigatório (≥3 chars).', 'erro');
   if (!corpo || corpo.length < 3) return toast('Corpo obrigatório (≥3 chars).', 'erro');
+  if (imagem && !/^https:\/\//i.test(imagem)) return toast('Imagem precisa ser uma URL https.', 'erro');
 
   let valor = null;
   if (audTipo === 'pts_gte') valor = Number(container.querySelector('#aud-pts').value) || 0;
   if (audTipo === 'uid')     valor = container.querySelector('#aud-uid').value.trim();
   if (audTipo === 'uid' && !valor) return toast('Cole o UID alvo.', 'erro');
 
+  // Agendamento
+  let scheduledFor = null;
+  if (quando === 'agendar') {
+    const dt = container.querySelector('#p-quando-dt').value;
+    if (!dt) return toast('Escolha a data/hora do agendamento.', 'erro');
+    const ms = new Date(dt).getTime();
+    if (!Number.isFinite(ms)) return toast('Data/hora inválida.', 'erro');
+    if (ms < Date.now() + 60000) return toast('O agendamento precisa ser pelo menos 1 min no futuro.', 'erro');
+    scheduledFor = ms;
+  }
+
   const audDesc = audTipo === 'todos' ? 'TODOS os usuários com push token'
                 : audTipo === 'pts_gte' ? `usuários com pts ≥ ${valor}`
                 : audTipo === 'waitlist' ? 'todos da waitlist $JUICE'
                 : `UID ${valor}`;
+  const platDesc = plataforma === 'todos' ? 'iOS + Android' : plataforma;
 
   const ok = await confirmar(
-    'Enviar push agora?',
-    `Vai disparar pra ${audDesc}.\n\nTítulo: ${titulo}\nCorpo: ${corpo}\n\nEsta ação é irreversível e visível pros usuários imediatamente.`,
-    { confirmar: 'Enviar agora' }
+    scheduledFor ? 'Agendar push?' : 'Enviar push agora?',
+    `${scheduledFor
+        ? `Disparo agendado para ${new Date(scheduledFor).toLocaleString('pt-BR')}`
+        : 'Disparo imediato'}, pra ${audDesc} (${platDesc}).\n\nTítulo: ${titulo}\nCorpo: ${corpo}${imagem ? '\nImagem: sim' : ''}`,
+    { confirmar: scheduledFor ? 'Agendar' : 'Enviar agora' }
   );
   if (!ok) return;
 
   const btn = container.querySelector('#p-enviar');
   const labelOriginal = btn.textContent;
   btn.disabled = true;
-  btn.textContent = '⏳ Enviando…';
+  btn.textContent = scheduledFor ? '⏳ Agendando…' : '⏳ Enviando…';
   try {
     const res = await enviarPushJob({
       titulo, corpo,
       audiencia: { tipo: audTipo, valor },
+      plataforma,
+      imagem: imagem || null,
       data: deeplink ? { deeplink } : null,
+      scheduledFor,
     });
     const d = res.data;
-    if (d.total === 0) {
+    if (d.agendado) {
+      toast(`✓ Push agendado para ${new Date(d.scheduledFor).toLocaleString('pt-BR')}.`, 'ok');
+      container.querySelector('#p-cancelar').click();
+    } else if (d.total === 0) {
       toast('Audiência vazia.', 'aviso');
-    } else if (d.totalTokens === 0) {
-      toast(`${d.total} users na audiência mas ninguém tem push_token (eles precisam abrir o app).`, 'aviso');
+    } else if (!d.totalTokens) {
+      toast(`${d.total} users na audiência mas ninguém tem push_token na plataforma escolhida.`, 'aviso');
     } else {
       toast(`✓ ${d.sucesso} enviados, ${d.falha} falhas (de ${d.totalTokens} tokens).`, d.falha ? 'aviso' : 'ok');
     }

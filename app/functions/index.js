@@ -1889,99 +1889,88 @@ exports.contarAuthUsers = onCall({ region: 'us-central1', timeoutSeconds: 60 }, 
 
 // ─── Envio de push via Expo Push API (dashboard) ────────────────────────────
 // Audiência: { tipo: 'todos' | 'pts_gte' | 'waitlist' | 'uid', valor? }
-// Cria audit log em push_jobs/{id} e retorna { ok, total, sucesso, falha }.
-exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, memory: '512MiB' }, async (req) => {
-  const adminUid = req.auth?.uid;
-  const admins = adminUids.value().split(',').map(s => s.trim()).filter(Boolean);
-  if (!adminUid || !admins.includes(adminUid)) {
-    throw new HttpsError('permission-denied', 'Acesso restrito a admins.');
-  }
+// Suporta filtro por plataforma (ios/android), imagem (richContent) e
+// agendamento. Cria/atualiza audit log em push_jobs/{id}.
 
-  const { titulo, corpo, audiencia, data, campaignId, sponsorId } = req.data ?? {};
-  if (!titulo || typeof titulo !== 'string' || titulo.length > 120) {
-    throw new HttpsError('invalid-argument', 'titulo obrigatório (≤120 chars).');
-  }
-  if (!corpo || typeof corpo !== 'string' || corpo.length > 500) {
-    throw new HttpsError('invalid-argument', 'corpo obrigatório (≤500 chars).');
-  }
-  if (!audiencia?.tipo) {
-    throw new HttpsError('invalid-argument', 'audiencia.tipo obrigatório.');
-  }
+// Núcleo de envio — compartilhado pelo disparo imediato e pelo agendado.
+// Resolve a audiência, busca tokens (filtrando por plataforma), envia em lotes
+// via Expo Push API e grava o resultado no doc push_jobs informado.
+async function executarPushJob(db, jobRef, job) {
+  const { titulo, corpo, audiencia, plataforma, imagem, data, campaignId } = job;
 
-  const db = getFirestore();
-
-  // 1. Determinar lista de UIDs alvo
+  // 1. Resolver UIDs da audiência
   let uidsAlvo = [];
-  const TIPO = audiencia.tipo;
-
+  const TIPO = audiencia?.tipo;
   if (TIPO === 'uid') {
-    if (typeof audiencia.valor !== 'string') throw new HttpsError('invalid-argument', 'uid inválido.');
-    uidsAlvo = [audiencia.valor];
+    uidsAlvo = typeof audiencia.valor === 'string' ? [audiencia.valor] : [];
   } else if (TIPO === 'todos') {
-    // Pega todos os push_tokens diretamente
     const snap = await db.collection('push_tokens').limit(10000).get();
     uidsAlvo = snap.docs.map(d => d.id);
   } else if (TIPO === 'pts_gte') {
-    const min = Number(audiencia.valor);
-    if (!Number.isFinite(min) || min < 0) throw new HttpsError('invalid-argument', 'pts_gte exige valor numérico.');
-    const snap = await db.collection('usuarios').where('pontos', '>=', min).limit(10000).get();
+    const snap = await db.collection('usuarios')
+      .where('pontos', '>=', Number(audiencia.valor) || 0).limit(10000).get();
     uidsAlvo = snap.docs.map(d => d.id);
   } else if (TIPO === 'waitlist') {
     const snap = await db.collection('juice_waitlist').limit(10000).get();
     uidsAlvo = snap.docs.map(d => d.data().uid).filter(Boolean);
-  } else {
-    throw new HttpsError('invalid-argument', `audiencia.tipo desconhecido: ${TIPO}`);
   }
 
   if (!uidsAlvo.length) {
-    return { ok: true, total: 0, sucesso: 0, falha: 0, mensagem: 'Nenhum UID na audiência.' };
+    await jobRef.update({
+      status: 'enviado', finalizadoEm: new Date(),
+      totalUids: 0, totalTokens: 0, sucesso: 0, falha: 0, mensagem: 'Audiência vazia.',
+    });
+    return { total: 0, totalTokens: 0, sucesso: 0, falha: 0 };
   }
 
-  // 2. Buscar tokens pra cada uid (em paralelo, chunks de 30)
+  // 2. Buscar tokens (chunks de 30), filtrando por plataforma
   const tokens = [];
   const CHUNK = 30;
   for (let i = 0; i < uidsAlvo.length; i += CHUNK) {
     const slice = uidsAlvo.slice(i, i + CHUNK);
-    const fetches = slice.map(uid =>
+    const got = await Promise.all(slice.map(uid =>
       db.doc(`push_tokens/${uid}`).get()
-        .then(s => s.exists ? { uid, token: s.data().token } : null)
+        .then(s => (s.exists ? { uid, token: s.data().token, platform: s.data().platform } : null))
         .catch(() => null)
-    );
-    const got = await Promise.all(fetches);
-    for (const x of got) if (x?.token) tokens.push(x);
+    ));
+    for (const x of got) {
+      if (!x?.token) continue;
+      if (plataforma && plataforma !== 'todos' && x.platform !== plataforma) continue;
+      tokens.push(x);
+    }
   }
 
   if (!tokens.length) {
-    return { ok: true, total: uidsAlvo.length, sucesso: 0, falha: 0, mensagem: 'Nenhum push_token encontrado pra audiência.' };
+    await jobRef.update({
+      status: 'enviado', finalizadoEm: new Date(),
+      totalUids: uidsAlvo.length, totalTokens: 0, sucesso: 0, falha: 0,
+      mensagem: 'Nenhum push_token na audiência/plataforma.',
+    });
+    return { total: uidsAlvo.length, totalTokens: 0, sucesso: 0, falha: 0 };
   }
 
-  // 3. Audit log (cria primeiro pra ter o id e poder atualizar depois)
-  const jobRef = db.collection('push_jobs').doc();
-  await jobRef.set({
-    titulo, corpo, audiencia,
-    data: data ?? null,
-    campaignId: campaignId ?? null,
-    sponsorId: sponsorId ?? null,
-    criadoEm: new Date(),
-    criadoPor: adminUid,
-    totalUids: uidsAlvo.length,
-    totalTokens: tokens.length,
-    status: 'enviando',
-  });
-
-  // 4. Send batches via Expo Push API (≤100 por request)
+  // 3. Enviar em lotes de 100 via Expo Push API
   let sucesso = 0, falha = 0;
   const erros = [];
   const BATCH = 100;
   for (let i = 0; i < tokens.length; i += BATCH) {
     const slice = tokens.slice(i, i + BATCH);
-    const messages = slice.map(t => ({
-      to: t.token,
-      title: titulo,
-      body: corpo,
-      data: { ...(data ?? {}), jobId: jobRef.id, campaignId: campaignId ?? null },
-      sound: 'default',
-    }));
+    const messages = slice.map(t => {
+      const m = {
+        to: t.token,
+        title: titulo,
+        body: corpo,
+        data: { ...(data ?? {}), jobId: jobRef.id, campaignId: campaignId ?? null },
+        sound: 'default',
+      };
+      // Imagem: richContent renderiza no Android. No iOS exige uma Notification
+      // Service Extension nativa (mutableContent) — ainda não implementada.
+      if (imagem) {
+        m.richContent = { image: imagem };
+        m.mutableContent = true;
+      }
+      return m;
+    });
     try {
       const resp = await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
@@ -1994,8 +1983,7 @@ exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, mem
         continue;
       }
       const j = await resp.json();
-      const tickets = j.data ?? [];
-      for (const t of tickets) {
+      for (const t of (j.data ?? [])) {
         if (t.status === 'ok') sucesso++;
         else { falha++; if (erros.length < 10) erros.push(t.message ?? 'erro desconhecido'); }
       }
@@ -2005,16 +1993,101 @@ exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, mem
     }
   }
 
-  // 5. Atualiza audit log
   await jobRef.update({
-    status: 'enviado',
-    finalizadoEm: new Date(),
-    sucesso, falha,
-    erros: erros.slice(0, 10),
+    status: 'enviado', finalizadoEm: new Date(),
+    totalUids: uidsAlvo.length, totalTokens: tokens.length,
+    sucesso, falha, erros: erros.slice(0, 10),
   });
+  return { total: uidsAlvo.length, totalTokens: tokens.length, sucesso, falha, erros: erros.slice(0, 5) };
+}
 
-  return { ok: true, jobId: jobRef.id, total: uidsAlvo.length, totalTokens: tokens.length, sucesso, falha, erros: erros.slice(0, 5) };
+exports.enviarPushJob = onCall({ region: 'us-central1', timeoutSeconds: 540, memory: '512MiB' }, async (req) => {
+  const adminUid = req.auth?.uid;
+  const admins = adminUids.value().split(',').map(s => s.trim()).filter(Boolean);
+  if (!adminUid || !admins.includes(adminUid)) {
+    throw new HttpsError('permission-denied', 'Acesso restrito a admins.');
+  }
+
+  const { titulo, corpo, audiencia, plataforma, imagem, data, campaignId, sponsorId, scheduledFor } = req.data ?? {};
+  if (!titulo || typeof titulo !== 'string' || titulo.length > 120) {
+    throw new HttpsError('invalid-argument', 'titulo obrigatório (≤120 chars).');
+  }
+  if (!corpo || typeof corpo !== 'string' || corpo.length > 500) {
+    throw new HttpsError('invalid-argument', 'corpo obrigatório (≤500 chars).');
+  }
+  if (!['uid', 'todos', 'pts_gte', 'waitlist'].includes(audiencia?.tipo)) {
+    throw new HttpsError('invalid-argument', 'audiencia.tipo inválido.');
+  }
+  if (audiencia.tipo === 'uid' && typeof audiencia.valor !== 'string') {
+    throw new HttpsError('invalid-argument', 'uid inválido.');
+  }
+  if (imagem != null && (typeof imagem !== 'string' || !/^https:\/\//i.test(imagem))) {
+    throw new HttpsError('invalid-argument', 'imagem deve ser uma URL https.');
+  }
+  const plat = ['todos', 'ios', 'android'].includes(plataforma) ? plataforma : 'todos';
+
+  const db = getFirestore();
+  const jobBase = {
+    titulo, corpo, audiencia,
+    plataforma: plat,
+    imagem: imagem ?? null,
+    data: data ?? null,
+    campaignId: campaignId ?? null,
+    sponsorId: sponsorId ?? null,
+    criadoEm: new Date(),
+    criadoPor: adminUid,
+  };
+
+  // Agendado: grava o job e sai — processarPushAgendados dispara na hora certa.
+  const agendarMs = scheduledFor != null ? new Date(scheduledFor).getTime() : NaN;
+  if (Number.isFinite(agendarMs) && agendarMs > Date.now() + 60000) {
+    const jobRef = db.collection('push_jobs').doc();
+    await jobRef.set({ ...jobBase, status: 'agendado', scheduledFor: new Date(agendarMs) });
+    return { ok: true, agendado: true, jobId: jobRef.id, scheduledFor: new Date(agendarMs).toISOString() };
+  }
+
+  // Imediato.
+  const jobRef = db.collection('push_jobs').doc();
+  await jobRef.set({ ...jobBase, status: 'enviando' });
+  const r = await executarPushJob(db, jobRef, jobBase);
+  return { ok: true, jobId: jobRef.id, ...r };
 });
+
+// ─── Dispara os push agendados que já venceram (cron a cada 10 min) ─────────
+exports.processarPushAgendados = onSchedule(
+  { schedule: 'every 10 minutes', region: 'us-central1', timeoutSeconds: 540, memory: '512MiB' },
+  async () => {
+    const db = getFirestore();
+    // Só equality em status (índice automático); o vencimento é filtrado em memória.
+    const snap = await db.collection('push_jobs').where('status', '==', 'agendado').limit(50).get();
+    if (snap.empty) return;
+
+    const agora = Date.now();
+    for (const doc of snap.docs) {
+      const venceEm = doc.data().scheduledFor?.toDate?.()?.getTime?.() ?? 0;
+      if (venceEm > agora) continue; // ainda não chegou a hora
+
+      // Claim transacional: impede duas execuções do cron pegarem o mesmo job.
+      const claimed = await db.runTransaction(async (t) => {
+        const fresh = await t.get(doc.ref);
+        if (fresh.data()?.status !== 'agendado') return false;
+        t.update(doc.ref, { status: 'enviando', iniciadoEm: new Date() });
+        return true;
+      });
+      if (!claimed) continue;
+
+      try {
+        await executarPushJob(db, doc.ref, doc.data());
+        console.log(`[pushAgendado] job ${doc.id} disparado`);
+      } catch (e) {
+        console.error(`[pushAgendado] job ${doc.id} falhou:`, e.message);
+        await doc.ref.update({
+          status: 'falhou', finalizadoEm: new Date(), erros: [e.message ?? String(e)],
+        }).catch(() => {});
+      }
+    }
+  }
+);
 
 // ─── Investigação de fraude (temporário) ────────────────────────────────────
 // TEMP DESABILITADO no Windows: investigarFraude.js só existe no Mac, não commitado.
