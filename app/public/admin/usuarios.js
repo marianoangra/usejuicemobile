@@ -1,7 +1,7 @@
 // Lookup de usuário — busca por email/uid/PIX/CPF + perfil completo + ações inline.
 import { db } from './lib/firebase.js';
 import {
-  doc, getDoc, collection, query, where, getDocs, orderBy, limit, updateDoc,
+  doc, getDoc, collection, query, where, getDocs, orderBy, limit, updateDoc, addDoc, increment,
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { fmtNum, fmtDateTime, fmtRelative, fmtShort, esc } from './lib/fmt.js';
 import { toast, confirmar } from './lib/ui.js';
@@ -155,6 +155,7 @@ async function renderPerfilCompleto(u, host) {
             <p style="font-size:11px;color:#555;font-family:monospace;margin-top:4px">uid: ${esc(u.uid)}</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-small" id="btn-ajustar-pts" style="background:transparent;border:1px solid #1a2535;color:#8a9a8a">⚙️ Ajustar pontos</button>
             ${bloqueado
               ? `<button class="btn-small btn-ok" id="btn-desbloquear">✓ Desbloquear</button>`
               : `<button class="btn-small btn-danger" id="btn-bloquear">🚫 Bloquear saques</button>`}
@@ -214,8 +215,10 @@ async function renderPerfilCompleto(u, host) {
   // Wire ações
   const btnBloquear = host.querySelector('#btn-bloquear');
   const btnDesbloquear = host.querySelector('#btn-desbloquear');
+  const btnAjustar = host.querySelector('#btn-ajustar-pts');
   if (btnBloquear) btnBloquear.onclick = () => bloquear(u, host);
   if (btnDesbloquear) btnDesbloquear.onclick = () => desbloquear(u, host);
+  if (btnAjustar) btnAjustar.onclick = () => ajustarPontos(u, host);
 }
 
 async function bloquear(u, host) {
@@ -256,6 +259,55 @@ async function desbloquear(u, host) {
     });
     toast(`${u.nome} desbloqueado.`, 'ok');
     Object.assign(u, { saquesBloqueados: false, contaSuspeita: false, motivoBloqueio: null });
+    await renderPerfilCompleto(u, host);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'erro');
+  }
+}
+
+// Ajuste manual de pontos (crédito ou débito) — registra em ajustes_manuais.
+async function ajustarPontos(u, host) {
+  const raw = prompt(
+    `Ajustar pontos de "${u.nome}".\n\nSaldo atual: ${u.pontos ?? 0} pts.\n` +
+    `Valor a somar (negativo pra remover). Ex: 500000  ou  -10000`,
+    ''
+  );
+  if (raw == null) return;
+  const delta = Number(String(raw).replace(/[^0-9-]/g, ''));
+  if (!Number.isInteger(delta) || delta === 0) return toast('Valor inválido.', 'erro');
+  if (Math.abs(delta) > 2000000) {
+    return toast('Ajuste acima de 2.000.000 — confira o valor (faça em partes se for real).', 'erro');
+  }
+  const atual = u.pontos ?? 0;
+  const depois = atual + delta;
+  if (depois < 0) return toast('O saldo ficaria negativo.', 'erro');
+
+  const motivo = (prompt('Motivo do ajuste (vai pro log de auditoria):', '') ?? '').trim();
+  if (!motivo) return toast('Motivo obrigatório.', 'erro');
+
+  const ok = await confirmar(
+    'Confirmar ajuste de pontos',
+    `${u.nome}\n\n${fmtNum(atual)} → ${fmtNum(depois)} pts  (${delta > 0 ? '+' : ''}${fmtNum(delta)})\n\nMotivo: ${motivo}`,
+    { confirmar: delta > 0 ? 'Creditar' : 'Debitar' }
+  );
+  if (!ok) return;
+
+  try {
+    await updateDoc(doc(db, 'usuarios', u.uid), { pontos: increment(delta) });
+    await addDoc(collection(db, 'ajustes_manuais'), {
+      tipo: 'ajuste_pontos',
+      uid: u.uid,
+      nome: u.nome ?? null,
+      email: u.email ?? null,
+      delta,
+      pontosAntes: atual,
+      pontosDepois: depois,
+      motivo,
+      por: 'admin',
+      criadoEm: new Date(),
+    });
+    toast(`${u.nome}: ${delta > 0 ? '+' : ''}${fmtNum(delta)} pts aplicado.`, 'ok');
+    Object.assign(u, { pontos: depois });
     await renderPerfilCompleto(u, host);
   } catch (e) {
     toast('Erro: ' + e.message, 'erro');
