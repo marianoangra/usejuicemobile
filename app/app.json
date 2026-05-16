@@ -2,7 +2,7 @@
   "expo": {
     "name": "JUICE",
     "slug": "cnbmobile",
-    "version": "1.2.45",
+    "version": "1.2.46",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -12,7 +12,11 @@
       "resizeMode": "cover",
       "backgroundColor": "#0A0F1E"
     },
-    "scheme": "com.cnb.cnbappv2",
+    "scheme": [
+      "com.cnb.cnbappv2",
+      "com.googleusercontent.apps.144617374104-f1na8of0dsq5d33fhi7qo8j1n9doddq7",
+      "com.googleusercontent.apps.144617374104-at4m556iuiqftj2ruum3ibpa749u0gdd"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.cnb.cnbappv2",
@@ -31,7 +35,7 @@
     },
     "android": {
       "package": "com.cnb.cnbappv2",
-      "versionCode": 209,
+      "versionCode": 210,
       "permissions": [
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_DATA_SYNC"
