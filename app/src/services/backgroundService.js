@@ -1,13 +1,13 @@
-import * as Battery from 'expo-battery';
 import * as Notifications from 'expo-notifications';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { adicionarMinutoComBonus, calcularPontosTotal } from './pontos';
 import { lerConsentimentos } from '../utils/consentimentos';
+import {
+  lerBateria, lerSessao, salvarSessao, novaSessao, marcarCheckpoint,
+  reconciliar, minutosDecorridos, LIMITE_MINUTOS, SESSAO_KEY,
+} from './sessaoCarregamento';
 
-// Anti-bot: limite de sessão contínua de 8 horas
-const LIMITE_MINUTOS = 480;
-
-export const SESSAO_KEY = 'cnb_sessao_carregamento';
+// Re-export para compatibilidade com importadores antigos.
+export { SESSAO_KEY };
 
 // ─── Guard do módulo nativo ───────────────────────────────────────────────────
 // Se o build ainda não inclui react-native-background-actions compilado,
@@ -39,71 +39,51 @@ function estaRodando() {
 
 // ─── Lógica da tarefa (roda em background) ───────────────────────────────────
 
-function estaCarregando(state) {
-  return state === Battery.BatteryState.CHARGING || state === Battery.BatteryState.FULL;
-}
-
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Foreground service: crédito AO VIVO da sessão. A cada ciclo credita 1 minuto
+// via adicionarMinutoComBonus — o espaçamento de 60s respeita a regra do
+// Firestore (≥50s entre writes). Se o SO throttla o serviço, esse caminho
+// credita menos que o tempo real; o gap é fechado depois por reconciliarSessao.
 async function tarefaCarregamento(taskData) {
   const { uid } = taskData;
-  let minutos = 0;
-  let pendingMinutes = 0; // minutos não confirmados no Firestore (ex: ficou offline)
 
-  try {
-    const raw = await AsyncStorage.getItem(SESSAO_KEY);
-    if (raw) {
-      const sessao = JSON.parse(raw);
-      if (sessao.uid === uid) {
-        minutos = sessao.minutosAcumulados ?? 0;
-        pendingMinutes = sessao.pendingMinutes ?? 0;
-      }
-    }
-  } catch {}
-
-  // Reconcilia minutos pendentes de sessão anterior interrompida offline
-  if (pendingMinutes > 0) {
-    let flushed = 0;
-    while (flushed < pendingMinutes) {
-      try {
-        const bonusConcedido = await adicionarMinutoComBonus(uid);
-        if (bonusConcedido) console.log(`[BackgroundService] Bônus de hora (reconciliação) concedido!`);
-        flushed++;
-      } catch {
-        break; // Ainda offline — tenta no próximo ciclo
-      }
-    }
-    pendingMinutes -= flushed;
-    if (flushed > 0) console.log(`[BackgroundService] Reconciliados ${flushed} min pendentes.`);
+  // O hook normalmente já criou a sessão ao detectar a carga; garante mesmo assim.
+  let sessao = await lerSessao(uid);
+  if (!sessao) {
+    const { nivel } = await lerBateria();
+    sessao = novaSessao(uid, nivel);
+    await salvarSessao(sessao);
   }
-
-  await AsyncStorage.setItem(SESSAO_KEY, JSON.stringify({ uid, minutosAcumulados: minutos, pendingMinutes })).catch(() => {});
 
   while (estaRodando()) {
     await sleep(60000);
     if (!estaRodando()) break;
 
+    const bateria = await lerBateria();
+    if (!bateria.charging) {
+      // Carregador desconectado — credita o gap final e encerra.
+      const atual = (await lerSessao(uid)) || sessao;
+      await reconciliar(atual, bateria);
+      try { await BackgroundService.stop(); } catch {}
+      break;
+    }
+
+    // Crédito ao vivo — 1 minuto por ciclo.
     try {
-      const state = await Battery.getBatteryStateAsync();
-      if (!estaCarregando(state)) {
-        try { await BackgroundService.stop(); } catch {}
-        break;
-      }
+      const consent = await lerConsentimentos().catch(() => ({}));
+      await adicionarMinutoComBonus(uid, consent.horarios !== false);
     } catch {}
 
-    // Lê consentimentos a cada ciclo para refletir revogações em tempo real
-    const consentimentos = await lerConsentimentos().catch(() => ({}));
-    const incluirHorarios = consentimentos.horarios !== false;
-    // Stubs para features futuras:
-    // const incluirLocalizacao = consentimentos.localizacao !== false;
-    // const incluirRede        = consentimentos.rede !== false;
-
-    minutos++;
-    pendingMinutes++;
+    // Avança o checkpoint (chargeEndedAt honesto para a reconciliação).
+    sessao = (await lerSessao(uid)) || sessao;
+    sessao = await marcarCheckpoint(sessao);
 
     // Anti-bot: para após 8 horas contínuas de carregamento.
     // Reinicia quando o usuário desconectar e reconectar o carregador.
+    const minutos = minutosDecorridos(sessao);
     if (minutos >= LIMITE_MINUTOS) {
+      await reconciliar(sessao, bateria);
       try {
         await Notifications.scheduleNotificationAsync({
           content: {
@@ -118,34 +98,12 @@ async function tarefaCarregamento(taskData) {
       break;
     }
 
-    // Tenta aplicar todos os minutos pendentes (incluindo o atual)
-    let flushed = 0;
-    while (flushed < pendingMinutes) {
-      try {
-        const bonusConcedido = await adicionarMinutoComBonus(uid, incluirHorarios);
-        if (bonusConcedido) console.log(`[BackgroundService] Bônus de hora concedido! (min ${minutos})`);
-        flushed++;
-      } catch {
-        console.warn(`[BackgroundService] Offline — ${pendingMinutes - flushed} min pendentes`);
-        break;
-      }
-    }
-    pendingMinutes -= flushed;
-
-    try {
-      await AsyncStorage.setItem(SESSAO_KEY, JSON.stringify({ uid, minutosAcumulados: minutos, pendingMinutes }));
-    } catch (e) {
-      console.warn('[BackgroundService] Falha ao salvar sessão no AsyncStorage:', e?.message);
-    }
-
     try {
       await BackgroundService.updateNotification({
         taskDesc: `⚡ ${minutos} min carregando · +${calcularPontosTotal(minutos).toLocaleString('pt-BR')} pts`,
       });
     } catch {}
   }
-
-  await AsyncStorage.removeItem(SESSAO_KEY).catch(() => {});
 }
 
 const OPCOES_BASE = {

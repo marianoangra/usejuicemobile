@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -15,6 +15,10 @@ import { useCarregamento } from '../hooks/useCarregamento';
 import { calcularAtividadeDiaria } from '../services/pontos';
 import { useAccent } from '../context/AccentContext';
 import { useScreenTrace } from '../hooks/useScreenTrace';
+import {
+  SUPORTA_OTIMIZACAO_BATERIA, abrirAjustesOtimizacaoBateria,
+  jaPediuOtimizacaoBateria, marcarOtimizacaoBateriaPedida,
+} from '../services/batteryOptimization';
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const NEON         = '#00FF7F';
@@ -707,6 +711,28 @@ export default function ChargingScreen({ route, navigation }) {
     );
     return () => sub?.remove();
   }, []);
+
+  // ── Isenção de otimização de bateria (Android) ──
+  // Na primeira sessão de carregamento, pede uma vez para o usuário liberar o
+  // JUICE — sem isso o sistema mata o foreground service em segundo plano.
+  useEffect(() => {
+    if (!carregando || !SUPORTA_OTIMIZACAO_BATERIA) return;
+    let cancelado = false;
+    (async () => {
+      if (await jaPediuOtimizacaoBateria()) return;
+      if (cancelado) return;
+      await marcarOtimizacaoBateriaPedida(); // mostra só uma vez, mesmo se o usuário ignorar
+      Alert.alert(
+        t('charging.batteryOptTitle'),
+        t('charging.batteryOptMsg'),
+        [
+          { text: t('charging.batteryOptLater'), style: 'cancel' },
+          { text: t('charging.batteryOptOpen'), onPress: abrirAjustesOtimizacaoBateria },
+        ],
+      );
+    })();
+    return () => { cancelado = true; };
+  }, [carregando]);
 
   // Entrada
   const entrada  = useSharedValue(0);

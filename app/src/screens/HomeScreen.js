@@ -398,6 +398,9 @@ export default function HomeScreen({ route, navigation }) {
   usePresence(perfil?.uid);
   const onAtualizarRef = useRef(onAtualizar);
   useEffect(() => { onAtualizarRef.current = onAtualizar; }, [onAtualizar]);
+  // Espelha perfil para uso dentro do listener de pontos (effect com deps [])
+  const perfilRef = useRef(perfil);
+  useEffect(() => { perfilRef.current = perfil; }, [perfil]);
 
   const frasesMotivacionais = t('home.phrases', { returnObjects: true });
   const frase = Array.isArray(frasesMotivacionais)
@@ -406,11 +409,23 @@ export default function HomeScreen({ route, navigation }) {
   const [atividades, setAtividades]           = useState([]);
   const [loadingAtividades, setLoadingAtiv]   = useState(false);
   const [refreshing, setRefreshing]           = useState(false);
+  // Pontos da sessão de carregamento em curso (espelha pontosGanhos do ChargingScreen).
+  // No iOS o Firestore só é gravado ao fim da sessão; sem isto o card fica congelado.
+  const [liveSessionPts, setLiveSessionPts]   = useState(0);
+  const sessaoBaseRef = useRef(null);  // total persistido capturado no início da sessão
   // Sincroniza pontos com o Firestore a cada tick do carregamento.
   // Aguarda 2s após o evento para garantir que o serviço já escreveu no Firestore.
   useEffect(() => {
     let timer;
-    const unsub = onPontosUpdate(() => {
+    const unsub = onPontosUpdate((pts) => {
+      // pts = pontos acumulados na sessão de carregamento atual (0 ao encerrar).
+      // Captura o total persistido como base no início da sessão e zera ao fim.
+      if (pts > 0) {
+        if (sessaoBaseRef.current === null) sessaoBaseRef.current = perfilRef.current?.pontos ?? 0;
+      } else {
+        sessaoBaseRef.current = null;
+      }
+      setLiveSessionPts(pts);
       clearTimeout(timer);
       timer = setTimeout(() => onAtualizarRef.current?.(), 2000);
     });
@@ -480,10 +495,16 @@ export default function HomeScreen({ route, navigation }) {
       .finally(() => setLoadingAtiv(false));
   }, [perfil?.uid, perfil?.pontos, i18n.language]);
 
-  const pontos    = perfil?.pontos ?? 0;
+  const pontosPersistidos = perfil?.pontos ?? 0;
+  // Durante uma sessão de carregamento mostra o total ao vivo (base + ganho da sessão).
+  // Math.max evita contar dobrado no Android, onde o Firestore já sobe sozinho a cada minuto.
+  const pontos    = liveSessionPts > 0 && sessaoBaseRef.current !== null
+    ? Math.max(pontosPersistidos, sessaoBaseRef.current + liveSessionPts)
+    : pontosPersistidos;
   const progresso = Math.min(pontos / META, 1);
   const faltam    = Math.max(META - pontos, 0);
-  const podeSacar = pontos >= META;
+  // Saque continua travado no total persistido — pontos ao vivo ainda não estão no Firestore.
+  const podeSacar = pontosPersistidos >= META;
   const nome      = perfil?.nome?.split(' ')[0] ?? (user ? t('common.user') : t('home.visitor'));
   const estaCarregando = useCarregando();
 

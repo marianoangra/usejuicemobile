@@ -115,7 +115,11 @@
     "earn10": "+10 pts por minuto carregando",
     "earn50": "+50 pts bônus a cada hora completa",
     "earn10daily": "+10 pts por login diário",
-    "earn100referral": "+100 pts por amigo indicado"
+    "earn100referral": "+100 pts por amigo indicado",
+    "batteryOptTitle": "Não perca pontos com a tela travada",
+    "batteryOptMsg": "Para o JUICE continuar contando enquanto o celular carrega com a tela bloqueada, libere o app da otimização de bateria. Sem isso, o Android pode pausar a contagem em segundo plano.",
+    "batteryOptLater": "Agora não",
+    "batteryOptOpen": "Liberar JUICE"
   },
   "ranking": {
     "heading": "Ranking",

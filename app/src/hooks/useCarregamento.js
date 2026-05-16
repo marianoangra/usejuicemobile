@@ -1,46 +1,52 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState } from 'react-native';
 import * as Battery from 'expo-battery';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { iniciarForegroundService, pararForegroundService, servicoRodando, SESSAO_KEY } from '../services/backgroundService';
+import { iniciarForegroundService, pararForegroundService, servicoRodando } from '../services/backgroundService';
+import {
+  lerBateria, lerSessao, salvarSessao, limparSessao, novaSessao,
+  sessaoResumivel, minutosDecorridos, marcarCheckpoint, reconciliar,
+  estaCarregando, LIMITE_MINUTOS,
+} from '../services/sessaoCarregamento';
 import { logInicioCarregamento, logFimCarregamento, logSessaoOnChain } from '../services/analytics';
-import { calcularPontosTotal, adicionarMinutoComBonus } from '../services/pontos';
+import { calcularPontosTotal } from '../services/pontos';
 import { getDeviceHash } from '../services/deviceFingerprint';
 import { emitPontosUpdate } from '../services/chargeEvents';
 import { notificarInicioCarregamento } from '../services/notificacoes';
 
-const LIMITE_MINUTOS_ANTI_BOT = 480; // 8 horas contínuas
-
-function estaCarregando(state) {
-  return state === Battery.BatteryState.CHARGING || state === Battery.BatteryState.FULL;
-}
+// A cada quantos minute ticks chamar reconciliarSessao (mantém o Firestore
+// atualizado durante carga em foreground e o marcador antifraude fresco).
+const TICKS_POR_RECONCILE = 5;
 
 export function useCarregamento(uid, onPontosAdicionados) {
   const [carregando, setCarregando] = useState(false);
   const [pontosGanhos, setPontosGanhos] = useState(0);
   const [segundosRestantes, setSegundosRestantes] = useState(3600);
   const [limiteBotAtingido, setLimiteBotAtingido] = useState(false);
-  // Ref espelhado para uso dentro de callbacks sem closure stale
-  const limiteBotRef = useRef(false);
 
   const uidRef = useRef(uid);
   const carregandoRef = useRef(false);
-  const minutosRef = useRef(0);
   const onAtualizarRef = useRef(onPontosAdicionados);
-  const countdownRef = useRef(null);
-  const minuteTickRef = useRef(null);
   const montadoRef = useRef(true);
 
-  // Mutex: evita chamadas concorrentes de iniciar/parar sessão
+  // Espelho em memória da sessão persistida (modelo em sessaoCarregamento.js)
+  const sessaoRef = useRef(null);
+  const limiteBotRef = useRef(false);
+  const reconcileTickRef = useRef(0);
+
+  // Timers visuais — recalculam a UI pelo relógio; se forem throttled, nada
+  // se perde, pois o valor é derivado de (agora - chargeStartedAt).
+  const countdownRef = useRef(null);   // 1s — segundosRestantes
+  const minuteTickRef = useRef(null);  // 60s — recalcula minutos e checkpoint
+
+  // Mutexes: Android dispara múltiplos eventos de bateria ao conectar/desconectar
   const iniciandoSessaoRef = useRef(false);
   const parandoSessaoRef = useRef(false);
-
-  // Rastreia se o serviço nativo chegou a rodar nesta sessão
   const servicoIniciadoRef = useRef(false);
-
-  // Debounce: aguarda Android estabilizar o estado da bateria antes de agir
   const batteryDebounceRef = useRef(null);
+
+  // pararSessao é referenciado pelo minute tick antes de ser declarado
+  const pararSessaoRef = useRef(null);
 
   useEffect(() => { uidRef.current = uid; }, [uid]);
   useEffect(() => { onAtualizarRef.current = onPontosAdicionados; }, [onPontosAdicionados]);
@@ -50,70 +56,125 @@ export function useCarregamento(uid, onPontosAdicionados) {
     return () => { montadoRef.current = false; };
   }, []);
 
-  // ─── Timers visuais ──────────────────────────────────────────────────────────
+  // ─── UI pelo relógio ─────────────────────────────────────────────────────────
 
-  const iniciarContador = useCallback(() => {
-    if (countdownRef.current) return;
-    setSegundosRestantes(3600 - (minutosRef.current % 60) * 60);
-    countdownRef.current = setInterval(() => {
-      setSegundosRestantes(prev => prev <= 0 ? 3600 : prev - 1);
-    }, 1000);
+  // Recalcula pontos e countdown a partir de (agora - chargeStartedAt).
+  // Devolve os minutos decorridos.
+  const atualizarUI = useCallback(() => {
+    if (!montadoRef.current) return 0;
+    const s = sessaoRef.current;
+    const m = minutosDecorridos(s);
+    const pts = calcularPontosTotal(m);
+    setPontosGanhos(pts);
+    emitPontosUpdate(pts);
+    if (s) {
+      const seg = Math.floor((Date.now() - s.chargeStartedAt) / 1000) % 3600;
+      setSegundosRestantes(3600 - seg);
+    }
+    return m;
   }, []);
 
-  const pararContador = useCallback(() => {
+  // ─── Timers visuais ──────────────────────────────────────────────────────────
+
+  const pararTimers = useCallback(() => {
     if (countdownRef.current) { clearInterval(countdownRef.current); countdownRef.current = null; }
     if (minuteTickRef.current) { clearInterval(minuteTickRef.current); minuteTickRef.current = null; }
   }, []);
+
+  const iniciarTimers = useCallback(() => {
+    if (!countdownRef.current) {
+      countdownRef.current = setInterval(() => {
+        const s = sessaoRef.current;
+        if (!s || !montadoRef.current) return;
+        const seg = Math.floor((Date.now() - s.chargeStartedAt) / 1000) % 3600;
+        setSegundosRestantes(3600 - seg);
+      }, 1000);
+    }
+    if (!minuteTickRef.current) {
+      minuteTickRef.current = setInterval(async () => {
+        const m = atualizarUI();
+
+        // Anti-bot: interrompe após 8 horas consecutivas de carregamento.
+        if (m >= LIMITE_MINUTOS) {
+          limiteBotRef.current = true;
+          if (montadoRef.current) setLimiteBotAtingido(true);
+          await pararSessaoRef.current?.();
+          return;
+        }
+
+        // Avança o checkpoint a cada minuto (chargeEndedAt honesto se o app
+        // for morto) e reconcilia periodicamente (mantém o Firestore em dia).
+        let s = sessaoRef.current;
+        if (s) {
+          s = await marcarCheckpoint(s);
+          sessaoRef.current = s;
+          reconcileTickRef.current += 1;
+          if (reconcileTickRef.current >= TICKS_POR_RECONCILE) {
+            reconcileTickRef.current = 0;
+            const bateria = await lerBateria();
+            await reconciliar(s, bateria);
+            onAtualizarRef.current?.();
+          }
+        }
+      }, 60000);
+    }
+  }, [atualizarUI]);
 
   // ─── Sessão ──────────────────────────────────────────────────────────────────
 
   const iniciarSessao = useCallback(async () => {
     if (!uidRef.current) return;
-    // Mutex: impede chamadas concorrentes (Android pode disparar múltiplos eventos de bateria)
+    // Mutex: impede chamadas concorrentes (Android dispara eventos múltiplos)
     if (iniciandoSessaoRef.current) return;
     iniciandoSessaoRef.current = true;
 
     try {
-      // Restaura minutos acumulados de sessão existente (app voltou ao foreground)
-      try {
-        const raw = await AsyncStorage.getItem(SESSAO_KEY);
-        if (raw) {
-          const { uid: savedUid, minutosAcumulados } = JSON.parse(raw);
-          if (savedUid === uidRef.current && minutosAcumulados > minutosRef.current) {
-            minutosRef.current = minutosAcumulados;
-            const pts = calcularPontosTotal(minutosAcumulados);
-            if (montadoRef.current) setPontosGanhos(pts);
-            emitPontosUpdate(pts);
-          }
-        }
-      } catch {}
+      const bateria = await lerBateria();
 
-      iniciarContador();
+      // Retoma a sessão guardada se o checkpoint ainda for recente; caso
+      // contrário concilia a sessão órfã (de uma carga anterior) e inicia uma nova.
+      const guardada = await lerSessao(uidRef.current);
+      let sessao;
+      let resumida = false;
+      if (guardada && sessaoResumivel(guardada)) {
+        sessao = guardada;
+        resumida = true;
+      } else {
+        if (guardada) {
+          // Sessão órfã — credita só até o checkpoint dela (charging:false),
+          // sem incluir o tempo não observado até agora.
+          await reconciliar(guardada, { charging: false, nivel: bateria.nivel });
+        }
+        sessao = novaSessao(uidRef.current, bateria.nivel);
+        await salvarSessao(sessao);
+      }
+      sessaoRef.current = sessao;
+      reconcileTickRef.current = 0;
+      limiteBotRef.current = false;
+      if (montadoRef.current) setLimiteBotAtingido(false);
+
       logInicioCarregamento();
-      // Notifica o usuário se o app estiver em background (iOS/Android)
+      // Notifica o usuário se o app estiver em background
       notificarInicioCarregamento().catch(() => {});
 
-      // Tick local a cada minuto — só atualiza UI (Firestore é gravado pelo Foreground Service)
-      if (!minuteTickRef.current) {
-        minuteTickRef.current = setInterval(() => {
-          minutosRef.current += 1;
+      atualizarUI();
+      iniciarTimers();
 
-          // Anti-bot: interrompe após 8 horas consecutivas de carregamento.
-          // Reinicia automaticamente quando o usuário desconectar e reconectar.
-          if (minutosRef.current >= LIMITE_MINUTOS_ANTI_BOT) {
-            limiteBotRef.current = true;
-            if (montadoRef.current) setLimiteBotAtingido(true);
-            pararSessao(minutosRef.current);
-            return;
-          }
-
-          const pts = calcularPontosTotal(minutosRef.current);
-          if (montadoRef.current) setPontosGanhos(pts);
-          emitPontosUpdate(pts);
-        }, 60000);
+      // Sessão retomada: credita o gap recente.
+      if (resumida) {
+        await reconciliar(sessao, bateria);
+        onAtualizarRef.current?.();
       }
 
-      // Inicia o Foreground Service — roda em background e escreve no Firestore
+      // Já passou de 8h (sessão retomada antiga)? encerra.
+      if (minutosDecorridos(sessao) >= LIMITE_MINUTOS) {
+        limiteBotRef.current = true;
+        if (montadoRef.current) setLimiteBotAtingido(true);
+        await pararSessaoRef.current?.();
+        return;
+      }
+
+      // Foreground Service — crédito ao vivo no Android e roda em background
       try {
         await iniciarForegroundService(uidRef.current);
         servicoIniciadoRef.current = servicoRodando();
@@ -124,82 +185,58 @@ export function useCarregamento(uid, onPontosAdicionados) {
     } finally {
       iniciandoSessaoRef.current = false;
     }
-  }, [iniciarContador]);
+  }, [iniciarTimers, atualizarUI]);
 
-  const pararSessao = useCallback(async (minutosFinal) => {
+  const pararSessao = useCallback(async () => {
     // Mutex: impede chamadas concorrentes
     if (parandoSessaoRef.current) return;
     parandoSessaoRef.current = true;
 
     try {
-      const minutos = minutosFinal ?? minutosRef.current;
-      if (minutos > 0) logFimCarregamento(minutos, calcularPontosTotal(minutos));
-      pararContador();
-      minutosRef.current = 0;
-      limiteBotRef.current = false;
+      pararTimers();
+
+      // Sessão autoritativa: a do storage (o foreground service pode tê-la
+      // atualizado), com fallback para o espelho em memória.
+      const guardada = await lerSessao(uidRef.current);
+      const sessao = guardada || sessaoRef.current;
+
+      let minutosFinal = 0;
+      if (sessao) {
+        const bateria = await lerBateria();
+        // Reconciliação final — credita o gap que faltou. Encadeada, então
+        // não é descartada mesmo se uma reconciliação periódica estiver em voo.
+        await reconciliar(sessao, bateria);
+        const chargeEndedAt = bateria.charging ? Date.now() : sessao.ultimoCheckpoint;
+        minutosFinal = minutosDecorridos(sessao, chargeEndedAt);
+      }
+
+      sessaoRef.current = null;
       if (montadoRef.current) {
         setPontosGanhos(0);
         setSegundosRestantes(3600);
-        setLimiteBotAtingido(false);
       }
       emitPontosUpdate(0);
-      // Fallback de salvamento: garante que minutos não gravados pelo serviço
-      // sejam persistidos no Firestore antes de encerrar a sessão.
-      //
-      // IMPORTANTE: adicionarPontos() NÃO pode ser usado aqui porque a regra
-      // do Firestore limita a +60 pts e +1 min por operação. Para sessões com
-      // mais de 6 minutos (ou qualquer sessão de iOS, onde o background service
-      // não roda), adicionarPontos() seria silenciosamente rejeitada.
-      // Usamos adicionarMinutoComBonus() em loop — 1 transação por minuto —
-      // que respeita as regras e aplica o bônus de hora corretamente.
-      if (uidRef.current && minutos > 0) {
-        try {
-          const minutosParaSalvar = !servicoIniciadoRef.current
-            ? minutos  // serviço nunca rodou (iOS ou falha): salva toda a sessão
-            : await (async () => {    // serviço rodou: salva só os pendentes (offline)
-                try {
-                  const raw = await AsyncStorage.getItem(SESSAO_KEY);
-                  if (!raw) return 0;
-                  const { pendingMinutes: pending = 0 } = JSON.parse(raw);
-                  return pending;
-                } catch { return 0; }
-              })();
 
-          if (minutosParaSalvar > 0) {
-            let salvos = 0;
-            for (let i = 0; i < minutosParaSalvar; i++) {
-              try {
-                await adicionarMinutoComBonus(uidRef.current);
-                salvos++;
-              } catch {
-                break; // offline — para aqui, perde o restante desta tentativa
-              }
-            }
-            console.log(`[Carregar] Fallback: ${salvos}/${minutosParaSalvar} min salvos no Firestore`);
-          }
-        } catch (e) {
-          console.warn('[Carregar] Erro ao salvar minutos no fallback:', e?.message);
-        }
-      }
+      await limparSessao();
+      try { await pararForegroundService(); } catch {}
       servicoIniciadoRef.current = false;
 
-      // Limpa AsyncStorage aqui: se o serviço foi morto pelo SO, ele nunca
-      // executa removeItem, e a próxima sessão carregaria os minutos antigos.
-      await AsyncStorage.removeItem(SESSAO_KEY).catch(() => {});
-      try { await pararForegroundService(); } catch {}
-      if (minutos > 0) {
+      if (minutosFinal > 0) {
+        logFimCarregamento(minutosFinal, calcularPontosTotal(minutosFinal));
         // Registra prova on-chain da sessão (não-bloqueante — falha silenciosa)
         getDeviceHash().then(deviceHash =>
-          httpsCallable(getFunctions(), 'registrarProvasSessao')({ duracaoMinutos: minutos, deviceHash })
+          httpsCallable(getFunctions(), 'registrarProvasSessao')({ duracaoMinutos: minutosFinal, deviceHash })
         )
-          .then(r => logSessaoOnChain(minutos, calcularPontosTotal(minutos), r?.data?.signature))
-          .catch(() => logSessaoOnChain(minutos, calcularPontosTotal(minutos), null));
+          .then(r => logSessaoOnChain(minutosFinal, calcularPontosTotal(minutosFinal), r?.data?.signature))
+          .catch(() => logSessaoOnChain(minutosFinal, calcularPontosTotal(minutosFinal), null));
         onAtualizarRef.current?.();
       }
     } finally {
       parandoSessaoRef.current = false;
     }
-  }, [pararContador]);
+  }, [pararTimers]);
+
+  useEffect(() => { pararSessaoRef.current = pararSessao; }, [pararSessao]);
 
   // ─── Sincroniza ao retornar ao foreground ────────────────────────────────────
 
@@ -208,35 +245,37 @@ export function useCarregamento(uid, onPontosAdicionados) {
       if (nextState !== 'active') return;
       if (!carregandoRef.current) return;
 
-      try {
-        const raw = await AsyncStorage.getItem(SESSAO_KEY);
-        if (raw) {
-          const { minutosAcumulados } = JSON.parse(raw);
-          if (minutosAcumulados > minutosRef.current) {
-            minutosRef.current = minutosAcumulados;
-            const pts = calcularPontosTotal(minutosAcumulados);
-            if (montadoRef.current) setPontosGanhos(pts);
-            emitPontosUpdate(pts);
-          }
-        }
-      } catch {}
+      const bateria = await lerBateria();
 
-      // Detecta serviço morto pelo SO: UI acha que está carregando mas serviço parou.
-      // Reinicia se bateria ainda está carregando — o listener de bateria cuida do caso contrário.
-      // Não reinicia se o limite anti-bot foi atingido nesta sessão.
-      if (!servicoRodando() && uidRef.current && !limiteBotRef.current) {
-        try {
-          const state = await Battery.getBatteryStateAsync();
-          if (estaCarregando(state)) {
-            await iniciarForegroundService(uidRef.current);
-          }
-        } catch {}
+      if (bateria.charging) {
+        // Credita o gap que passou com o app suspenso (iOS) ou com o serviço
+        // morto pelo SO (Android). É aqui que a contagem por relógio destrava.
+        let sessao = (await lerSessao(uidRef.current)) || sessaoRef.current;
+        if (sessao) {
+          sessao = await marcarCheckpoint(sessao);
+          sessaoRef.current = sessao;
+          await reconciliar(sessao, bateria);
+        }
+        const m = atualizarUI();
+
+        if (m >= LIMITE_MINUTOS) {
+          limiteBotRef.current = true;
+          if (montadoRef.current) setLimiteBotAtingido(true);
+          await pararSessao();
+        } else if (!servicoRodando() && uidRef.current && !limiteBotRef.current) {
+          // Serviço morto pelo SO — religa.
+          try { await iniciarForegroundService(uidRef.current); } catch {}
+        }
+      } else {
+        // Carregador foi desconectado enquanto o app estava fora.
+        if (montadoRef.current) setCarregando(false);
+        await pararSessao();
       }
 
       onAtualizarRef.current?.();
     });
     return () => sub.remove();
-  }, []);
+  }, [atualizarUI, pararSessao]);
 
   // ─── Inicialização: detecção de bateria ──────────────────────────────────────
 
@@ -246,9 +285,8 @@ export function useCarregamento(uid, onPontosAdicionados) {
 
     (async () => {
       try {
-        const state = await Battery.getBatteryStateAsync();
+        const { charging } = await lerBateria();
         if (!ativo) return;
-        const charging = estaCarregando(state);
         if (montadoRef.current) setCarregando(charging);
         if (charging) {
           await iniciarSessao();
@@ -289,10 +327,10 @@ export function useCarregamento(uid, onPontosAdicionados) {
         batteryDebounceRef.current = null;
       }
       sub?.remove();
-      pararContador();
+      pararTimers();
       pararForegroundService().catch(() => {});
     };
-  }, [iniciarSessao, pararSessao, pararContador]);
+  }, [iniciarSessao, pararSessao, pararTimers]);
 
   return { carregando, pontosGanhos, segundosRestantes, limiteBotAtingido };
 }

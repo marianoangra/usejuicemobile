@@ -115,7 +115,11 @@
     "earn10": "+10 pts per minute charging",
     "earn50": "+50 pts bonus every full hour",
     "earn10daily": "+10 pts for daily login",
-    "earn100referral": "+100 pts per referred friend"
+    "earn100referral": "+100 pts per referred friend",
+    "batteryOptTitle": "Don't lose points with the screen locked",
+    "batteryOptMsg": "For JUICE to keep counting while your phone charges with the screen locked, exempt the app from battery optimization. Without it, Android may pause counting in the background.",
+    "batteryOptLater": "Not now",
+    "batteryOptOpen": "Exempt JUICE"
   },
   "ranking": {
     "heading": "Ranking",
